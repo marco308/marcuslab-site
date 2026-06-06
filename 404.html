@@ -68,11 +68,10 @@ main{ flex:1; display:flex; align-items:center; padding:60px 0; }
 .grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center; }
 .eyebrow{ font-family:var(--mono); font-size:12.5px; color:var(--mint); }
 .eyebrow::before{ content:"// "; color:var(--ink-3); }
-.guide-tag{ display:inline-flex; align-items:center; gap:9px; font-family:var(--mono); font-size:12px; color:var(--ink-2);
-  border:1px solid var(--line); border-radius:999px; padding:6px 13px; margin-bottom:22px; }
-.guide-tag .fish{ font-size:14px; }
+.bignum{ font-weight:800; font-size:clamp(86px,18vw,168px); line-height:.9; letter-spacing:-.06em;
+  color:var(--ink); margin:10px 0 0; }
 
-h1{ font-family:var(--mono); font-weight:800; font-size:clamp(48px,9vw,92px); line-height:.96; letter-spacing:-.04em; margin:14px 0 0; }
+h1{ font-family:var(--mono); font-weight:800; font-size:clamp(34px,6vw,60px); line-height:.96; letter-spacing:-.03em; margin:6px 0 0; }
 h1 .panic{ color:var(--mint); }
 .sub{ font-size:clamp(16px,2vw,18px); color:var(--ink-2); margin-top:22px; max-width:46ch; }
 .sub em{ color:var(--ink); font-style:normal; border-bottom:1px dotted var(--ink-3); }
@@ -125,9 +124,9 @@ footer{ border-top:1px solid var(--line); padding:22px 0; }
 <main>
   <div class="wrap grid">
     <div>
-      <span class="guide-tag"><span class="fish">🐟</span> THE HITCHHIKER'S GUIDE · entry 404</span>
-      <span class="eyebrow">error 404 — page not found</span>
-      <h1 class="mono">Don't<br><span class="panic">Panic.</span></h1>
+      <span class="eyebrow">page not found</span>
+      <div class="bignum mono">404</div>
+      <h1 class="mono">Don't <span class="panic">Panic.</span></h1>
       <p class="sub">The page you're looking for has been demolished to make way for a hyperspace bypass. The plans were on display at your local planning office in Alpha Centauri for <em>fifty of your Earth years</em>, so you've had plenty of time to lodge a complaint.</p>
       <div class="actions">
         <a class="btn btn-primary" href="/">← so long, take me home</a>
