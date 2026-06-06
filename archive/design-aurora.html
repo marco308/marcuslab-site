@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>document.documentElement.classList.add('js');</script>
+<title>Marcus Williams — apps &amp; tools · marcuslab</title>
+<meta name="description" content="Marcus Williams builds native iOS &amp; macOS apps and developer tools. Maker of mDone and ChukkaTimer, and a handful of open-source projects." />
+<meta name="theme-color" content="#6d5efc" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   marcuslab — DESIGN 4 · "aurora"
+   Soft light UI, glassmorphism, violet→cyan gradients.
+   ============================================================ */
+:root{
+  --v1:  #6d5efc;
+  --v2:  #9b6bff;
+  --cy:  #22c7d6;
+  --pk:  #ff7ec4;
+
+  --bg:    #f4f5fb;
+  --ink:   #14152b;
+  --ink-2: #54566f;
+  --ink-3: #8a8ca6;
+  --glass: rgba(255,255,255,.65);
+  --glass-2: rgba(255,255,255,.85);
+  --line:  rgba(20,21,43,.08);
+  --line-2:rgba(20,21,43,.05);
+
+  --r-lg: 28px;
+  --r-md: 18px;
+  --maxw: 1080px;
+  --display: "Sora", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --grad: linear-gradient(120deg, var(--v1), var(--v2) 45%, var(--cy));
+  --sh-sm: 0 2px 8px rgba(60,50,130,.06), 0 12px 30px -12px rgba(60,50,130,.16);
+  --sh-md: 0 24px 60px -24px rgba(70,55,160,.35);
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  margin:0; font-family:var(--sans); color:var(--ink); background:var(--bg);
+  line-height:1.65; font-size:17px; -webkit-font-smoothing:antialiased; overflow-x:hidden; position:relative;
+}
+/* aurora background blobs */
+body::before, body::after{ content:""; position:fixed; z-index:-2; border-radius:50%; filter:blur(90px); opacity:.5; pointer-events:none; }
+body::before{ width:620px; height:620px; left:-160px; top:-200px; background:radial-gradient(circle, var(--v2), transparent 68%); }
+body::after{ width:560px; height:560px; right:-160px; top:320px; background:radial-gradient(circle, var(--cy), transparent 68%); }
+a{ color:inherit; text-decoration:none; }
+:focus-visible{ outline:2.5px solid var(--v1); outline-offset:3px; border-radius:8px; }
+.wrap{ width:100%; max-width:var(--maxw); margin:0 auto; padding:0 24px; }
+h1,h2,h3{ margin:0; font-family:var(--display); font-weight:700; line-height:1.05; letter-spacing:-.025em; }
+p{ margin:0; }
+.grad-txt{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.eyebrow{ font-family:var(--display); font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; }
+.eyebrow.grad-txt{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+/* buttons */
+.btn{ display:inline-flex; align-items:center; gap:9px; font-family:var(--display); font-weight:600; font-size:15px;
+  padding:12px 22px; border-radius:999px; border:1px solid transparent; transition:.22s; white-space:nowrap; }
+.btn:active{ transform:translateY(1px); }
+.btn-primary{ background:var(--grad); color:#fff; box-shadow:0 12px 28px -10px rgba(109,94,252,.6); }
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 18px 40px -12px rgba(109,94,252,.7); }
+.btn-ghost{ background:var(--glass-2); color:var(--ink); border-color:var(--line); backdrop-filter:blur(10px); box-shadow:var(--sh-sm); }
+.btn-ghost:hover{ transform:translateY(-2px); border-color:rgba(109,94,252,.4); }
+.tlink{ font-weight:600; color:var(--v1); display:inline-flex; align-items:center; gap:4px; }
+.tlink:hover{ color:var(--cy); }
+
+/* nav */
+header.nav{ position:sticky; top:14px; z-index:100; margin-top:14px; }
+.nav-inner{ display:flex; align-items:center; justify-content:space-between; height:58px; padding:0 10px 0 22px;
+  background:var(--glass); backdrop-filter:saturate(160%) blur(16px); -webkit-backdrop-filter:saturate(160%) blur(16px);
+  border:1px solid var(--line); border-radius:999px; box-shadow:var(--sh-sm); }
+.brand{ font-family:var(--display); font-weight:700; font-size:19px; letter-spacing:-.02em; }
+.brand .dot{ background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.nav-links{ display:flex; align-items:center; gap:8px; }
+.nav-links a{ font-size:14.5px; font-weight:500; color:var(--ink-2); padding:8px 14px; border-radius:999px; transition:.2s; }
+.nav-links a:hover{ color:var(--ink); background:rgba(20,21,43,.05); }
+.nav-links a.cta{ background:var(--ink); color:#fff; }
+.nav-links a.cta:hover{ background:var(--v1); }
+
+/* hero */
+.hero{ position:relative; padding:84px 0 64px; text-align:center; }
+.hero .avail{ display:inline-flex; align-items:center; gap:9px; background:var(--glass-2); border:1px solid var(--line);
+  padding:7px 16px; border-radius:999px; box-shadow:var(--sh-sm); font-size:13.5px; font-weight:500; color:var(--ink-2); backdrop-filter:blur(10px); }
+.hero .avail .dot{ width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,.18); }
+h1.hero-title{ font-size:clamp(44px,7.2vw,86px); margin:24px 0 0; letter-spacing:-.035em; }
+.hero-sub{ font-size:clamp(18px,2.2vw,21px); color:var(--ink-2); margin:26px auto 0; max-width:52ch; }
+.hero-actions{ display:flex; gap:13px; margin-top:34px; flex-wrap:wrap; justify-content:center; }
+
+/* sections */
+section{ padding:80px 0; }
+.sec-head{ text-align:center; margin-bottom:44px; }
+.sec-head h2{ font-size:clamp(30px,4.4vw,46px); margin-top:12px; }
+.sec-head p{ color:var(--ink-2); max-width:48ch; margin:12px auto 0; }
+
+/* work */
+.work{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.proj{ position:relative; background:var(--glass-2); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line); border-radius:var(--r-lg); padding:30px; box-shadow:var(--sh-sm);
+  transition:.28s; display:flex; flex-direction:column; overflow:hidden; }
+.proj::after{ content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; opacity:0; transition:.28s;
+  background:var(--grad); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+.proj:hover{ transform:translateY(-5px); box-shadow:var(--sh-md); }
+.proj:hover::after{ opacity:1; }
+.proj-top{ display:flex; align-items:center; gap:14px; margin-bottom:17px; }
+.proj-mark{ width:52px; height:52px; border-radius:15px; display:grid; place-items:center; flex:none;
+  font-family:var(--display); font-weight:700; font-size:23px; color:#fff; box-shadow:inset 0 1px 0 rgba(255,255,255,.3); }
+.proj-tags{ display:flex; flex-wrap:wrap; gap:7px; }
+.tag{ font-size:11.5px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--ink-2);
+  background:rgba(109,94,252,.08); border:1px solid rgba(109,94,252,.14); border-radius:999px; padding:3px 11px; }
+.proj h3{ font-size:25px; margin-bottom:8px; }
+.proj p{ color:var(--ink-2); font-size:15.5px; flex:1; }
+.proj p strong{ color:var(--ink); font-weight:600; }
+.proj-links{ display:flex; flex-wrap:wrap; gap:16px; margin-top:22px; padding-top:18px; border-top:1px solid var(--line-2); }
+
+/* about */
+.about-grid{ display:grid; grid-template-columns:.95fr 1.05fr; gap:52px; align-items:center; }
+.about-grid h2{ font-size:clamp(30px,4.2vw,42px); margin-top:12px; }
+.lead{ font-size:19px; margin-top:18px; }
+.about-grid p + p{ margin-top:15px; color:var(--ink-2); }
+.facts{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.fact{ padding:20px; background:var(--glass-2); border:1px solid var(--line); border-radius:var(--r-md); box-shadow:var(--sh-sm); backdrop-filter:blur(10px); }
+.fact .ic{ width:44px; height:44px; border-radius:13px; display:grid; place-items:center; margin-bottom:13px;
+  background:var(--grad); color:#fff; box-shadow:0 8px 18px -8px rgba(109,94,252,.6); }
+.fact .ic svg{ width:21px; height:21px; }
+.fact h4{ font-family:var(--display); font-size:15.5px; font-weight:600; margin:0 0 3px; }
+.fact p{ font-size:14px; color:var(--ink-2); margin:0; }
+
+/* contact */
+.contact{ text-align:center; }
+.contact-card{ position:relative; background:var(--grad); border-radius:var(--r-lg); padding:64px 32px; overflow:hidden; box-shadow:var(--sh-md); }
+.contact-card::before{ content:""; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 50%); }
+.contact-card > *{ position:relative; }
+.contact-card .eyebrow{ color:rgba(255,255,255,.85); -webkit-text-fill-color:rgba(255,255,255,.85); }
+.contact h2{ font-size:clamp(32px,5.4vw,56px); color:#fff; margin-top:12px; }
+.contact p{ color:rgba(255,255,255,.9); margin:16px auto 0; font-size:18px; max-width:42ch; }
+.contact .actions{ display:flex; gap:13px; justify-content:center; margin-top:30px; flex-wrap:wrap; }
+.contact .btn-light{ background:#fff; color:var(--v1); box-shadow:0 12px 30px -12px rgba(0,0,0,.3); }
+.contact .btn-light:hover{ transform:translateY(-2px); }
+.contact .btn-outline{ background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.4); backdrop-filter:blur(10px); }
+.contact .btn-outline:hover{ background:rgba(255,255,255,.2); transform:translateY(-2px); }
+footer{ padding:34px 0; }
+.foot-inner{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; color:var(--ink-3); font-size:13.5px; }
+.foot-links{ display:flex; gap:22px; flex-wrap:wrap; }
+.foot-links a{ color:var(--ink-2); } .foot-links a:hover{ color:var(--v1); }
+
+/* reveal */
+.js .reveal{ opacity:0; transform:translateY(20px); transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1); }
+.reveal.in{ opacity:1; transform:none; }
+
+@media (max-width:820px){
+  .work{ grid-template-columns:1fr; } .about-grid{ grid-template-columns:1fr; gap:34px; }
+  .facts{ grid-template-columns:1fr 1fr; }
+  .nav-links a:not(.cta){ display:none; } section{ padding:60px 0; } .hero{ padding:56px 0 48px; }
+}
+@media (prefers-reduced-motion:reduce){ *{ animation:none!important; transition:none!important; } .js .reveal{ opacity:1; transform:none; } html{ scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap"><div class="nav-inner">
+    <a class="brand" href="#top">marcuslab<span class="dot">.</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a class="cta" href="https://github.com/marco308">GitHub</a>
+    </nav>
+  </div></div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <span class="avail"><span class="dot"></span> Building &amp; shipping, mostly nights and weekends</span>
+    <h1 class="hero-title">I build native apps<br>&amp; <span class="grad-txt">developer tools.</span></h1>
+    <p class="hero-sub">I'm Marcus Williams — an engineering leader by day, and an indie maker the rest of the time. I ship polished iOS &amp; macOS apps, write open-source tools, and over-engineer my homelab. Some of it lives here.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#work">See the work</a>
+      <a class="btn btn-ghost" href="https://github.com/marco308">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 014 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        @marco308
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow grad-txt">Selected work</span>
+      <h2>Things I've made.</h2>
+      <p>Two apps on the App Store and a few open-source projects. All built and maintained solo.</p>
+    </div>
+    <div class="work">
+
+      <article class="proj reveal">
+        <div class="proj-top">
+          <div class="proj-mark" style="background:linear-gradient(150deg,#6b8dff,#3f63ee);">m</div>
+          <div class="proj-tags"><span class="tag">iOS &amp; macOS</span><span class="tag">Swift</span><span class="tag">Open source</span></div>
+        </div>
+        <h3>mDone</h3>
+        <p>A polished, native iOS &amp; macOS client for your self-hosted <strong>Vikunja</strong> server — smart lists, widgets, a focus timer, repeating tasks and offline sync, with zero tracking. MIT-licensed and built in the open.</p>
+        <div class="proj-links">
+          <a class="tlink" href="https://apps.apple.com/app/id6760613430">App Store →</a>
+          <a class="tlink" href="https://marco308.github.io/mdone/">Website →</a>
+          <a class="tlink" href="https://github.com/marco308/mdone">GitHub →</a>
+        </div>
+      </article>
+
+      <article class="proj reveal">
+        <div class="proj-top">
+          <div class="proj-mark" style="background:linear-gradient(150deg,#2c6b4d,#163f2c);">C</div>
+          <div class="proj-tags"><span class="tag">iPhone</span><span class="tag">Swift</span><span class="tag">Live sharing</span></div>
+        </div>
+        <h3>ChukkaTimer</h3>
+        <p>The essential polo timing app — a one-tap chukka timer with warning bells, full game mode with teams, handicaps and scoring, and live sharing so spectators can follow the match from any browser. Built for the field.</p>
+        <div class="proj-links">
+          <a class="tlink" href="https://apps.apple.com/app/id6740096681">App Store →</a>
+          <a class="tlink" href="https://marco308.github.io/chukkatimer-site/">Website →</a>
+        </div>
+      </article>
+
+      <article class="proj reveal">
+        <div class="proj-top">
+          <div class="proj-mark" style="background:linear-gradient(150deg,#3aa3c7,#1f7fa0);">⌂</div>
+          <div class="proj-tags"><span class="tag">Home Assistant</span><span class="tag">Python</span></div>
+        </div>
+        <h3>HA TickTick</h3>
+        <p>A Home Assistant custom integration for <strong>TickTick</strong> — syncs your projects and tasks into HA and fires events you can automate against, so your to-do list becomes part of your smart home.</p>
+        <div class="proj-links">
+          <a class="tlink" href="https://github.com/marco308/HA_ticktick">GitHub →</a>
+        </div>
+      </article>
+
+      <article class="proj reveal">
+        <div class="proj-top">
+          <div class="proj-mark" style="background:linear-gradient(150deg,#c98a3a,#9a6322);">🍺</div>
+          <div class="proj-tags"><span class="tag">Python API</span><span class="tag">For fun</span></div>
+        </div>
+        <h3>PMaaS</h3>
+        <p>Pub Meeting as a Service. An API that generates legitimate-sounding business meeting names — pop a "Quarterly Pint Review" in your calendar and nobody questions where you've gone. Tested, MIT, faintly ridiculous.</p>
+        <div class="proj-links">
+          <a class="tlink" href="https://github.com/marco308/PMaaS">GitHub →</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <span class="eyebrow grad-txt">About</span>
+      <h2>Engineer, maker, polo player.</h2>
+      <p class="lead">I lead data-platform engineering in the payments world. Outside of that, I build the kind of small, sharp software I want to use myself.</p>
+      <p>Most of what's here is native Swift — I care a lot about apps that feel like they belong on the platform, respect your privacy, and don't nag you. The rest is glue: Home Assistant integrations, little APIs, and whatever keeps my homelab humming.</p>
+      <p>When I'm not at a keyboard I'm usually on a polo pony, which is how ChukkaTimer happened.</p>
+    </div>
+    <div class="facts reveal">
+      <div class="fact">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M10 6h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h4>Native by default</h4><p>iOS &amp; macOS in Swift / SwiftUI — no cross-platform shortcuts.</p>
+      </div>
+      <div class="fact">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h4>Privacy-first</h4><p>No analytics, no third-party SDKs. Self-hosting where it makes sense.</p>
+      </div>
+      <div class="fact">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h4>Open source</h4><p>I ship in the open and contribute back where I can.</p>
+      </div>
+      <div class="fact">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <h4>Homelab tinkerer</h4><p>Everything here runs from a homelab on marcuslab.uk.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="contact-card reveal">
+      <span class="eyebrow">Get in touch</span>
+      <h2>Let's build something.</h2>
+      <p>Got an idea, a bug, or just want to say hello? I'm easiest to reach on GitHub.</p>
+      <div class="actions">
+        <a class="btn btn-light" href="https://github.com/marco308">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 014 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+        <a class="btn btn-outline" href="mailto:hello@marcuslab.uk">Email me</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>© 2026 Marcus Williams · marcuslab.uk</span>
+    <div class="foot-links">
+      <a href="#work">Work</a>
+      <a href="https://github.com/marco308">GitHub</a>
+      <a href="https://apps.apple.com/app/id6760613430">mDone</a>
+      <a href="https://apps.apple.com/app/id6740096681">ChukkaTimer</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const els = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('in')); }
+  else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => { if (e.isIntersecting) { e.target.style.transitionDelay = Math.min(i*60,240)+'ms'; e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(el => io.observe(el));
+  }
+</script>
+</body>
+</html>
