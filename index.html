@@ -83,10 +83,6 @@ p{ margin:0; }
 .progress{ position:fixed; top:0; left:0; right:0; height:2px; z-index:200;
   background:linear-gradient(90deg,var(--mint),var(--blue)); transform:scaleX(0); transform-origin:0 50%; pointer-events:none; }
 
-/* cursor follower (created by JS, desktop pointers only) */
-.cursor{ position:fixed; top:0; left:0; width:34px; height:34px; margin:-17px 0 0 -17px;
-  border:1.5px solid rgba(67,224,160,.7); border-radius:50%; pointer-events:none; z-index:300; }
-
 /* buttons */
 .btn{ display:inline-flex; align-items:center; gap:9px; font-family:var(--mono); font-weight:500; font-size:14px;
   padding:11px 18px; border-radius:8px; border:1px solid var(--line); transition:background .18s,color .18s,border-color .18s,box-shadow .18s; white-space:nowrap; will-change:transform; }
@@ -107,7 +103,7 @@ header.nav.nav-hidden{ transform:translateY(-100%); }
 .brand{ font-family:var(--mono); font-weight:800; font-size:17px; letter-spacing:-.02em; }
 .brand .b{ color:var(--mint); } .brand .c{ color:var(--ink-3); }
 .nav-links{ display:flex; align-items:center; gap:26px; }
-.nav-links a{ font-family:var(--mono); font-size:14px; color:var(--ink-2); transition:.2s; }
+.nav-links a{ font-family:var(--mono); font-size:14px; color:var(--ink); transition:.2s; }
 .nav-links a:hover{ color:var(--mint); }
 .nav-links a::before{ content:"["; color:var(--ink-3); } .nav-links a::after{ content:"]"; color:var(--ink-3); }
 
@@ -209,11 +205,10 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
   .nav-links{ display:none; } section{ padding:64px 0; } .contact{ padding:90px 0; }
   .scroll-hint{ display:none; }
 }
-@media (hover:none){ .cursor{ display:none; } }
 @media (prefers-reduced-motion:reduce){
   *{ animation:none!important; transition:none!important; }
   html{ scroll-behavior:auto; }
-  .progress,.cursor{ display:none; }
+  .progress{ display:none; }
 }
 </style>
 </head>
@@ -432,9 +427,8 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
   const heroSplit = SplitText.create('#hero-title', { type: 'chars,lines', mask: 'lines' });
   const intro = gsap.timeline();
   intro
-    .from('.brand', { y: -18, autoAlpha: 0, duration: .6 })
-    .from('.nav-links a', { y: -18, autoAlpha: 0, duration: .5, stagger: .07 }, '<.1')
-    .from('.avail', { autoAlpha: 0, duration: .4 }, '-=.2')
+    .from('.nav-inner', { y: -24, autoAlpha: 0, duration: .45 })
+    .from('.avail', { autoAlpha: 0, duration: .4 }, '-=.1')
     .to('.avail-txt', { duration: 1.1, scrambleText: { text: 'status: shipping (nights & weekends)', chars: '<>/_-=01', speed: .4 } }, '<')
     .from(heroSplit.chars, { yPercent: 120, duration: .9, ease: 'power4.out', stagger: .018 }, '-=.9')
     .from('.hero-sub', { y: 26, autoAlpha: 0, duration: .7 }, '-=.5')
@@ -527,22 +521,6 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
   /* ---------- desktop pointer extras ---------- */
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (fine) {
-    // cursor follower ring
-    const ring = document.createElement('div');
-    ring.className = 'cursor';
-    document.body.appendChild(ring);
-    gsap.set(ring, { xPercent: 0, yPercent: 0, autoAlpha: 0, scale: .9 });
-    const rx = gsap.quickTo(ring, 'x', { duration: .35, ease: 'power3' });
-    const ry = gsap.quickTo(ring, 'y', { duration: .35, ease: 'power3' });
-    window.addEventListener('mousemove', e => {
-      gsap.to(ring, { autoAlpha: 1, duration: .25 });
-      rx(e.clientX); ry(e.clientY);
-    }, { passive: true });
-    document.querySelectorAll('a, .btn').forEach(el => {
-      el.addEventListener('mouseenter', () => gsap.to(ring, { scale: 1.6, duration: .25 }));
-      el.addEventListener('mouseleave', () => gsap.to(ring, { scale: .9, duration: .25 }));
-    });
-
     // magnetic buttons
     document.querySelectorAll('[data-magnetic]').forEach(el => {
       const mx = gsap.quickTo(el, 'x', { duration: .35, ease: 'power3' });
