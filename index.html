@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script>document.documentElement.classList.add('js');</script>
 <title>Marcus · apps &amp; tools · marcuslab</title>
-<meta name="description" content="Marcus builds native iOS &amp; macOS apps and developer tools. Maker of mDone and ChukkaTimer, and a handful of open-source projects." />
+<meta name="description" content="Marcus builds native iOS &amp; macOS apps and developer tools. Maker of mDone, ChukkaTimer and YAMP, and a handful of open-source projects." />
 <meta name="theme-color" content="#0a0d0c" />
 <link rel="canonical" href="https://marcuslab.uk/" />
 
@@ -17,13 +17,13 @@
 <meta property="og:url" content="https://marcuslab.uk/" />
 <meta property="og:site_name" content="marcuslab" />
 <meta property="og:title" content="Marcus · apps &amp; tools" />
-<meta property="og:description" content="Native iOS &amp; macOS apps and developer tools. Maker of mDone and ChukkaTimer." />
+<meta property="og:description" content="Native iOS &amp; macOS apps, self-hosted tools and open source. Maker of mDone, ChukkaTimer and YAMP." />
 <meta property="og:image" content="https://marcuslab.uk/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Marcus · apps &amp; tools" />
-<meta name="twitter:description" content="Native iOS &amp; macOS apps and developer tools. Maker of mDone and ChukkaTimer." />
+<meta name="twitter:description" content="Native iOS &amp; macOS apps, self-hosted tools and open source. Maker of mDone, ChukkaTimer and YAMP." />
 <meta name="twitter:image" content="https://marcuslab.uk/og-image.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -171,6 +171,17 @@ section{ padding:96px 0; }
 .proj p strong{ color:var(--ink); font-weight:600; }
 .proj-links{ display:flex; flex-wrap:wrap; gap:16px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line-2); }
 
+/* featured project: full width, newest first */
+.proj-featured{ grid-column:1 / -1; padding:30px; }
+.proj-featured::before{ opacity:1; }
+.proj-featured h3{ font-size:27px; margin-bottom:4px; }
+.proj-featured .proj-top{ padding-right:74px; } /* keep tags clear of the flag */
+.proj-featured .proj-body{ max-width:74ch; }
+.proj p.proj-tagline{ font-family:var(--mono); font-size:13px; color:var(--bar,var(--mint)); flex:none; margin-bottom:9px; }
+.proj-flag{ position:absolute; top:22px; right:22px; font-family:var(--mono); font-size:10.5px; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--bar,var(--mint));
+  border:1px solid currentColor; border-radius:999px; padding:3px 10px; }
+
 /* about */
 .about{ background:var(--bg-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start; }
@@ -252,9 +263,9 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
         <div class="ln"><span class="pr">➜</span> whoami</div>
         <div class="ln tok-mint">marcus</div>
         <div class="ln"><span class="pr">➜</span> cat stack.txt</div>
-        <div class="ln"><span class="tok-amber">swift</span> · <span class="tok-blue">swiftui</span> · <span class="tok-pink">python</span> · home-assistant</div>
+        <div class="ln"><span class="tok-amber">swift</span> · <span class="tok-blue">swiftui</span> · <span class="tok-pink">python</span> · mcp · home-assistant</div>
         <div class="ln"><span class="pr">➜</span> ls ~/shipped</div>
-        <div class="ln">mDone/  ChukkaTimer/  HA_ticktick/  PMaaS/</div>
+        <div class="ln">YAMP/  mDone/  ChukkaTimer/  HA_ticktick/  PMaaS/</div>
         <div class="ln"><span class="pr">➜</span> <span class="cur">&nbsp;</span></div>
       </div>
     </div>
@@ -268,6 +279,7 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
       <span>SWIFT</span><span class="sep">✦</span><span>SWIFTUI</span><span class="sep">✦</span>
       <span>iOS</span><span class="sep">✦</span><span>macOS</span><span class="sep">✦</span>
       <span>PYTHON</span><span class="sep">✦</span><span>HOME ASSISTANT</span><span class="sep">✦</span>
+      <span>MCP</span><span class="sep">✦</span><span>SELF-HOSTED</span><span class="sep">✦</span>
       <span>OPEN SOURCE</span><span class="sep">✦</span><span>HOMELAB</span><span class="sep">✦</span>
       <span>POLO</span><span class="sep">✦</span>
     </div>
@@ -275,6 +287,7 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
       <span>SWIFT</span><span class="sep">✦</span><span>SWIFTUI</span><span class="sep">✦</span>
       <span>iOS</span><span class="sep">✦</span><span>macOS</span><span class="sep">✦</span>
       <span>PYTHON</span><span class="sep">✦</span><span>HOME ASSISTANT</span><span class="sep">✦</span>
+      <span>MCP</span><span class="sep">✦</span><span>SELF-HOSTED</span><span class="sep">✦</span>
       <span>OPEN SOURCE</span><span class="sep">✦</span><span>HOMELAB</span><span class="sep">✦</span>
       <span>POLO</span><span class="sep">✦</span>
     </div>
@@ -288,6 +301,21 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
       <h2 class="mono" data-split><span class="pre">const </span>things_ive_made</h2>
     </div>
     <div class="work">
+
+      <article class="proj proj-featured" style="--bar:#df4a2b;">
+        <span class="proj-flag">new</span>
+        <div class="proj-top">
+          <div class="proj-mark" style="background:linear-gradient(150deg,#e8613f,#c23c20);color:#fff2ec;">🍳</div>
+          <div class="proj-tags"><span class="tag">Self-hosted</span><span class="tag">FastAPI</span><span class="tag">MCP</span><span class="tag">SwiftUI</span><span class="tag">AGPL</span></div>
+        </div>
+        <h3>YAMP</h3>
+        <p class="proj-tagline">yet another meal planner. unfortunately, this one is good.</p>
+        <p class="proj-body">A self-hosted recipe library, meal-options planner and aisle-sorted shopping list with <strong>no LLM inside</strong>. That is the point: it ships a REST API, a first-party MCP server and a skill the server publishes about itself, so whichever AI assistant you already talk to can drive it. Paste a recipe URL, ask for five dinners, get the shopping list. Plans are pools rather than calendars, every line on the list knows which meal put it there, and the offline-first iPhone app survives a supermarket with no signal.</p>
+        <div class="proj-links">
+          <a class="tlink" href="https://marco308.github.io/meals/">Website →</a>
+          <a class="tlink" href="https://github.com/marco308/meals">GitHub →</a>
+        </div>
+      </article>
 
       <article class="proj" style="--bar:#6ea8fe;">
         <div class="proj-top">
@@ -394,6 +422,7 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
     <div class="foot-links">
       <a href="#work">work</a>
       <a href="https://github.com/marco308">github</a>
+      <a href="https://marco308.github.io/meals/">YAMP</a>
       <a href="https://apps.apple.com/app/id6760613430">mDone</a>
       <a href="https://apps.apple.com/app/id6740096681">ChukkaTimer</a>
       <a href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
