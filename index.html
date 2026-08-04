@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script>document.documentElement.classList.add('js');</script>
 <title>Marcus · apps &amp; tools · marcuslab</title>
-<meta name="description" content="Marcus builds native iOS &amp; macOS apps and developer tools. Maker of mDone and ChukkaTimer, and a handful of open-source projects." />
+<meta name="description" content="Marcus builds native iOS &amp; macOS apps and developer tools. Maker of Meals, mDone and ChukkaTimer, and a handful of open-source projects." />
 <meta name="theme-color" content="#0a0d0c" />
 <link rel="canonical" href="https://marcuslab.uk/" />
 
@@ -17,13 +17,13 @@
 <meta property="og:url" content="https://marcuslab.uk/" />
 <meta property="og:site_name" content="marcuslab" />
 <meta property="og:title" content="Marcus · apps &amp; tools" />
-<meta property="og:description" content="Native iOS &amp; macOS apps and developer tools. Maker of mDone and ChukkaTimer." />
+<meta property="og:description" content="Native iOS &amp; macOS apps and developer tools. Maker of Meals, mDone and ChukkaTimer." />
 <meta property="og:image" content="https://marcuslab.uk/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Marcus · apps &amp; tools" />
-<meta name="twitter:description" content="Native iOS &amp; macOS apps and developer tools. Maker of mDone and ChukkaTimer." />
+<meta name="twitter:description" content="Native iOS &amp; macOS apps and developer tools. Maker of Meals, mDone and ChukkaTimer." />
 <meta name="twitter:image" content="https://marcuslab.uk/og-image.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -254,7 +254,8 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
         <div class="ln"><span class="pr">➜</span> cat stack.txt</div>
         <div class="ln"><span class="tok-amber">swift</span> · <span class="tok-blue">swiftui</span> · <span class="tok-pink">python</span> · home-assistant</div>
         <div class="ln"><span class="pr">➜</span> ls ~/shipped</div>
-        <div class="ln">mDone/  ChukkaTimer/  HA_ticktick/  PMaaS/</div>
+        <div class="ln">Meals/  mDone/  ChukkaTimer/</div>
+        <div class="ln">HA_ticktick/  PMaaS/</div>
         <div class="ln"><span class="pr">➜</span> <span class="cur">&nbsp;</span></div>
       </div>
     </div>
@@ -267,14 +268,16 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
     <div class="marquee-row">
       <span>SWIFT</span><span class="sep">✦</span><span>SWIFTUI</span><span class="sep">✦</span>
       <span>iOS</span><span class="sep">✦</span><span>macOS</span><span class="sep">✦</span>
-      <span>PYTHON</span><span class="sep">✦</span><span>HOME ASSISTANT</span><span class="sep">✦</span>
+      <span>PYTHON</span><span class="sep">✦</span><span>MCP</span><span class="sep">✦</span>
+      <span>HOME ASSISTANT</span><span class="sep">✦</span>
       <span>OPEN SOURCE</span><span class="sep">✦</span><span>HOMELAB</span><span class="sep">✦</span>
       <span>POLO</span><span class="sep">✦</span>
     </div>
     <div class="marquee-row">
       <span>SWIFT</span><span class="sep">✦</span><span>SWIFTUI</span><span class="sep">✦</span>
       <span>iOS</span><span class="sep">✦</span><span>macOS</span><span class="sep">✦</span>
-      <span>PYTHON</span><span class="sep">✦</span><span>HOME ASSISTANT</span><span class="sep">✦</span>
+      <span>PYTHON</span><span class="sep">✦</span><span>MCP</span><span class="sep">✦</span>
+      <span>HOME ASSISTANT</span><span class="sep">✦</span>
       <span>OPEN SOURCE</span><span class="sep">✦</span><span>HOMELAB</span><span class="sep">✦</span>
       <span>POLO</span><span class="sep">✦</span>
     </div>
@@ -288,6 +291,19 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
       <h2 class="mono" data-split><span class="pre">const </span>things_ive_made</h2>
     </div>
     <div class="work">
+
+      <article class="proj" style="--bar:#e8705f;">
+        <div class="proj-top">
+          <div class="proj-mark" style="background:linear-gradient(150deg,#d1573f,#9b3524);color:#ffe7df;">🍲</div>
+          <div class="proj-tags"><span class="tag">AI · MCP</span><span class="tag">Python</span><span class="tag">SwiftUI</span></div>
+        </div>
+        <h3>Meals</h3>
+        <p>A meal <em>options</em> planner, not a rigid Mon–Sun grid: a recipe library that ingests any URL, weekly pools of meals, and an aisle-sorted shopping list that knows which meal every item came from. Self-hosted and with <strong>no built-in LLM</strong> — a REST API, an MCP server and a published skill pack let you drive it with your own AI assistant. Web app plus a native SwiftUI iPhone app that shops offline.</p>
+        <div class="proj-links">
+          <a class="tlink" href="https://github.com/marco308/meals">GitHub →</a>
+          <a class="tlink" href="https://meals.marcuslab.uk/skill">AI playbook →</a>
+        </div>
+      </article>
 
       <article class="proj" style="--bar:#6ea8fe;">
         <div class="proj-top">
@@ -352,6 +368,7 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
       <h2 class="mono" data-split>Engineer, maker,<br>polo player.</h2>
       <p class="lead">I build the kind of small software I want to use myself.</p>
       <p>Most of what's here is native Swift. I care a lot about apps that feel like they belong on the platform and don't nag you. The rest is glue: Home Assistant integrations, little APIs, and whatever keeps my homelab humming.</p>
+      <p>Lately that's meant building software an AI assistant can drive as well as I can — Meals ships an MCP server and its own playbook instead of a chatbot bolted on the side.</p>
       <p>When I'm not at a keyboard I'm usually on a polo pony, which is how ChukkaTimer happened.</p>
     </div>
     <div class="facts">
