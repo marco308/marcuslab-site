@@ -10,5 +10,12 @@ under **marcuslab.uk**.
   animated with [GSAP](https://gsap.com/) — ScrollTrigger, SplitText and
   ScrambleText, self-hosted in `vendor/gsap/`. Degrades gracefully: without
   JS the page renders fully, just without motion.
+- Typography: mono is for text that is literally code or machine chrome
+  (`const things_ive_made`, `build()`, tags, the terminal, nav, buttons);
+  Inter is for prose, headings included. Both are self-hosted variable
+  fonts in `vendor/fonts/` — one `.woff2` per family covers every weight,
+  so the page makes no third-party requests at all.
+- Colour: every text token clears WCAG AA (4.5:1) against all four
+  surfaces (`--bg`, `--bg-2`, `--panel`, `--panel-2`).
 - To preview: serve the folder (e.g. `python3 -m http.server`) and open it
-  in a browser — the GSAP scripts are loaded from absolute paths.
+  in a browser — the GSAP scripts and fonts are loaded from absolute paths.
