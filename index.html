@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script>document.documentElement.classList.add('js');</script>
 <title>Marcus · apps &amp; tools · marcuslab</title>
-<meta name="description" content="Marcus builds native iOS &amp; macOS apps and developer tools. Maker of mDone, ChukkaTimer and YAMP, and a handful of open-source projects." />
+<meta name="description" content="Marcus builds native iOS &amp; macOS apps and open, self-hosted tools. Maker of mDone, ChukkaTimer and YAMP, and a handful of open-source projects." />
 <meta name="theme-color" content="#0a0d0c" />
 <link rel="canonical" href="https://marcuslab.uk/" />
 
@@ -198,6 +198,17 @@ section{ padding:96px 0; }
 .proj p strong{ color:var(--ink); font-weight:600; }
 .proj-links{ display:flex; flex-wrap:wrap; gap:16px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line-2); }
 
+/* expandable cards (Flip): click a card to let it take the full row */
+.proj-expandable{ cursor:pointer; }
+.proj-expandable .proj-hint{ position:absolute; top:20px; right:20px; font-family:var(--mono); font-size:13px;
+  color:var(--ink-3); transition:color .22s, transform .35s ease; pointer-events:none; }
+.proj-expandable:hover .proj-hint{ color:var(--mint); }
+.proj-expanded{ grid-column:1 / -1; padding:30px; }
+.proj-expanded::before{ opacity:1; }
+.proj-expanded h3{ font-size:27px; }
+.proj-expanded p{ max-width:74ch; font-size:15.5px; }
+.proj-expanded .proj-hint{ transform:rotate(45deg); color:var(--mint); }
+
 /* featured project: full width, newest first */
 .proj-featured{ grid-column:1 / -1; padding:30px; }
 .proj-featured::before{ opacity:1; }
@@ -248,6 +259,14 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
   .nav-links{ display:none; } section{ padding:64px 0; } .contact{ padding:90px 0; }
   .scroll-hint{ display:none; }
 }
+/* Lenis smooth scroll (classes are added to <html> by Lenis at runtime).
+   scroll-behavior MUST be auto while Lenis drives the scroll — native smooth
+   scrolling turns every per-frame scrollTop write into its own animation and
+   the two fight each other. */
+html.lenis, html.lenis body{ height:auto; scroll-behavior:auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent]{ overscroll-behavior:contain; }
+.lenis.lenis-stopped{ overflow:hidden; }
+
 @media (prefers-reduced-motion:reduce){
   *{ animation:none!important; transition:none!important; }
   html{ scroll-behavior:auto; }
@@ -279,7 +298,7 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
   <div class="wrap hero-grid">
     <div>
       <span class="avail"><span class="dot"></span> <span class="avail-txt">status: shipping (nights &amp; weekends)</span></span>
-      <h1 class="hero-title" id="hero-title">Native apps<br>&amp; <span class="gl">dev tools.</span></h1>
+      <h1 class="hero-title" id="hero-title">Native apps<br>&amp; <span class="gl">open tools.</span></h1>
       <p class="hero-sub">I'm Marcus, an indie maker. iOS &amp; macOS apps, open-source tools, and an over-engineered homelab.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#work" data-magnetic>./see-the-work</a>
@@ -468,6 +487,8 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
 <script src="/vendor/gsap/ScrollTrigger.min.js"></script>
 <script src="/vendor/gsap/SplitText.min.js"></script>
 <script src="/vendor/gsap/ScrambleTextPlugin.min.js"></script>
+<script src="/vendor/gsap/Flip.min.js"></script>
+<script src="/vendor/lenis/lenis.min.js"></script>
 <script>
 (function () {
   'use strict';
@@ -483,8 +504,17 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
   // fully rendered — simply skip all animation.
   if (!window.gsap || reduce) return;
 
-  gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin);
+  gsap.registerPlugin(ScrollTrigger, SplitText, ScrambleTextPlugin, Flip);
   gsap.defaults({ ease: 'power3.out' });
+
+  /* ---------- Lenis: lerped smooth scroll, driven by GSAP's ticker ---------- */
+  let lenis = null;
+  if (window.Lenis) {
+    lenis = new Lenis({ autoRaf: false, anchors: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
 
   /* ---------- intro: nav + hero ---------- */
   const heroSplit = SplitText.create('#hero-title', { type: 'chars,lines', mask: 'lines' });
@@ -557,6 +587,48 @@ footer{ border-top:1px solid var(--line); padding:30px 0; }
   ScrollTrigger.batch('.proj', {
     start: 'top 88%', once: true,
     onEnter: batch => gsap.to(batch, { y: 0, autoAlpha: 1, duration: .8, ease: 'power4.out', stagger: .12 })
+  });
+
+  /* ---------- project cards: Flip expand/collapse ---------- */
+  const flipCards = gsap.utils.toArray('.proj:not(.proj-featured)');
+  flipCards.forEach(card => {
+    card.classList.add('proj-expandable');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-expanded', 'false');
+    const hint = document.createElement('span');
+    hint.className = 'proj-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    hint.textContent = '+';
+    card.appendChild(hint);
+
+    const toggle = () => {
+      const wasExpanded = card.classList.contains('proj-expanded');
+      const state = Flip.getState('.proj');
+      flipCards.forEach(c => {
+        c.classList.remove('proj-expanded');
+        c.setAttribute('aria-expanded', 'false');
+      });
+      if (!wasExpanded) {
+        card.classList.add('proj-expanded');
+        card.setAttribute('aria-expanded', 'true');
+      }
+      gsap.set('.proj', { rotationX: 0, rotationY: 0 }); // clear hover tilt before measuring
+      Flip.from(state, {
+        duration: .55, ease: 'power3.inOut',
+        onComplete: () => {
+          ScrollTrigger.refresh();
+          // the grid grows on expand — glide the card back into view
+          if (!wasExpanded && lenis) lenis.scrollTo(card, { offset: -84, duration: .7 });
+        }
+      });
+    };
+    card.addEventListener('click', e => {
+      if (e.target.closest('a')) return;
+      toggle();
+    });
+    card.addEventListener('keydown', e => {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target === card) { e.preventDefault(); toggle(); }
+    });
   });
 
   /* ---------- about: parallax avatar + facts ---------- */
