@@ -10,6 +10,10 @@ under **marcuslab.uk**.
   animated with [GSAP](https://gsap.com/) — ScrollTrigger, SplitText and
   ScrambleText, self-hosted in `vendor/gsap/`. Degrades gracefully: without
   JS the page renders fully, just without motion.
+- Between the work grid and the about section sits a pinned statement band
+  (`#statement`) that scrolls one line sideways while each character drops
+  into place, via ScrollTrigger's `containerAnimation`. Desktop only — under
+  821px, with reduced motion, or with no JS it renders as a plain pull-quote.
 - Typography: mono is for text that is literally code or machine chrome
   (`const things_ive_made`, `build()`, tags, the terminal, nav, buttons);
   Inter is for prose, headings included. Both are self-hosted variable

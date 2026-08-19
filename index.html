@@ -220,6 +220,24 @@ section{ padding:96px 0; }
   letter-spacing:.1em; text-transform:uppercase; color:var(--bar,var(--mint));
   border:1px solid currentColor; border-radius:999px; padding:3px 10px; }
 
+/* statement band — GSAP containerAnimation: the line scrolls sideways while
+   the section is pinned, and each character drops into place as it crosses
+   the viewport. The base rules below are the fallback used with no JS, with
+   reduced motion, and on phones: an ordinary big pull-quote. `.is-hz` is
+   added by the script only where the horizontal version actually runs. */
+.hz{ position:relative; overflow:hidden; }
+.hz-glow{ position:absolute; left:50%; top:50%; width:min(900px,92vw); height:400px;
+  transform:translate(-50%,-50%); border-radius:50%; filter:blur(90px); pointer-events:none; z-index:-1;
+  background:radial-gradient(circle, rgba(67,224,160,.11), transparent 65%); }
+.hz-inner{ width:100%; max-width:var(--maxw); margin:0 auto; padding:0 24px; }
+.hz-text{ font-size:clamp(30px,5vw,54px); font-weight:700; letter-spacing:-.03em; line-height:1.12; max-width:20ch; }
+.hz-text .tok-mint{ color:var(--mint); }
+
+.hz.is-hz{ height:100svh; display:flex; align-items:center; padding:0; }
+.hz.is-hz .hz-inner{ max-width:none; padding:0; }
+.hz.is-hz .hz-text{ width:max-content; max-width:none; white-space:nowrap;
+  padding-left:100vw; padding-right:14vw; font-size:clamp(44px,7.5vw,104px); letter-spacing:-.04em; }
+
 /* about */
 .about{ background:var(--bg-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
 /* The portrait sits at the head of the right-hand column so that column
@@ -420,6 +438,13 @@ html.lenis, html.lenis body{ height:auto; scroll-behavior:auto !important; }
       </article>
 
     </div>
+  </div>
+</section>
+
+<section class="hz" id="statement" aria-label="What I build">
+  <div class="hz-glow" aria-hidden="true"></div>
+  <div class="hz-inner">
+    <p class="hz-text" id="hz-text">Small, sharp software &mdash; <span class="tok-mint">native</span> where it matters, <span class="tok-mint">open</span> where it counts.</p>
   </div>
 </section>
 
@@ -630,6 +655,59 @@ html.lenis, html.lenis body{ height:auto; scroll-behavior:auto !important; }
       if ((e.key === 'Enter' || e.key === ' ') && e.target === card) { e.preventDefault(); toggle(); }
     });
   });
+
+  /* ---------- statement band: horizontal scroll, chars land on the way past ----------
+     The pinned section scrolls one long line sideways; every character gets its
+     own ScrollTrigger that reads position from that tween via containerAnimation,
+     so they settle as they cross the viewport rather than all at once. Desktop
+     only — pinning a full-height horizontal band is miserable on a phone, so
+     small screens get the same masked word reveal as the other headings. */
+  const hzSection = document.getElementById('statement');
+  const hzText = document.getElementById('hz-text');
+  const hzMM = gsap.matchMedia();
+
+  hzMM.add('(min-width: 821px)', () => {
+    hzSection.classList.add('is-hz');
+    const split = SplitText.create(hzText, { type: 'chars,words' });
+
+    const scrollTween = gsap.to(hzText, {
+      xPercent: -100, ease: 'none',
+      scrollTrigger: {
+        trigger: hzSection, pin: true, scrub: true, invalidateOnRefresh: true,
+        // Scroll distance tracks the line's own width, so the text always
+        // travels exactly once across, at any font size or viewport. Held well
+        // under 1:1 — the line then moves a little faster than the scroll and
+        // the band stays a beat in the page rather than half of its length.
+        end: () => '+=' + Math.round(hzText.offsetWidth * .6)
+      }
+    });
+
+    split.chars.forEach(char => {
+      gsap.from(char, {
+        yPercent: 'random(-180, 180)', rotation: 'random(-16, 16)', ease: 'back.out(1.2)',
+        scrollTrigger: {
+          trigger: char, containerAnimation: scrollTween,
+          start: 'left 100%', end: 'left 35%', scrub: 1
+        }
+      });
+    });
+
+    // matchMedia reverts the tweens and triggers itself; this undoes the rest.
+    return () => { hzSection.classList.remove('is-hz'); split.revert(); };
+  });
+
+  hzMM.add('(max-width: 820px)', () => {
+    const split = SplitText.create(hzText, { type: 'words,lines', mask: 'lines' });
+    gsap.from(split.words, {
+      yPercent: 120, duration: .8, ease: 'power4.out', stagger: .04,
+      scrollTrigger: { trigger: hzSection, start: 'top 80%', once: true }
+    });
+    return () => split.revert();
+  });
+
+  // The horizontal band's scroll length is measured from text width, so it has
+  // to be re-measured once the real fonts are in.
+  if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
 
   /* ---------- about: parallax avatar + facts ---------- */
   gsap.to('#avatar', { y: -34, ease: 'none', scrollTrigger: { trigger: '.about', start: 'top bottom', end: 'bottom top', scrub: true } });
