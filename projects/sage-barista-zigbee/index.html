@@ -170,7 +170,6 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
     <a class="brand" href="/">marcus<span class="b">lab</span><span class="c">()</span></a>
     <nav class="nav-links" aria-label="Primary">
       <a href="/#work">work</a>
-      <a href="https://github.com/marco308/zigbrew">repo</a>
       <a href="https://github.com/marco308">github</a>
     </nav>
   </div>
@@ -390,7 +389,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
       </div>
       <div class="cap">Brown to L, blue to N on each relay. Route the leads up the gap between the two halves of the machine, alongside the loom, and tie them to it.</div>
     </div>
-    <figure class="rv fig-wide"><div class="fig-scroll"><img class="h1" src="img/step1-mains-tap.svg" alt="WireViz harness drawing for the mains tap: cord, two WAGOs, machine wiring, relay L and N" loading="lazy" /></div><div class="fig-tools"><span>← scroll sideways →</span><a href="img/step1-mains-tap.svg" target="_blank" rel="noopener">open full size ↗</a></div><figcaption>The same step as a harness drawing, generated from a WireViz description in the repo. Every wire, colour and terminal, nothing implied. Scrolls sideways.</figcaption></figure>
+    <figure class="rv fig-wide"><div class="fig-scroll"><img class="h1" src="img/step1-mains-tap.svg" alt="WireViz harness drawing for the mains tap: cord, two WAGOs, machine wiring, relay L and N" loading="lazy" /></div><div class="fig-tools"><span>← scroll sideways →</span><a href="img/step1-mains-tap.svg" target="_blank" rel="noopener">open full size ↗</a></div><figcaption>The same step as a harness drawing, generated from a short WireViz description. Every wire, colour and terminal, nothing implied. Scrolls sideways.</figcaption></figure>
     <figure class="rv fig-wide"><img src="img/mains-tap.jpg" alt="Two WAGO blocks in place of the bullets, leads running to a relay on the bench" loading="lazy" /><figcaption>The tap as built, relay on the bench for the first power-up. Top block all blue, bottom block all brown. The one mistake that goes bang is mixing them, so check twice.</figcaption></figure>
   </div>
 </section>
@@ -497,7 +496,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
         <g class="fn" id="f5"><rect class="sv-box" x="560" y="176" width="200" height="70" rx="12" stroke="#f0b35a"/><text class="sv-t" x="660" y="204" text-anchor="middle" fill="#f0b35a">fail-safe disarm</text><text class="sv-t dim sm" x="660" y="226" text-anchor="middle">armed 2 h unused, or 03:00</text></g>
         <text class="sv-t dim sm" x="20" y="300">once a morning, by construction: the shower flag only rises once a day, and the armed flag is consumed by the first grind.</text>
       </svg>
-      <div class="cap">Three automations and one helper. The full YAML is in the repo.</div>
+      <div class="cap">Three automations and one helper. The grind one is below; the other two are a state trigger and a timeout.</div>
     </div>
 
     <div class="term rv">
@@ -546,7 +545,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
 <section>
   <div class="wrap">
     <div class="sec-head"><span class="eyebrow">reference</span><h2><span class="pre">export </span>full_harness</h2></div>
-    <div class="prose"><p>Everything from the mains inlet to the front panel in one drawing, as built for the POWER relay. The grinder relay is the same pattern on the blue pair. The source is a short YAML file in the repo, so if your machine's positions differ, change two lines and re-render.</p></div>
+    <div class="prose"><p>Everything from the mains inlet to the front panel in one drawing, as built for the POWER relay. The grinder relay is the same pattern on the blue pair. It is generated from a short WireViz YAML file, so if your machine's positions differ, it is two lines to change and re-render.</p></div>
     <figure class="rv fig-wide"><div class="fig-scroll"><img class="h2" src="img/phase1-power-relay.svg" alt="Complete WireViz harness for phase one: mains inlet, WAGO splices, relay, front-panel loom breakouts" loading="lazy" /></div><div class="fig-tools"><span>← scroll sideways →</span><a href="img/phase1-power-relay.svg" target="_blank" rel="noopener">open full size ↗</a></div><figcaption>Phase 1 harness. Left to right: mains inlet, WAGO splices, machine wiring and relay power, then the main board plug, the two loom breakouts, and the front panel.</figcaption></figure>
   </div>
 </section>
@@ -556,7 +555,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
   <div class="wrap prose">
     <span class="eyebrow">what's next</span>
     <p style="margin-top:12px">A power-monitoring plug for machine state. Then the shot buttons, which are the same trick on the other header. Tamping still needs a human, so that one will be a voice command rather than an automation.</p>
-    <p>The build log, every photo, the wiring diagrams and the automation YAML are in <a href="https://github.com/marco308/zigbrew">marco308/zigbrew</a>. Thanks to <a href="https://www.kopiro.me/press/sage-barista-via-zigbee/index.html">kopiro</a> for going first.</p>
+    <p>Thanks to <a href="https://www.kopiro.me/press/sage-barista-via-zigbee/index.html">kopiro</a> for going first, and to the <a href="https://community.home-assistant.io/t/modifying-a-breville-sage-barista-express-coffee-machine-to-integrate-with-home-assistant/487575">Home Assistant community thread</a> that started it.</p>
   </div>
 </section>
 
@@ -567,7 +566,6 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
     <span>© 2026 Marcus · marcuslab.uk</span>
     <div class="foot-links">
       <a href="/#work">work</a>
-      <a href="https://github.com/marco308/zigbrew">zigbrew</a>
       <a href="https://github.com/marco308">github</a>
       <a href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
     </div>
