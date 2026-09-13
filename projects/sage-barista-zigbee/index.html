@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>document.documentElement.classList.add('js');</script>
+<title>My Sage Barista Express turns itself on when I get in the shower · marcuslab</title>
+<meta name="description" content="Two Sonoff Zigbee dry-contact relays, a soldering iron and Home Assistant: the espresso machine is warm and the dose is ground by the time I reach the kitchen. Every step, every photo, every trap." />
+<meta name="theme-color" content="#0a0d0c" />
+<link rel="canonical" href="https://marcuslab.uk/projects/sage-barista-zigbee/" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://marcuslab.uk/projects/sage-barista-zigbee/" />
+<meta property="og:site_name" content="marcuslab" />
+<meta property="og:title" content="My Sage Barista Express turns itself on when I get in the shower" />
+<meta property="og:description" content="Two Zigbee relays across the POWER and grinder switches, driven by Home Assistant. The full build, with the traps." />
+<meta property="og:image" content="https://marcuslab.uk/projects/sage-barista-zigbee/img/hero-front.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preload" href="/vendor/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/vendor/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+<style>
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/vendor/fonts/inter-latin.woff2) format("woff2");}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:100 900;font-display:swap;src:url(/vendor/fonts/jetbrains-mono-latin.woff2) format("woff2");}
+:root{
+  --mint:#43e0a0; --mint-d:#29b37e; --amber:#f0b35a; --pink:#ff7eb6; --blue:#6ea8fe; --red:#ff6b57;
+  --bg:#0a0d0c; --bg-2:#101413; --panel:#141917; --panel-2:#1a201d;
+  --ink:#e8efe9; --ink-2:#9fb0a6; --ink-3:#788a7f;
+  --line:rgba(120,150,135,.14); --line-2:rgba(120,150,135,.08);
+  --maxw:1120px; --prose:720px;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--mint);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em;line-height:1.08}
+p{margin:0}
+.mono{font-family:var(--mono)}
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.prose{max-width:var(--prose);margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:12.5px;font-weight:500;letter-spacing:.02em;color:var(--mint)}
+.eyebrow::before{content:"// ";color:var(--ink-3)}
+.progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;background:linear-gradient(90deg,var(--mint),var(--blue));transform-origin:0 50%;transform:scaleX(0)}
+/* nav */
+.nav{position:sticky;top:0;z-index:100;background:rgba(10,13,12,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font-family:var(--mono);font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--ink)}
+.brand .b{color:var(--mint)} .brand .c{color:var(--ink-3)}
+.nav-links{display:flex;align-items:center;gap:26px}
+.nav-links a{font-family:var(--mono);font-size:14px;color:var(--ink);transition:.2s}
+.nav-links a:hover{color:var(--mint);text-decoration:none}
+.nav-links a::before{content:"[";color:var(--ink-3)} .nav-links a::after{content:"]";color:var(--ink-3)}
+/* hero */
+.hero{position:relative;min-height:78vh;display:grid;align-items:end;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-img{position:absolute;inset:0;background:url(img/hero-front.jpg) center 55%/cover no-repeat;filter:saturate(.85) brightness(.55)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,13,12,.35) 0%,rgba(10,13,12,.2) 40%,rgba(10,13,12,.96) 100%)}
+.hero-inner{position:relative;z-index:1;padding:120px 0 56px}
+.hero h1{font-size:clamp(36px,6vw,72px);letter-spacing:-.035em;max-width:14ch;margin-top:16px}
+.hero h1 .gl{color:var(--mint)}
+.hero .dek{max-width:60ch;font-size:19px;color:var(--ink-2);margin-top:22px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;align-items:center}
+.tag{font-family:var(--mono);font-size:11px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.meta .date{font-family:var(--mono);font-size:12.5px;color:var(--ink-3)}
+/* sections */
+section{padding:72px 0}
+section + section{border-top:1px solid var(--line-2)}
+.sec-head{margin-bottom:28px}
+.sec-head h2{font-size:clamp(26px,3.4vw,38px);margin-top:10px;letter-spacing:-.03em}
+.sec-head h2 .pre{color:var(--ink-3);font-weight:500}
+.prose p + p{margin-top:16px}
+.prose p.lead{font-size:19px;color:var(--ink)}
+.prose p{color:var(--ink-2)}
+.prose strong{color:var(--ink)}
+.prose code,.prose kbd{font-family:var(--mono);font-size:.88em;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--ink)}
+/* figures */
+figure{margin:32px 0}
+figure img{border-radius:12px;border:1px solid var(--line);background:var(--panel)}
+figcaption{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+figcaption::before{content:"↳ ";color:var(--mint)}
+.fig-wide{max-width:var(--maxw);margin-left:auto;margin-right:auto}
+.fig-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.fig-scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--line);background:#fff}
+.fig-scroll img{border:0;border-radius:0;min-width:900px}
+/* callouts */
+.callout{border:1px solid var(--line);border-left:3px solid var(--mint);background:var(--panel);border-radius:10px;padding:18px 20px;margin:26px 0}
+.callout.warn{border-left-color:var(--red)}
+.callout.amber{border-left-color:var(--amber)}
+.callout .k{font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--mint);display:block;margin-bottom:6px}
+.callout.warn .k{color:var(--red)} .callout.amber .k{color:var(--amber)}
+.callout p{color:var(--ink-2)}
+/* diagram card */
+.diagram{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin:30px 0;overflow:hidden}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram .cap{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);margin-top:12px}
+.diagram .cap::before{content:"↳ ";color:var(--mint)}
+.diagram .ctrl{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-weight:500;font-size:14px;padding:9px 14px;border-radius:9px;border:1px solid var(--line);cursor:pointer;transition:.2s;background:var(--panel-2);color:var(--ink)}
+.btn:hover{border-color:var(--mint);color:var(--mint)}
+.btn-primary{background:var(--mint);color:#04130c;border-color:var(--mint);font-weight:700}
+.btn-primary:hover{background:var(--mint-d);color:#04130c}
+.btn:disabled{opacity:.5;cursor:default}
+/* svg shared */
+.sv-box{fill:var(--panel-2);stroke:var(--line);stroke-width:1}
+.sv-box.hot{stroke:var(--mint)}
+.sv-t{font-family:var(--mono);font-size:12px;fill:var(--ink)}
+.sv-t.dim{fill:var(--ink-3)} .sv-t.mint{fill:var(--mint)} .sv-t.sm{font-size:10.5px}
+.sv-wire{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.sv-bn{stroke:#a66a3c} .sv-bu{stroke:#5b8cff} .sv-bk{stroke:#3a3f3d} .sv-wh{stroke:#dfe6e1} .sv-gy{stroke:#8fa898}
+.sv-pulse{stroke:var(--mint);stroke-width:4;fill:none;stroke-linecap:round;stroke-dasharray:22 1000;stroke-dashoffset:0;opacity:0}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:15px;margin:22px 0}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--ink-3);letter-spacing:.02em}
+td{color:var(--ink-2)} td:first-child{color:var(--ink)}
+td code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
+/* terminal */
+.term{background:#070908;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:26px 0}
+.term-bar{display:flex;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line);display:inline-block}
+.term pre{margin:0;padding:16px 18px;font-family:var(--mono);font-size:13.5px;line-height:1.7;color:var(--ink-2);overflow-x:auto}
+.term pre .on{color:var(--mint)} .term pre .off{color:var(--ink-3)} .term pre .c{color:var(--ink-3)}
+/* steps */
+.steps{counter-reset:s;display:grid;gap:14px;margin:24px 0}
+.step{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.step::before{counter-increment:s;content:counter(s,decimal-leading-zero);font-family:var(--mono);font-weight:700;color:var(--mint);font-size:18px;line-height:1.2}
+.step b{display:block;color:var(--ink);margin-bottom:4px}
+.step p{color:var(--ink-2);font-size:15.5px}
+/* tell-you list */
+.tips{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.tip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.tip .k{font-family:var(--mono);font-size:12px;color:var(--amber);display:block;margin-bottom:6px}
+.tip p{color:var(--ink-2);font-size:15.5px}
+/* footer */
+footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-family:var(--mono);font-size:13px}
+.foot-inner{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+.foot-links{display:flex;gap:18px;flex-wrap:wrap}
+.foot-links a{color:var(--ink-2)} .foot-links a:hover{color:var(--mint)}
+/* reveal */
+.js .rv{opacity:0;transform:translateY(18px)}
+@media (max-width:820px){
+  .fig-grid,.tips{grid-template-columns:1fr}
+  .diagram{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .diagram svg{min-width:820px}
+  .diagram .cap,.diagram .ctrl{position:sticky;left:0}
+  .nav-links{gap:16px}
+  .hero-inner{padding-top:90px}
+  section{padding:56px 0}
+  .progress{display:none}
+}
+@media (prefers-reduced-motion:reduce){ .js .rv{opacity:1;transform:none} html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">marcus<span class="b">lab</span><span class="c">()</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="/#work">work</a>
+      <a href="https://github.com/marco308/zigbrew">repo</a>
+      <a href="https://github.com/marco308">github</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<div class="hero">
+  <div class="hero-img" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow">projects / zigbrew</span>
+    <h1>My espresso machine turns itself on <span class="gl">when I get in the shower</span></h1>
+    <p class="dek">Two Sonoff Zigbee dry-contact relays across the POWER button and the grinder switch of a Sage Barista Express, driven by Home Assistant. By the time I reach the kitchen it's warm and the dose is ground. Here's the whole build, traps included.</p>
+    <div class="meta">
+      <span class="tag">Sage BES870</span><span class="tag">Sonoff MINI-ZBD</span><span class="tag">Zigbee2MQTT</span><span class="tag">Home Assistant</span><span class="tag">230 V inside</span>
+      <span class="date">September 2026 · 15 min read</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WHY ============ -->
+<section>
+  <div class="wrap prose">
+    <span class="eyebrow">why</span>
+    <p class="lead" style="margin-top:12px">The Barista Express heats its thermoblock in a couple of minutes. Everything the coffee actually touches takes twenty.</p>
+    <p>Group head, portafilter, basket, the metal around them: all of it has to soak up heat before the first shot tastes right. Sage's own manual says a cold portafilter and basket lower the extraction temperature enough to spoil it. I've tested that claim by impatience, many times. It holds.</p>
+    <p>So the machine needs to come on about twenty minutes before I want coffee, and I don't want to think about it. <a href="https://www.kopiro.me/press/sage-barista-via-zigbee/index.html">kopiro</a> did the power button with a Tuya relay, building on a <a href="https://community.home-assistant.io/t/modifying-a-breville-sage-barista-express-coffee-machine-to-integrate-with-home-assistant/487575">Home Assistant community thread</a>. I did the same with Sonoff relays, then kept going and did the grinder.</p>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">how it works</span><h2><span class="pre">fn </span>press_the_button()</h2></div>
+    <div class="prose"><p>Nothing switches the machine's mains. A relay just presses the button for me, electrically. The relay's contact sits across the same two wires the front-panel button uses, closes for half a second, and lets go. The board can't tell the difference.</p></div>
+
+    <div class="diagram rv" id="chain">
+      <svg viewBox="0 0 1060 210" role="img" aria-label="Home Assistant sends a command through Zigbee2MQTT to the relay, which closes across the button wires, and the machine turns on">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#788a7f"/></marker></defs>
+        <!-- nodes -->
+        <g id="n1"><rect class="sv-box" x="10" y="60" width="170" height="90" rx="12"/><text class="sv-t mint" x="95" y="95" text-anchor="middle">Home Assistant</text><text class="sv-t dim sm" x="95" y="116" text-anchor="middle">switch.turn_on</text><text class="sv-t dim sm" x="95" y="132" text-anchor="middle">"zigbrew_power"</text></g>
+        <g id="n2"><rect class="sv-box" x="230" y="60" width="170" height="90" rx="12"/><text class="sv-t mint" x="315" y="95" text-anchor="middle">Zigbee2MQTT</text><text class="sv-t dim sm" x="315" y="116" text-anchor="middle">MQTT in, Zigbee out</text><text class="sv-t dim sm" x="315" y="132" text-anchor="middle">coordinator, ch 24</text></g>
+        <g id="n3"><rect class="sv-box" x="450" y="60" width="170" height="90" rx="12"/><text class="sv-t mint" x="535" y="95" text-anchor="middle">MINI-ZBD relay</text><text class="sv-t dim sm" x="535" y="116" text-anchor="middle">inching 0.5 s</text>
+          <!-- contact -->
+          <line x1="500" y1="138" x2="522" y2="138" stroke="#9fb0a6" stroke-width="3" stroke-linecap="round"/>
+          <line id="blade" x1="522" y1="138" x2="546" y2="124" stroke="#43e0a0" stroke-width="3" stroke-linecap="round"/>
+          <line x1="548" y1="138" x2="570" y2="138" stroke="#9fb0a6" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="522" cy="138" r="3" fill="#9fb0a6"/><circle cx="548" cy="138" r="3" fill="#9fb0a6"/>
+        </g>
+        <g id="n4"><rect class="sv-box" x="670" y="60" width="170" height="90" rx="12"/><text class="sv-t mint" x="755" y="95" text-anchor="middle">POWER button wires</text><text class="sv-t dim sm" x="755" y="116" text-anchor="middle">black pos 1 · white pos 7</text><text class="sv-t dim sm" x="755" y="132" text-anchor="middle">button still in parallel</text></g>
+        <g id="n5"><rect class="sv-box" x="890" y="60" width="160" height="90" rx="12"/><text class="sv-t mint" x="970" y="95" text-anchor="middle">Sage main board</text><text class="sv-t dim sm" x="970" y="116" text-anchor="middle">"someone pressed</text><text class="sv-t dim sm" x="970" y="132" text-anchor="middle">POWER"</text></g>
+        <!-- arrows -->
+        <path d="M180 105 H228" stroke="#788a7f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path d="M400 105 H448" stroke="#788a7f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path d="M620 105 H668" stroke="#788a7f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path d="M840 105 H888" stroke="#788a7f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path id="pulse" class="sv-pulse" d="M180 105 H228 M400 105 H448 M620 105 H668 M840 105 H888"/>
+        <!-- labels under -->
+        <text class="sv-t dim sm" x="204" y="90" text-anchor="middle">MQTT</text>
+        <text class="sv-t dim sm" x="424" y="90" text-anchor="middle">Zigbee</text>
+        <text class="sv-t dim sm" x="644" y="90" text-anchor="middle">dry contact</text>
+        <text class="sv-t dim sm" x="864" y="90" text-anchor="middle">low voltage</text>
+        <!-- machine LED -->
+        <circle id="led" cx="970" cy="180" r="9" fill="#1a201d" stroke="#788a7f" stroke-width="1.5"/>
+        <text class="sv-t dim sm" x="990" y="184">POWER ring</text>
+        <text id="ledtxt" class="sv-t sm" x="940" y="184" text-anchor="end" fill="#788a7f">standby</text>
+      </svg>
+      <div class="ctrl">
+        <button class="btn btn-primary" id="pressBtn" type="button">▶ tap the switch in HA</button>
+        <span class="mono" id="pressState" style="font-size:12.5px;color:var(--ink-3)">relay open · machine in standby</span>
+      </div>
+      <div class="cap">The contact closes for 0.5 s and opens by itself. It is the relay that guarantees that, not an automation, so a broken automation can never hold the button down.</div>
+    </div>
+
+    <div class="prose">
+      <p>Two properties of the relay make this safe. It must be <strong>momentary</strong>, so it can never hold the button. And it must be a <strong>dry contact</strong>, an isolated switch that puts no voltage of its own into the machine. That second one turns out to matter more than I expected.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARTS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">what you need</span><h2><span class="pre">const </span>parts</h2></div>
+    <div class="fig-grid">
+      <figure class="rv" style="margin:0"><img src="img/relay-terminals.jpg" alt="The Sonoff MINI-ZBD on calipers, terminals annotated" loading="lazy" /><figcaption>The MINI-ZBD. Left column NO / COM / NC is the dry contact. Right column N, L for mains in. S1, S2, DC+ and DC- stay empty. 41 × 41 × 22 mm.</figcaption></figure>
+      <div>
+        <table>
+          <tr><th>Item</th><th>Notes</th></tr>
+          <tr><td>Sage Barista Express BES870</td><td>or the Breville twin. Other Sage models differ inside.</td></tr>
+          <tr><td>Sonoff MINI-ZBD, one per button</td><td>100-240 V AC in, isolated NO/COM/NC out. Zigbee2MQTT supports it natively, inching included.</td></tr>
+          <tr><td>WAGO 221 lever connectors</td><td>5-way for the mains tap if you're feeding two relays.</td></tr>
+          <tr><td>0.75 mm² flex</td><td>A metre of ordinary three-core does every lead.</td></tr>
+          <tr><td>Soldering iron, heat shrink</td><td>For the button wires. WAGOs don't fit there.</td></tr>
+          <tr><td>Multimeter with a beeper</td><td>Continuity is the whole job.</td></tr>
+          <tr><td>Cable ties, tape, a marker</td><td>Label everything. Every wire in the loom is the same colour.</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="callout warn rv">
+      <span class="k">// safety</span>
+      <p>Part of this touches 230 V. Unplug at the wall before opening anything, and again before every step that touches wiring. The board's low-voltage side is <strong>not</strong> isolated from the mains, so never probe it plugged in. If that sentence worries you, this isn't the project for you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OPEN ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">step 1</span><h2><span class="pre">open </span>the_machine</h2></div>
+    <div class="prose"><p>Water tank off, every screw on the back, then the one you'll miss: under a round plastic cap in the tank recess, just right of the water inlet. Prise the cap off with a fingernail. The rear panel then lifts a few millimetres and tilts out from the bottom. The cup tray on top lifts off separately, with the bean-hopper cradle on its underside.</p></div>
+    <div class="fig-grid">
+      <figure class="rv"><img src="img/hidden-screw.jpg" alt="Rear of the machine with the tank off, the hidden screw cap marked" loading="lazy" /><figcaption>The cap on the right of the inlet valve. kopiro lost half an hour to this one. I lost ten minutes because he'd warned me.</figcaption></figure>
+      <figure class="rv"><img src="img/rear-overview.jpg" alt="Rear view with the panel off, ten parts annotated" loading="lazy" /><figcaption>Rear view, panel off. Left half is hot and wet: thermoblock, solenoids, pump, heatsink. Right half is the grinder motor over the main-board box, and the mains entry at the bottom. Everything I added lives on the right.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOARD ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">step 2</span><h2><span class="pre">read </span>the_board</h2></div>
+    <div class="prose"><p>Four corner screws on the white box. The board is a BV1871A1, and two things about it shape everything after.</p></div>
+    <figure class="rv fig-wide"><img src="img/board.jpg" alt="Main board component side, seven callouts" loading="lazy" /><figcaption>Component side. The two white headers on the right edge carry the front-panel loom. Bottom left is the power supply, and it is a capacitive dropper.</figcaption></figure>
+    <div class="prose">
+      <p><strong>The front-panel wiring plugs in.</strong> A loom of identical off-white wires lands on two headers next to the microcontroller. One serves the POWER side of the panel, the other the shot buttons. That's where the probing happens.</p>
+      <p><strong>The supply is transformerless.</strong> Yellow X2 capacitors, chokes, a diode chain, no transformer. So the board's "ground" sits at mains potential while the machine is plugged in. It's why the relay must be a dry contact, why you only probe with the plug out, and why I dropped the tempting idea of running the relay from the board's 12 V rail. There is one, the heater relay coil uses it, but it's a live 12 V.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIND WIRES ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">step 3</span><h2><span class="pre">find </span>the_two_wires()</h2></div>
+    <div class="prose"><p>You need the two wires the POWER button joins when pressed. Every wire in the loom is the same colour except one, so this is done by position, and the neat way removes every confusing reading the board would otherwise give you.</p></div>
+
+    <div class="diagram rv" id="probe">
+      <svg viewBox="0 0 1060 250" role="img" aria-label="The unplugged front-panel plug with twelve positions; probing finds continuity between positions 1 and 7 only while POWER is held">
+        <!-- plug housing -->
+        <rect x="120" y="70" width="620" height="70" rx="8" class="sv-box"/>
+        <text class="sv-t dim sm" x="120" y="60">POWER-side plug, unplugged from the board, numbered from the keyed end</text>
+        <g id="pins"></g>
+        <!-- meter -->
+        <rect x="800" y="40" width="230" height="150" rx="12" class="sv-box"/>
+        <rect x="820" y="58" width="190" height="50" rx="6" fill="#0b1310" stroke="#1f2a25"/>
+        <text id="meterTxt" class="sv-t" x="1000" y="92" text-anchor="end" font-size="26" fill="#43e0a0">1</text>
+        <text class="sv-t dim sm" x="828" y="130">continuity</text>
+        <text id="meterNote" class="sv-t sm" x="828" y="150" fill="#788a7f">open</text>
+        <circle cx="850" cy="176" r="6" fill="#e5322d"/><text class="sv-t dim sm" x="862" y="180">probe A</text>
+        <circle cx="940" cy="176" r="6" fill="#111"/><text class="sv-t dim sm" x="952" y="180">probe B</text>
+        <!-- probe leads -->
+        <path id="leadA" d="M850 170 C 850 120, 160 120, 150 140" fill="none" stroke="#e5322d" stroke-width="2.5"/>
+        <path id="leadB" d="M940 170 C 940 130, 460 130, 450 140" fill="none" stroke="#111" stroke-width="2.5"/>
+        <!-- button -->
+        <g id="pbtn"><circle cx="150" cy="215" r="16" fill="#1a201d" stroke="#788a7f" stroke-width="1.5"/><text class="sv-t dim sm" x="176" y="219">POWER button on the panel</text></g>
+      </svg>
+      <div class="ctrl">
+        <button class="btn btn-primary" id="probeBtn" type="button">▶ run the sweep</button>
+        <span class="mono" id="probeState" style="font-size:12.5px;color:var(--ink-3)">probe A on 1, sweep B along the rest, button held</span>
+      </div>
+      <div class="cap">The pair that beeps only while the button is held is the one. On mine: the single black wire at position 1, and white at position 7, on the top header.</div>
+    </div>
+
+    <div class="steps">
+      <div class="step"><b>Unplug the machine. Pull the POWER-side plug off its header.</b><p>With the plug off, the wires only see the panel: buttons and LED rings. A pressed button is a clean short. Nothing else looks like one.</p></div>
+      <div class="step"><b>Number the positions on a strip of tape.</b><p>The crimp tails are exposed where each wire enters the housing, so a normal probe tip reaches them. No need for anything thinner.</p></div>
+      <div class="step"><b>Probe A on 1, hold POWER, sweep probe B. Then A on 2, and so on.</b><p>Tape the button down so both hands are free. LED lines show a one-way forward drop whether or not a button is pressed; ignore those.</p></div>
+      <div class="step"><b>Write both positions down, and photograph the tape.</b><p>The forum thread found "first and fourth" on a different unit. Treat any such number as a hint to check first, never as an answer.</p></div>
+    </div>
+    <div class="fig-grid">
+      <figure class="rv"><img src="img/plug.jpg" alt="The front-panel plug held unplugged, all wires off-white" loading="lazy" /><figcaption>The plug in hand. Not a ribbon cable, a loom of identical wires crimped into one housing, which is why numbering is the only way.</figcaption></figure>
+      <figure class="rv"><img src="img/wires-tagged.jpg" alt="Behind the panel carrier, the white ON wire tagged and the black wire beside it" loading="lazy" /><figcaption>Found and tagged, at the spot behind the panel carrier where the loom has slack. That's where the joints go.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MAINS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">step 4</span><h2><span class="pre">power </span>the_relays()</h2></div>
+    <div class="prose"><p>kopiro spliced into the mains. On the BES870 it's easier: where the cord's brown and blue meet the internal wiring, just below the control box, each core ends in an insulated bullet connector. Pull it apart, cut the crimps off, and a WAGO takes both halves plus the new lead. Nothing else is cut, and the bullets can be re-crimped if the mod ever comes out.</p></div>
+
+    <div class="diagram rv" id="tap">
+      <svg viewBox="0 0 1060 300" role="img" aria-label="Before: cord brown and blue join the machine wiring through bullet connectors. After: each bullet is replaced by a five-way WAGO that also feeds L and N on both relays.">
+        <text class="sv-t dim sm" x="20" y="24">mains cord</text>
+        <text class="sv-t dim sm" x="1040" y="24" text-anchor="end">machine internal wiring</text>
+        <!-- BEFORE layer -->
+        <g id="tapBefore">
+          <path class="sv-wire sv-bn" d="M20 80 H440"/><path class="sv-wire sv-bn" d="M560 80 H1040"/>
+          <path class="sv-wire sv-bu" d="M20 130 H440"/><path class="sv-wire sv-bu" d="M560 130 H1040"/>
+          <rect x="440" y="68" width="120" height="24" rx="12" fill="#dfe6e1" opacity=".9"/><text class="sv-t sm" x="500" y="84" text-anchor="middle" fill="#0a0d0c">bullet</text>
+          <rect x="440" y="118" width="120" height="24" rx="12" fill="#dfe6e1" opacity=".9"/><text class="sv-t sm" x="500" y="134" text-anchor="middle" fill="#0a0d0c">bullet</text>
+          <text class="sv-t dim sm" x="500" y="175" text-anchor="middle">as found: push-fit crimps, one per core</text>
+        </g>
+        <!-- AFTER layer -->
+        <g id="tapAfter" opacity="0">
+          <path class="sv-wire sv-bn" d="M20 80 H420"/><path class="sv-wire sv-bn" d="M580 80 H1040"/>
+          <path class="sv-wire sv-bu" d="M20 130 H420"/><path class="sv-wire sv-bu" d="M580 130 H1040"/>
+          <rect x="420" y="62" width="160" height="36" rx="6" fill="#e9eceb"/><rect x="420" y="112" width="160" height="36" rx="6" fill="#e9eceb"/>
+          <g fill="#f08a2e"><rect x="428" y="66" width="24" height="10" rx="2"/><rect x="456" y="66" width="24" height="10" rx="2"/><rect x="484" y="66" width="24" height="10" rx="2"/><rect x="512" y="66" width="24" height="10" rx="2"/><rect x="540" y="66" width="24" height="10" rx="2"/>
+            <rect x="428" y="116" width="24" height="10" rx="2"/><rect x="456" y="116" width="24" height="10" rx="2"/><rect x="484" y="116" width="24" height="10" rx="2"/><rect x="512" y="116" width="24" height="10" rx="2"/><rect x="540" y="116" width="24" height="10" rx="2"/></g>
+          <text class="sv-t sm" x="500" y="91" text-anchor="middle" fill="#0a0d0c">WAGO 221-415</text><text class="sv-t sm" x="500" y="141" text-anchor="middle" fill="#0a0d0c">WAGO 221-415</text>
+          <!-- new leads down to relays -->
+          <path class="sv-wire sv-bn" d="M470 98 V210 H300"/><path class="sv-wire sv-bu" d="M500 148 V236 H300"/>
+          <path class="sv-wire sv-bn" d="M530 98 V210 H700"/><path class="sv-wire sv-bu" d="M560 148 V236 H700"/>
+          <rect class="sv-box hot" x="170" y="190" width="130" height="70" rx="10"/><text class="sv-t mint" x="235" y="216" text-anchor="middle">relay 1</text><text class="sv-t dim sm" x="235" y="236" text-anchor="middle">POWER</text>
+          <text class="sv-t sm" x="306" y="206" fill="#a66a3c">L</text><text class="sv-t sm" x="306" y="240" fill="#5b8cff">N</text>
+          <rect class="sv-box hot" x="700" y="190" width="130" height="70" rx="10"/><text class="sv-t mint" x="765" y="216" text-anchor="middle">relay 2</text><text class="sv-t dim sm" x="765" y="236" text-anchor="middle">GRIND</text>
+          <text class="sv-t sm" x="688" y="206" text-anchor="end" fill="#a66a3c">L</text><text class="sv-t sm" x="688" y="240" text-anchor="end" fill="#5b8cff">N</text>
+          <text class="sv-t dim sm" x="500" y="285" text-anchor="middle">one colour per block: three browns, three blues. Earth untouched on its stud.</text>
+        </g>
+      </svg>
+      <div class="ctrl">
+        <button class="btn" id="tapBefBtn" type="button">before</button>
+        <button class="btn btn-primary" id="tapAftBtn" type="button">after</button>
+      </div>
+      <div class="cap">Brown to L, blue to N on each relay. Route the leads up the gap between the two halves of the machine, alongside the loom, and tie them to it.</div>
+    </div>
+    <figure class="rv fig-wide"><img src="img/mains-tap.jpg" alt="Two WAGO blocks in place of the bullets, leads running to a relay on the bench" loading="lazy" /><figcaption>The tap as built, relay on the bench for the first power-up. Top block all blue, bottom block all brown. The one mistake that goes bang is mixing them, so check twice.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ CONFIGURE ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">step 5</span><h2><span class="pre">configure </span>before_you_wire()</h2></div>
+    <div class="prose"><p>This order matters. Out of the box the relay is a normal on/off switch, and some modules restore to "on" after a power cut. Either would hold the button down forever. So with L and N connected and <strong>nothing on COM or NO</strong>, plug in with your hands clear, pair in Zigbee2MQTT, and set four things.</p></div>
+    <div class="fig-grid">
+      <div>
+        <table>
+          <tr><th>Zigbee2MQTT</th><th>Value</th><th>Why</th></tr>
+          <tr><td><code>power_on_behavior</code></td><td><code>off</code></td><td>comes up open after a power cut</td></tr>
+          <tr><td><code>inching_control</code></td><td><code>ON</code></td><td>momentary</td></tr>
+          <tr><td><code>inching_time</code></td><td><code>0.5</code> s</td><td>the minimum, plenty for a press</td></tr>
+          <tr><td><code>inching_mode</code></td><td><code>OFF</code></td><td>turn on, then auto-off</td></tr>
+        </table>
+      </div>
+      <div class="term rv" style="margin:0">
+        <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">zigbee2mqtt/zigbrew_power · pulse test</span></div>
+        <pre id="termOut"><span class="c"># three ON commands, four seconds apart</span>
+</pre>
+      </div>
+    </div>
+    <div class="prose"><p>Toggle it three times from Z2M. Each time the relay clicks, reports ON, then reports OFF within a second with no further command. That log is the moment I stopped worrying about the design. Unplug again before the next step.</p></div>
+  </div>
+</section>
+
+<!-- ============ BREAKOUT ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">step 6</span><h2><span class="pre">tee </span>into_the_button()</h2></div>
+    <div class="prose"><p>Each of the two wires is cut once and rejoined with a third lead branching to the relay. The real button stays in circuit, in parallel with the relay contact, so it works whatever the relay does.</p></div>
+
+    <div class="diagram rv" id="tee">
+      <svg viewBox="0 0 1060 260" role="img" aria-label="Black and white loom wires each pass through a soldered three-way joint; the third lead from each goes to COM and NO on the relay; the front-panel button remains in parallel">
+        <rect class="sv-box" x="20" y="70" width="150" height="110" rx="10"/><text class="sv-t mint" x="95" y="100" text-anchor="middle">front panel</text><text class="sv-t dim sm" x="95" y="120" text-anchor="middle">POWER button</text>
+        <!-- button symbol -->
+        <line x1="60" y1="150" x2="82" y2="150" stroke="#9fb0a6" stroke-width="3" stroke-linecap="round"/><line x1="82" y1="150" x2="106" y2="136" stroke="#9fb0a6" stroke-width="3" stroke-linecap="round"/><line x1="108" y1="150" x2="130" y2="150" stroke="#9fb0a6" stroke-width="3" stroke-linecap="round"/>
+        <rect class="sv-box" x="890" y="70" width="150" height="110" rx="10"/><text class="sv-t mint" x="965" y="100" text-anchor="middle">main board</text><text class="sv-t dim sm" x="965" y="120" text-anchor="middle">top header</text><text class="sv-t dim sm" x="965" y="138" text-anchor="middle">pos 1 · pos 7</text>
+        <!-- wires -->
+        <path class="sv-wire sv-bk" d="M170 100 H420 M480 100 H890"/>
+        <path class="sv-wire sv-wh" d="M170 150 H600 M660 150 H890"/>
+        <!-- joints -->
+        <g id="jt1"><rect x="420" y="88" width="60" height="24" rx="12" fill="#2e9e4f"/><text class="sv-t sm" x="450" y="104" text-anchor="middle" fill="#04130c">joint</text></g>
+        <g id="jt2"><rect x="600" y="138" width="60" height="24" rx="12" fill="#2e9e4f"/><text class="sv-t sm" x="630" y="154" text-anchor="middle" fill="#04130c">joint</text></g>
+        <text class="sv-t dim sm" x="450" y="80" text-anchor="middle">black, pos 1</text>
+        <text class="sv-t dim sm" x="630" y="180" text-anchor="middle">white "ON", pos 7</text>
+        <!-- leads to relay -->
+        <path class="sv-wire sv-bk" d="M450 112 V215 H500"/>
+        <path class="sv-wire sv-wh" d="M630 162 V215 H580"/>
+        <rect class="sv-box hot" x="500" y="195" width="80" height="44" rx="8"/>
+        <text class="sv-t sm" x="512" y="222" fill="#43e0a0">COM</text><text class="sv-t sm" x="560" y="222" text-anchor="end" fill="#43e0a0">NO</text>
+        <text class="sv-t dim sm" x="540" y="255" text-anchor="middle">relay 1 contact, in parallel with the button</text>
+        <text class="sv-t sm" x="700" y="230" fill="#ff6b57">not NC. NC would hold the button down.</text>
+      </svg>
+      <div class="cap">Solder, not WAGOs: there's no room behind the panel carrier. Heat shrink on first, cut, strip 10 mm on all three ends, twist along the length, solder, shrink, tie to the loom.</div>
+    </div>
+    <div class="fig-grid">
+      <figure class="rv"><img src="img/joint.jpg" alt="Three black wire ends twisted and soldered into one joint" loading="lazy" /><figcaption>The black joint before its heat shrink: panel side, board side, and the new COM lead. Tug each wire before covering it.</figcaption></figure>
+      <figure class="rv"><img src="img/relay-wired.jpg" alt="The relay with all four leads on: L, N, COM, NO" loading="lazy" /><figcaption>All four leads on. White to NO, black to COM, NC empty, brown to L, blue to N. Resting on the grinder for the photo only.</figcaption></figure>
+    </div>
+    <div class="callout rv"><span class="k">// it worked</span><p>Loom plugged back on, machine plugged in, one tap in Home Assistant: the Sage woke up as if I'd pressed the button. The physical button still worked. Phase one done. Then I noticed something on the board.</p></div>
+  </div>
+</section>
+
+<!-- ============ GRINDER ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">bonus round</span><h2><span class="pre">also </span>the_grinder()</h2></div>
+    <div class="prose"><p>Three colour-keyed two-pin connectors on the board are silkscreened <em>Steam</em>, <em>Hot water</em> and <em>Port filter</em>. I'd assumed they drove the solenoids. A meter across the blue <em>Port filter</em> one while pressing the portafilter into the grinder cradle: continuity. They're switch inputs, and blue is the grinder trigger.</p></div>
+    <div class="fig-grid">
+      <figure class="rv"><img src="img/cradle-switch.jpg" alt="The cradle microswitch on the grinder housing with its blue pair" loading="lazy" /><figcaption>The other end of the blue pair: a microswitch on the grinder housing, lever facing the chute. The portafilter presses it. The second relay's NO and COM went across those two wires.</figcaption></figure>
+      <figure class="rv"><img src="img/trial-fit.jpg" alt="A relay held in the top compartment beside the grinder gear" loading="lazy" /><figcaption>Where both relays live: the top compartment between the panel carrier and the grinder gear, on the cool side of the divider, tied so nothing can drift into the teeth.</figcaption></figure>
+    </div>
+    <div class="prose"><p>Both wires are blue, and it doesn't matter which is which: a switch contact has no polarity. Relay two was configured identically to relay one, and a 0.5 s pulse runs a normal dose. Two things I learned the hard way:</p></div>
+    <div class="fig-grid" style="margin-top:22px">
+      <div class="callout amber" style="margin:0"><span class="k">// standby</span><p>The grinder is ignored while the machine is in standby. POWER first, always. An automation that grinds before it wakes the machine does nothing, silently.</p></div>
+      <div class="callout amber" style="margin:0"><span class="k">// hopper interlock</span><p>With the cup tray off, the bean hopper isn't locked, the interlock on the tray's underside is open, and the grinder won't run for the relay <strong>or</strong> the real switch. The machine tells you with SINGLE and DOUBLE flashing alternately. Not a fault: "lock the hopper". Cost me twenty minutes.</p></div>
+    </div>
+    <figure class="rv fig-wide"><img src="img/interlock-lights.jpg" alt="Front panel with the single and double lights flashing" loading="lazy" /><figcaption>What "hopper not locked" looks like. If you're testing with the top off, that's why nothing grinds.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ AUTOMATION ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">home assistant</span><h2><span class="pre">automation </span>morning_coffee</h2></div>
+    <div class="prose"><p>My house already knows when I've had a shower: a current sensor on the shower pump sets a <code>marcus_showered</code> flag that's cleared each night. And the kitchen has occupancy sensors that run the lights. So the coffee hangs off those, not a fixed time.</p></div>
+
+    <div class="diagram rv" id="flow">
+      <svg viewBox="0 0 1060 330" role="img" aria-label="Shower detected presses POWER and arms a grind; first kitchen arrival while armed disarms then presses GRIND; a two-hour timeout or 03:00 disarms">
+        <g class="fn" id="f1"><rect class="sv-box" x="20" y="40" width="200" height="86" rx="12"/><text class="sv-t mint" x="120" y="70" text-anchor="middle">shower detected</text><text class="sv-t dim sm" x="120" y="92" text-anchor="middle">pump &gt; 1 A for 30 s</text><text class="sv-t dim sm" x="120" y="110" text-anchor="middle">05:00-11:30 · awake · home</text></g>
+        <g class="fn" id="f2"><rect class="sv-box" x="290" y="40" width="200" height="86" rx="12"/><text class="sv-t mint" x="390" y="70" text-anchor="middle">press POWER</text><text class="sv-t dim sm" x="390" y="92" text-anchor="middle">relay 1 pulses</text><text class="sv-t dim sm" x="390" y="110" text-anchor="middle">set: coffee armed</text></g>
+        <g class="fn" id="f3"><rect class="sv-box" x="560" y="40" width="200" height="86" rx="12"/><text class="sv-t mint" x="660" y="70" text-anchor="middle">first kitchen arrival</text><text class="sv-t dim sm" x="660" y="92" text-anchor="middle">occupancy on, armed,</text><text class="sv-t dim sm" x="660" y="110" text-anchor="middle">POWER pressed &gt; 60 s ago</text></g>
+        <g class="fn" id="f4"><rect class="sv-box" x="830" y="40" width="210" height="86" rx="12"/><text class="sv-t mint" x="935" y="70" text-anchor="middle">disarm, then GRIND</text><text class="sv-t dim sm" x="935" y="92" text-anchor="middle">flag off first,</text><text class="sv-t dim sm" x="935" y="110" text-anchor="middle">so nothing can grind twice</text></g>
+        <path d="M220 83 H288" stroke="#788a7f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path d="M490 83 H558" stroke="#788a7f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <path d="M760 83 H828" stroke="#788a7f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <!-- failsafe -->
+        <path d="M390 126 V210 H560" stroke="#f0b35a" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arr)" fill="none"/>
+        <g class="fn" id="f5"><rect class="sv-box" x="560" y="176" width="200" height="70" rx="12" stroke="#f0b35a"/><text class="sv-t" x="660" y="204" text-anchor="middle" fill="#f0b35a">fail-safe disarm</text><text class="sv-t dim sm" x="660" y="226" text-anchor="middle">armed 2 h unused, or 03:00</text></g>
+        <text class="sv-t dim sm" x="20" y="300">once a morning, by construction: the shower flag only rises once a day, and the armed flag is consumed by the first grind.</text>
+      </svg>
+      <div class="cap">Three automations and one helper. The full YAML is in the repo.</div>
+    </div>
+
+    <div class="term rv">
+      <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">automations.yaml · the grind</span></div>
+      <pre>- id: zigbrew_kitchen_grinds
+  alias: "zigbrew - Kitchen arrival runs the grinder"
+  triggers:
+    - trigger: state
+      entity_id: [binary_sensor.kitchen_occupancy_a, binary_sensor.kitchen_occupancy_b]
+      to: "on"
+  conditions:
+    - condition: state
+      entity_id: input_boolean.zigbrew_coffee_armed
+      state: "on"
+    - condition: template
+      value_template: >-
+        {{ (now() - states.input_boolean.zigbrew_coffee_armed.last_changed).total_seconds() > 60 }}
+  actions:
+    - action: input_boolean.turn_off        <span class="c"># disarm first</span>
+      target: { entity_id: input_boolean.zigbrew_coffee_armed }
+    - action: switch.turn_on                <span class="c"># then one press</span>
+      target: { entity_id: switch.zigbrew_grind }
+  mode: single</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELL YOU ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="eyebrow">before you start</span><h2><span class="pre">// </span>what_id_tell_you</h2></div>
+    <div class="tips">
+      <div class="tip rv"><span class="k">the hidden screw</span><p>Under the cap in the tank recess, right of the inlet. Look there first.</p></div>
+      <div class="tip rv"><span class="k">tray off = hopper unlocked</span><p>No grinder, and flashing filter-size lights. Not a fault.</p></div>
+      <div class="tip rv"><span class="k">tank off = pump primes dry</span><p>Every power-up. Keep test runs to seconds, or put the tank back before testing.</p></div>
+      <div class="tip rv"><span class="k">WAGOs won't fit up top</span><p>Solder the button breakouts. WAGOs are fine at the bottom for the mains tap.</p></div>
+      <div class="tip rv"><span class="k">don't power the relay from the board</span><p>The 12 V is there, but it's referenced to mains.</p></div>
+      <div class="tip rv"><span class="k">HA can't see if the machine is on</span><p>POWER toggles. If it were already on when the shower fired, the press would turn it off. A power-monitoring plug fixes this; the heater draw is unmistakable. That's the next change.</p></div>
+      <div class="tip rv"><span class="k">the grind lands where the cradle points</span><p>Portafilter in the cradle at night.</p></div>
+      <div class="tip rv"><span class="k">configure before you connect</span><p>Inching and power-on-off first, with COM and NO empty. Then wire the button. Never the other way round.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEXT ============ -->
+<section>
+  <div class="wrap prose">
+    <span class="eyebrow">what's next</span>
+    <p style="margin-top:12px">A power-monitoring plug for machine state. Then the shot buttons, which are the same trick on the other header. Tamping still needs a human, so that one will be a voice command rather than an automation.</p>
+    <p>The build log, every photo, the wiring diagrams and the automation YAML are in <a href="https://github.com/marco308/zigbrew">marco308/zigbrew</a>. Thanks to <a href="https://www.kopiro.me/press/sage-barista-via-zigbee/index.html">kopiro</a> for going first.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span>© 2026 Marcus · marcuslab.uk</span>
+    <div class="foot-links">
+      <a href="/#work">work</a>
+      <a href="https://github.com/marco308/zigbrew">zigbrew</a>
+      <a href="https://github.com/marco308">github</a>
+      <a href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/vendor/gsap/gsap.min.js"></script>
+<script src="/vendor/gsap/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = typeof gsap !== 'undefined';
+  if (hasGsap && !reduce) {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.to('.progress',{scaleX:1,ease:'none',scrollTrigger:{trigger:document.body,start:'top top',end:'bottom bottom',scrub:.3}});
+    var io=new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ gsap.to(en.target,{opacity:1,y:0,duration:.7,ease:'power2.out'}); io.unobserve(en.target);} }); },{rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.rv').forEach(function(el){el.style.opacity=1;el.style.transform='none';});
+  }
+
+  /* ---- chain: press the button ---- */
+  var pressBtn=document.getElementById('pressBtn'), pressState=document.getElementById('pressState');
+  var blade=document.getElementById('blade'), led=document.getElementById('led'), ledtxt=document.getElementById('ledtxt'), pulse=document.getElementById('pulse');
+  var machineOn=false, busy=false;
+  function setLed(on){ led.setAttribute('fill', on?'#43e0a0':'#1a201d'); led.setAttribute('stroke', on?'#43e0a0':'#788a7f'); ledtxt.textContent=on?'on':'standby'; ledtxt.setAttribute('fill', on?'#43e0a0':'#788a7f'); }
+  pressBtn.addEventListener('click',function(){
+    if(busy) return; busy=true; pressBtn.disabled=true;
+    pressState.textContent='command sent…';
+    var steps=[['MQTT → Zigbee2MQTT',0],['Zigbee → relay',350],['contact closes 0.5 s',700],['board sees POWER',1250]];
+    if(hasGsap && !reduce){
+      gsap.set(pulse,{opacity:1,strokeDashoffset:0});
+      gsap.to(pulse,{strokeDashoffset:-220,duration:1.2,ease:'none',onComplete:function(){gsap.set(pulse,{opacity:0});}});
+    }
+    setTimeout(function(){ blade.setAttribute('x2','548'); blade.setAttribute('y2','138'); pressState.textContent='relay closed · pressing POWER'; },700);
+    setTimeout(function(){ blade.setAttribute('x2','546'); blade.setAttribute('y2','124'); machineOn=!machineOn; setLed(machineOn); pressState.textContent='relay open again · machine '+(machineOn?'heating':'in standby'); busy=false; pressBtn.disabled=false; pressBtn.textContent=machineOn?'▶ tap again (it toggles)':'▶ tap the switch in HA'; },1250);
+  });
+
+  /* ---- probe sweep ---- */
+  var pinsG=document.getElementById('pins'), N=12, pinEls=[];
+  for(var i=1;i<=N;i++){
+    var x=150+(i-1)*50;
+    var c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x); c.setAttribute('cy',105); c.setAttribute('r',9); c.setAttribute('fill','#dfe6e1'); c.setAttribute('stroke','#788a7f'); pinsG.appendChild(c);
+    var t=document.createElementNS('http://www.w3.org/2000/svg','text'); t.setAttribute('x',x); t.setAttribute('y',160); t.setAttribute('text-anchor','middle'); t.setAttribute('class','sv-t dim sm'); t.textContent=i; pinsG.appendChild(t);
+    pinEls.push(c);
+  }
+  pinEls[0].setAttribute('fill','#1a1d1c');
+  var probeBtn=document.getElementById('probeBtn'), probeState=document.getElementById('probeState'), meterTxt=document.getElementById('meterTxt'), meterNote=document.getElementById('meterNote'), leadB=document.getElementById('leadB'), pbtn=document.getElementById('pbtn').firstElementChild;
+  var sweeping=false;
+  probeBtn.addEventListener('click',function(){
+    if(sweeping) return; sweeping=true; probeBtn.disabled=true;
+    pbtn.setAttribute('fill','#43e0a0'); pinEls.forEach(function(p,i){ if(i>0) p.setAttribute('stroke','#788a7f'); });
+    var j=2;
+    function next(){
+      if(j>N){ probeState.textContent='beeped only on 7 while held → black 1 + white 7'; pbtn.setAttribute('fill','#1a201d'); sweeping=false; probeBtn.disabled=false; probeBtn.textContent='▶ run it again'; return; }
+      var x=150+(j-1)*50;
+      leadB.setAttribute('d','M940 170 C 940 130, '+(x+10)+' 130, '+x+' 96');
+      var hit=(j===7), ledline=(j===4||j===9);
+      meterTxt.textContent= hit?'002':(ledline?'1650':'1'); meterNote.textContent= hit?'BEEP · short while held':(ledline?'LED line, ignore':'open');
+      meterTxt.setAttribute('fill', hit?'#43e0a0':(ledline?'#f0b35a':'#9fb0a6'));
+      probeState.textContent='A on 1 · B on '+j+(hit?' · beep!':'');
+      pinEls[j-1].setAttribute('stroke', hit?'#43e0a0':'#788a7f'); if(hit) pinEls[j-1].setAttribute('stroke-width','3');
+      j++; setTimeout(next, hit?1400:420);
+    }
+    next();
+  });
+
+  /* ---- tap before/after ---- */
+  var bef=document.getElementById('tapBefore'), aft=document.getElementById('tapAfter');
+  function showTap(after){ if(hasGsap&&!reduce){ gsap.to(bef,{opacity:after?0:1,duration:.4}); gsap.to(aft,{opacity:after?1:0,duration:.4}); } else { bef.setAttribute('opacity',after?0:1); aft.setAttribute('opacity',after?1:0);} }
+  document.getElementById('tapBefBtn').addEventListener('click',function(){showTap(false);});
+  document.getElementById('tapAftBtn').addEventListener('click',function(){showTap(true);});
+  if(hasGsap && !reduce){ ScrollTrigger.create({trigger:'#tap',start:'top 60%',once:true,onEnter:function(){ setTimeout(function(){showTap(true);},600); }}); } else { showTap(true); }
+
+  /* ---- pulse-test terminal typewriter ---- */
+  var lines=[['09:36:27','ON'],['09:36:28','OFF'],['09:36:31','ON'],['09:36:32','OFF'],['09:36:35','ON'],['09:36:36','OFF']];
+  var termOut=document.getElementById('termOut'), typed=false;
+  function typeTerm(){ if(typed) return; typed=true; var i=0; (function tick(){ if(i>=lines.length){ termOut.innerHTML+='<span class="c"># relay returned to OFF by itself, every time</span>'; return; } var l=lines[i]; termOut.innerHTML+=l[0]+'  state=<span class="'+(l[1]==='ON'?'on':'off')+'">'+l[1]+'</span>\n'; i++; setTimeout(tick, l[1]==='ON'?900:500); })(); }
+  if(hasGsap && !reduce){ ScrollTrigger.create({trigger:'#termOut',start:'top 80%',once:true,onEnter:typeTerm}); } else { typeTerm(); }
+
+  /* ---- flow: light up in order ---- */
+  if(hasGsap && !reduce){
+    ScrollTrigger.create({trigger:'#flow',start:'top 65%',once:true,onEnter:function(){
+      ['f1','f2','f3','f4','f5'].forEach(function(id,i){ gsap.fromTo('#'+id+' rect',{stroke:'rgba(120,150,135,.14)'},{stroke: id==='f5'?'#f0b35a':'#43e0a0',duration:.4,delay:.35*i}); });
+    }});
+  }
+})();
+</script>
+</body>
+</html>
