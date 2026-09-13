@@ -84,9 +84,12 @@ figcaption{font-family:var(--mono);font-size:12.5px;color:var(--ink-3);margin-to
 figcaption::before{content:"↳ ";color:var(--mint)}
 .fig-wide{max-width:var(--maxw);margin-left:auto;margin-right:auto}
 .fig-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
-.fig-scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--line);background:#fff}
-.fig-scroll img{border:0;border-radius:0;min-width:1100px;padding:10px}
-.fig-scroll{scrollbar-color:var(--ink-3) transparent}
+.fig-scroll{overflow-x:scroll;border-radius:12px;border:1px solid var(--line);background:#fff;position:relative;scrollbar-color:#788a7f #e9eceb;scrollbar-width:thin}
+.fig-scroll::-webkit-scrollbar{height:10px} .fig-scroll::-webkit-scrollbar-thumb{background:#788a7f;border-radius:6px} .fig-scroll::-webkit-scrollbar-track{background:#e9eceb}
+.fig-scroll img{border:0;border-radius:0;width:auto;max-width:none;height:auto;padding:12px}
+.fig-scroll img.h1{width:1900px} .fig-scroll img.h2{width:2700px}
+.fig-tools{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.fig-tools a{color:var(--ink-2)} .fig-tools a:hover{color:var(--mint)}
 /* callouts */
 .callout{border:1px solid var(--line);border-left:3px solid var(--mint);background:var(--panel);border-radius:10px;padding:18px 20px;margin:26px 0}
 .callout.warn{border-left-color:var(--red)}
@@ -385,8 +388,8 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
       </div>
       <div class="cap">Brown to L, blue to N on each relay. Route the leads up the gap between the two halves of the machine, alongside the loom, and tie them to it.</div>
     </div>
-    <figure class="rv fig-wide"><div class="fig-scroll"><img src="img/step1-mains-tap.svg" alt="WireViz harness drawing for the mains tap: cord, two WAGOs, machine wiring, relay L and N" loading="lazy" /></div><figcaption>The same step as a harness drawing, generated from a WireViz description in the repo. Every wire, colour and terminal, nothing implied. Scrolls sideways.</figcaption></figure>
-    <figure class="rv fig-wide"><img src="img/mains-tap.jpg alt="Two WAGO blocks in place of the bullets, leads running to a relay on the bench" loading="lazy" /><figcaption>The tap as built, relay on the bench for the first power-up. Top block all blue, bottom block all brown. The one mistake that goes bang is mixing them, so check twice.</figcaption></figure>
+    <figure class="rv fig-wide"><div class="fig-scroll"><img class="h1" src="img/step1-mains-tap.svg" alt="WireViz harness drawing for the mains tap: cord, two WAGOs, machine wiring, relay L and N" loading="lazy" /></div><div class="fig-tools"><span>← scroll sideways →</span><a href="img/step1-mains-tap.svg" target="_blank" rel="noopener">open full size ↗</a></div><figcaption>The same step as a harness drawing, generated from a WireViz description in the repo. Every wire, colour and terminal, nothing implied. Scrolls sideways.</figcaption></figure>
+    <figure class="rv fig-wide"><img src="img/mains-tap.jpg" alt="Two WAGO blocks in place of the bullets, leads running to a relay on the bench" loading="lazy" /><figcaption>The tap as built, relay on the bench for the first power-up. Top block all blue, bottom block all brown. The one mistake that goes bang is mixing them, so check twice.</figcaption></figure>
   </div>
 </section>
 
@@ -445,7 +448,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
       </svg>
       <div class="cap">Solder, not WAGOs: there's no room behind the panel carrier. Heat shrink on first, cut, strip 10 mm on all three ends, twist along the length, solder, shrink, tie to the loom.</div>
     </div>
-    <figure class="rv fig-wide"><div class="fig-scroll"><img src="img/step3-button-breakout.svg" alt="WireViz harness drawing for the button breakout: panel wires, two joints, board plug, relay COM and NO" loading="lazy" /></div><figcaption>The breakout as a harness drawing. Positions 1 and 7 on the top plug, joints in the loom, third leads to COM and NO.</figcaption></figure>
+    <figure class="rv fig-wide"><div class="fig-scroll"><img class="h1" src="img/step3-button-breakout.svg" alt="WireViz harness drawing for the button breakout: panel wires, two joints, board plug, relay COM and NO" loading="lazy" /></div><div class="fig-tools"><span>← scroll sideways →</span><a href="img/step3-button-breakout.svg" target="_blank" rel="noopener">open full size ↗</a></div><figcaption>The breakout as a harness drawing. Positions 1 and 7 on the top plug, joints in the loom, third leads to COM and NO.</figcaption></figure>
     <div class="fig-grid">
       <figure class="rv"><img src="img/joint.jpg" alt="Three black wire ends twisted and soldered into one joint" loading="lazy" /><figcaption>The black joint before its heat shrink: panel side, board side, and the new COM lead. Tug each wire before covering it.</figcaption></figure>
       <figure class="rv"><img src="img/relay-wired.jpg" alt="The relay with all four leads on: L, N, COM, NO" loading="lazy" /><figcaption>All four leads on. White to NO, black to COM, NC empty, brown to L, blue to N. Resting on the grinder for the photo only.</figcaption></figure>
@@ -542,7 +545,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
   <div class="wrap">
     <div class="sec-head"><span class="eyebrow">reference</span><h2><span class="pre">export </span>full_harness</h2></div>
     <div class="prose"><p>Everything from the mains inlet to the front panel in one drawing, as built for the POWER relay. The grinder relay is the same pattern on the blue pair. The source is a short YAML file in the repo, so if your machine's positions differ, change two lines and re-render.</p></div>
-    <figure class="rv fig-wide"><div class="fig-scroll"><img src="img/phase1-power-relay.svg" alt="Complete WireViz harness for phase one: mains inlet, WAGO splices, relay, front-panel loom breakouts" loading="lazy" /></div><figcaption>Phase 1 harness. Left to right: mains inlet, WAGO splices, machine wiring and relay power, then the main board plug, the two loom breakouts, and the front panel.</figcaption></figure>
+    <figure class="rv fig-wide"><div class="fig-scroll"><img class="h2" src="img/phase1-power-relay.svg" alt="Complete WireViz harness for phase one: mains inlet, WAGO splices, relay, front-panel loom breakouts" loading="lazy" /></div><div class="fig-tools"><span>← scroll sideways →</span><a href="img/phase1-power-relay.svg" target="_blank" rel="noopener">open full size ↗</a></div><figcaption>Phase 1 harness. Left to right: mains inlet, WAGO splices, machine wiring and relay power, then the main board plug, the two loom breakouts, and the front panel.</figcaption></figure>
   </div>
 </section>
 
