@@ -129,6 +129,7 @@ td code{font-family:var(--mono);font-size:.9em;color:var(--ink)}
 .step{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
 .step::before{counter-increment:s;content:counter(s,decimal-leading-zero);font-family:var(--mono);font-weight:700;color:var(--mint);font-size:18px;line-height:1.2}
 .step b{display:block;color:var(--ink);margin-bottom:4px}
+.step b,.step p{grid-column:2}
 .step p{color:var(--ink-2);font-size:15.5px}
 /* tell-you list */
 .tips{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
