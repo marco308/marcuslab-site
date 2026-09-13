@@ -16,14 +16,14 @@
   <!-- grounds mound -->
   <path d="M9 33 Q18 19 27 33 Z" fill="#7a4a22"/>
   <path d="M12 33 Q18 24 24 33 Z" fill="#9a5f2c"/>
+  <!-- neck + handle, drawn first so the basket overlaps them: no seam -->
+  <rect x="22" y="34" width="14" height="6.5" rx="1.5" fill="#c9d2dd"/>
+  <rect x="32" y="33.5" width="25" height="7.5" rx="3.75" fill="url(#hd)"/>
+  <rect x="52" y="35" width="3" height="4.5" rx="1" fill="#f2a34a" opacity=".7"/>
   <!-- basket -->
   <path d="M8 33 H28 L26 42 a4 4 0 0 1 -4 3 H14 a4 4 0 0 1 -4 -3 Z" fill="url(#sv)"/>
   <rect x="7" y="31" width="22" height="4" rx="2" fill="#e9edf2"/>
   <!-- spout -->
   <path d="M15 45 v4 h6 v-4" fill="none" stroke="#c9d2dd" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- handle -->
-  <rect x="29" y="34" width="6" height="6" rx="1.5" fill="#c9d2dd"/>
-  <rect x="34" y="33.5" width="23" height="7.5" rx="3.75" fill="url(#hd)"/>
-  <rect x="52" y="35" width="3" height="4.5" rx="1" fill="#f2a34a" opacity=".7"/>
   </g>
 </svg>
