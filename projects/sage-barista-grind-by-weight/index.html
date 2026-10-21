@@ -226,8 +226,8 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
 <section>
   <div class="wrap">
     <div class="sec-head"><span class="eyebrow">how it works</span><h2><span class="pre">fn </span>stop_at(target)</h2></div>
-    <div class="prose"><p>A second push on the portafilter stops a timed dose early. The relay from part one can already control the grinder. So the whole project is: <strong>weigh the grounds as they land, and send one more press at the right moment.</strong></p>
-    <p>A Bluetooth coffee scale could reach Home Assistant through a proxy, and an automation could pulse the relay. But then every reading goes scale → proxy → Home Assistant → automation → Zigbee2MQTT → relay, and that path takes somewhere between a third and two thirds of a second, and varies. At 1.6 g/s, half a second of jitter is most of a gram. So the scale is home-made, it decides the stop itself at 84 readings a second, and it sends the press <strong>straight to the relay over a Zigbee binding</strong>. Home Assistant sets the target and writes the dose down, and is never in the loop.</p></div>
+    <div class="prose"><p>On the Barista Express you start a grind by pushing the portafilter into the cradle, and a second push stops it early. The relay from part one can already make that push. So the whole project comes down to this: <strong>weigh the grounds as they land, and send one more push at the right moment.</strong></p>
+    <p>I could have used a Bluetooth coffee scale and a Home Assistant automation. But then every reading has to go through a Bluetooth proxy, Home Assistant, Zigbee2MQTT and the relay. That takes a third to two thirds of a second, and never the same amount twice. At 1.6 g a second, that wobble alone is most of a gram. So I built my own scale. It decides when to stop by itself, 84 times a second, and talks <strong>straight to the relay over a Zigbee binding</strong>, a direct device-to-device link with no hub in the middle. Home Assistant only sets the target and writes down the result.</p></div>
 
     <div class="diagram rv" id="chain">
       <svg viewBox="0 0 1200 272" role="img" aria-label="Home Assistant arms the scale over Zigbee2MQTT, slowly and outside the loop. The scale weighs, decides, and sends On straight to the grind relay by a Zigbee binding; the relay pulses the cradle switch; the grinder runs; the grounds fall back onto the scale.">
@@ -267,7 +267,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
     </div>
 
     <div class="prose">
-      <p><strong>The safety net is the machine's own timer.</strong> GRIND AMOUNT is turned up so the timed dose always runs a little past the heaviest target. If the scale, the network or the relay drops out, the grind still ends on the timer, a gram or two heavy. The worst case is a heavy dose, never a grinder that won't stop. The scale never <em>holds</em> anything; it only presses.</p>
+      <p><strong>The safety net is the machine's own timer.</strong> GRIND AMOUNT is turned up so the timed dose always runs a little past the heaviest target. If the scale, the network or the relay drops out, the grind still ends on the timer, a gram or two heavy. The worst case is a heavy dose, never a grinder that won't stop, because the scale only sends short presses and never holds a switch on.</p>
     </div>
 
     <div class="diagram rv" id="dose">
