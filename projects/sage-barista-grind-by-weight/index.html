@@ -456,7 +456,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
 <section>
   <div class="wrap">
     <div class="sec-head"><span class="eyebrow">step 5</span><h2><span class="pre">grind </span>for_real()</h2></div>
-    <div class="prose"><p>17 October. The ring assembled, hung in the real cradle with the portafilter clipped on, still on the laptop's USB. First the boring checks, which all passed: the sleeve hangs free (every poke comes back to the same reading), re-clipping the portafilter repeats to 0.2 g, the calibration from the bench holds (two £1 coins read 17.49 g of 17.50), and noise is the same ±0.13 g as the bare cell. The portafilter weighs 492.5 g. Then I bound the trigger endpoint to <code>zigbrew_grind</code> in Zigbee2MQTT and ran an actual grind to see what would happen.</p></div>
+    <div class="prose"><p>The ring assembled, hung in the real cradle with the portafilter clipped on, still on the laptop's USB. First the boring checks, which all passed: the sleeve hangs free (every poke comes back to the same reading), re-clipping the portafilter repeats to 0.2 g, the calibration from the bench holds (two £1 coins read 17.49 g of 17.50), and noise is the same ±0.13 g as the bare cell. The portafilter weighs 492.5 g. Then I bound the trigger endpoint to <code>zigbrew_grind</code> in Zigbee2MQTT and ran an actual grind to see what would happen.</p></div>
     <figure class="rv fig-wide"><img src="img/in-cradle.jpg" alt="The assembled ring hanging in the cradle with the lid off, load cell and orange carrier visible, USB lead in, the portafilter handle below" loading="lazy" /><figcaption>The orange ring on the counter is an earlier draft.</figcaption></figure>
     <div class="prose"><p>The first try pressed once, saw nothing for four seconds and gave up: the machine was off, and the relay can't start a grinder in standby. One press, no second, exactly as designed. Machine on, armed for 18.0 g with a guessed lead of 1.0 g:</p></div>
     <table>
@@ -533,7 +533,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
     </div>
 
     <div class="term rv">
-      <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">zigbrew-scales · serial console · grind 2, 17 October</span></div>
+      <div class="term-bar"><i></i><i></i><i></i><span style="margin-left:8px">zigbrew-scales · serial console · grind 2</span></div>
       <pre id="termOut"><span class="c"># times rebuilt from the journal; the lines are the firmware's own</span>
 </pre>
     </div>
@@ -561,7 +561,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
       <div class="ctrl">
         <button class="btn" id="wakeBefBtn" type="button">before: rejoin 5.5 s</button>
         <button class="btn btn-primary" id="wakeAftBtn" type="button">after: rejoin 0.5 s</button>
-        <span class="mono" id="wakeNote" style="font-size:12.5px;color:var(--ink-3)">measured 18 October, in the cradle</span>
+        <span class="mono" id="wakeNote" style="font-size:12.5px;color:var(--ink-3)">measured in the cradle</span>
       </div>
       <div class="cap">One wake. Back on the network, report everything, listen two seconds. In the armed test Home Assistant answered 0.73 s after the check-in and the relay confirmed the press. Then it sleeps, with the HX711 powered down through the held clock pin.</div>
     </div>
@@ -581,7 +581,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
 <section>
   <div class="wrap">
     <div class="sec-head"><span class="eyebrow">reference</span><h2><span class="pre">export </span>one_page_overview</h2></div>
-    <div class="prose"><p>The whole project on one page, numbers as measured on 18 October. Everything behind it, the OpenSCAD with its touch checks, the firmware and the simulator, the Zigbee2MQTT converter, the Home Assistant scripts and the dashboard, and a build journal with every wrong turn, is in the <a href="https://github.com/marco308/zigbrew-scales">zigbrew-scales repo</a>.</p></div>
+    <div class="prose"><p>The whole project on one page, numbers as measured. Everything behind it, the OpenSCAD with its touch checks, the firmware and the simulator, the Zigbee2MQTT converter, the Home Assistant scripts and the dashboard, and a build journal with every wrong turn, is in the <a href="https://github.com/marco308/zigbrew-scales">zigbrew-scales repo</a>.</p></div>
     <figure class="rv fig-wide"><div class="fig-scroll"><img class="h1" src="img/overview.jpg" alt="One-page overview of zigbrew-scales: headline numbers, the ring, how a dose works, the first real doses chart, hardware, two cut-aways with numbered parts, and a status row" loading="lazy" /></div><div class="fig-tools"><span>← scroll sideways →</span><a href="img/overview.jpg" target="_blank" rel="noopener">open full size ↗</a></div><figcaption>The overview page, generated from the CAD renders and the journal. Two tiles say pending: ten doses for the ±0.2 g claim haven't been done, and the battery current hasn't been measured.</figcaption></figure>
   </div>
 </section>
