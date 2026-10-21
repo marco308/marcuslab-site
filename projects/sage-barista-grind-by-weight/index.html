@@ -297,7 +297,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
         <button class="btn" id="loseBtn" type="button">▶ lose the stop press</button>
         <span class="mono" id="doseNote" style="font-size:12.5px;color:var(--ink-3)">numbers from the bench: 0.89 s to first grounds, 1.62 g/s, 0.35 g after the stop</span>
       </div>
-      <div class="cap">Blue is what the load cell reads, with the ring's real ±0.15 g of noise. The scale acts on the dashed 300 ms trend line, never on a single reading. Press stop at target minus a lead the scale learns from its own doses; then keep watching, because a stop that never arrived shows up as grounds still pouring 1.5 s later, and the fix for that is one more press.</div>
+      <div class="cap">Blue is what the load cell reads, noise and all: the ring's real ±0.13 g. The scale ignores single readings and watches the dashed line, a 300 ms trend. It presses stop a little before the target, by an amount I'll call the lead, because grounds keep falling for a moment after the press. It learns the lead from its own doses. Then it keeps watching: if grounds are still pouring 1.5 s later, the stop never arrived, so it presses again.</div>
     </div>
   </div>
 </section>
