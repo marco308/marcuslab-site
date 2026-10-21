@@ -20,6 +20,14 @@ under **marcuslab.uk**.
   Inter is for prose, headings included. Both are self-hosted variable
   fonts in `vendor/fonts/` — one `.woff2` per family covers every weight,
   so the page makes no third-party requests at all.
+- Analytics: cookieless [Umami](https://umami.is), self-hosted at
+  `stats.marcuslab.uk` (repo `marco308/umami`). Every page loads its tracker
+  (`/m.js`) in `<head>`; the pages with outbound links also load `links.js`,
+  which records clicks off-site as `outbound-link` events (URL, host, and the
+  project card's title) and `mailto:` clicks as `email-click`. The tracker's
+  `data-domains="marcuslab.uk"` means local previews are not counted. To keep
+  your own visits out, run `localStorage.setItem('umami.disabled', 1)` in the
+  console on marcuslab.uk.
 - Colour: every text token clears WCAG AA (4.5:1) against all four
   surfaces (`--bg`, `--bg-2`, `--panel`, `--panel-2`).
 - To preview: serve the folder (e.g. `python3 -m http.server`) and open it
