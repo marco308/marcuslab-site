@@ -218,7 +218,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
     <p class="lead" style="margin-top:12px">The GRIND AMOUNT dial on a Barista Express sets a time, not a weight. And the weight drifts.</p>
     <p>Fresh beans grind faster than stale ones. A finer setting is slower. A hopper that's nearly empty feeds the burrs differently from a full one. All of that changes how many grams land in the same number of seconds, so a dose that was 18 g on Monday is 17 g by Friday, and the shot pulls differently every day. The fix in every café is a scale under the portafilter, and a finger on the button. I wanted the scale without the finger.</p>
     <p><strong>The target:</strong> set a dose in grams, and have every morning's grind land within ±0.2 g of it, with no scale to watch and nobody in the kitchen. The machine already presses its own buttons from part one. What it needed was something that could feel the grounds arriving and press GRIND again at the right moment.</p>
-    <p><strong>It works.</strong> The first morning dose, armed by Home Assistant with nobody in the kitchen, landed on 18.0 g exactly. One morning so far; the ten-dose run that turns that into a claim is still to do.</p>
+    <p><strong>It works.</strong> The first morning dose, armed by Home Assistant with nobody in the kitchen, landed on 18.0 g exactly, and the next morning's on 18.1. Two mornings so far; the ten-dose run that turns that into a claim is still to do.</p>
   </div>
 </section>
 
@@ -543,6 +543,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
 </pre>
     </div>
     <div class="prose"><p>Home Assistant also keeps a <em>Coffee scale</em> dashboard: a live weight gauge, the target with − and + buttons that write to the scale over Zigbee, a "grind one dose now" button, the last dose with its error and press count, and thirty days of doses against the target. Every dose shows up there with how many presses it took. Two is normal. One is "no grounds". Three or more is a rescue, and the logbook says why.</p></div>
+    <figure class="rv fig-wide" style="max-width:800px"><img src="img/ha-dashboard.jpg" alt="The Coffee scale dashboard in Home Assistant: a weight gauge reading 18.1 g, the target dose with minus and plus buttons, grind and POWER buttons, the last dose card, weight over the last hour, doses over thirty days, the scale's settings, and the morning automations" loading="lazy" /><figcaption>The dashboard this morning, with the ring asleep on its battery and checking in every two minutes. The last dose: 18.1 g against 18.0, two presses, stopped by weight. The settings on the left are written to the scale at its next check-in. A couple of rows in the Morning card are blurred; they're my routine, not the project.</figcaption></figure>
   </div>
 </section>
 
@@ -607,7 +608,8 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
 <section>
   <div class="wrap prose">
     <span class="eyebrow">what's next</span>
-    <p style="margin-top:12px">Ten doses in a row, so the ±0.2 g claim is a measurement rather than a simulation. The battery current with a meter, and a divider so the ring can report its own level. The overload stops, which are designed in and not yet set. A whole morning on battery, start to finish. Then, maybe, faster check-ins while I'm awake and before the grind, so the dose starts seconds after I reach the kitchen instead of up to two minutes later.</p>
+    <p style="margin-top:12px">The form factor first: the box across the front is a bench prototype that works, not a thing you'd want on the counter, so the next version slims it down. Then a low-power e-ink display on the ring, showing the target dose and the weight the last grind reached, so the numbers live on the machine instead of on a phone. E-ink holds its image with no power, which suits a scale that sleeps between doses. And a couple of buttons beside it to nudge the target up and down without opening Home Assistant.</p>
+    <p>Owed before any of that: ten doses in a row, so the ±0.2 g claim is a measurement rather than a simulation; the battery current with a meter, and a divider so the ring can report its own level; and the overload stops, which are designed in and not yet set.</p>
     <p>Thanks to Breville for writing "push and release again to stop" in the manual, which is the sentence the whole project rests on, and to espressoshock for the BES870 portafilter model on GrabCAD. And to <a href="/projects/sage-barista-zigbee/">part one</a>, without which there'd be nothing for the scale to press.</p>
   </div>
 </section>
