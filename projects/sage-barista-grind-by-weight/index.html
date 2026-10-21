@@ -520,10 +520,10 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
         <g class="fn" id="f6"><rect class="sv-box" x="560" y="246" width="200" height="60" rx="12" stroke="#f0b35a"/><text class="sv-t" x="660" y="272" text-anchor="middle" fill="#f0b35a">no start press in time</text><text class="sv-t dim sm" x="660" y="292" text-anchor="middle">notify, stop. never press for it</text></g>
         <text class="sv-t dim sm" x="20" y="316">once a morning, by construction: POWER and GRIND are stamped for the day, so a shower later finds them pressed and does nothing.</text>
       </svg>
-      <div class="cap">The only new automation is the first box. On the first morning, a Sunday, I went to the kitchen before the shower and nothing fired: the shower automation was waiting for a shower, and the gym one only runs on weekdays. So the first motion downstairs now starts it, hall first, because it's passed on the way down.</div>
+      <div class="cap">The only new trigger is the top box in the diagram. On the first morning, a Sunday, I went to the kitchen before showering and nothing happened: the coffee was waiting for my shower, and the gym-morning trigger only runs on weekdays. So now the first motion downstairs starts it too. The hall sensor comes first because I pass it on the way down.</div>
     </div>
 
-    <div class="prose"><p>Started by hand that Sunday instead, through the same script, on a wall plug, with the 0.35 g lead:</p></div>
+    <div class="prose"><p>So that Sunday I ran the script by hand, with the scale on a USB wall plug and the 0.35 g lead:</p></div>
     <div class="stats rv">
       <div class="stat"><div class="n">18.0 g</div><div class="l">on an 18.0 g target. Error 0.0, two presses, "stopped by weight". The first dose armed by Home Assistant.</div></div>
       <div class="stat"><div class="n">0.89 s</div><div class="l">from the start press to the first grounds, both bench grinds.</div></div>
@@ -537,7 +537,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
 </pre>
     </div>
     <div class="prose"><p>Home Assistant also keeps a <em>Coffee scale</em> dashboard. Every dose shows up there with how many presses it took. Two is normal. One is "no grounds". Three or more is a rescue, and the logbook says why.</p></div>
-    <figure class="rv fig-wide" style="max-width:800px"><img src="img/ha-dashboard.jpg" alt="The Coffee scale dashboard in Home Assistant: a weight gauge reading 18.1 g, the target dose with minus and plus buttons, grind and POWER buttons, the last dose card, weight over the last hour, doses over thirty days, the scale's settings, and the morning automations" loading="lazy" /><figcaption>This morning, with the ring asleep on its battery. The settings on the left are written to the scale at its next check-in. A couple of rows in the Morning card are blurred; they're my routine, not the project.</figcaption></figure>
+    <figure class="rv fig-wide" style="max-width:800px"><img src="img/ha-dashboard.jpg" alt="The Coffee scale dashboard in Home Assistant: a weight gauge reading 18.1 g, the target dose with minus and plus buttons, grind and POWER buttons, the last dose card, weight over the last hour, doses over thirty days, the scale's settings, and the morning automations" loading="lazy" /><figcaption>The morning I wrote this, with the ring asleep on its battery. The settings on the left are written to the scale at its next check-in. A couple of rows in the Morning card are blurred; they're my routine, not the project.</figcaption></figure>
   </div>
 </section>
 
