@@ -359,17 +359,17 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--ink-3);font-f
         <table>
           <tr><th>Item</th><th>Notes</th><th>Paid</th></tr>
           <tr><td>Seeed XIAO ESP32-C6</td><td>Zigbee radio, deep sleep, LiPo charger on board. Thumbnail-sized.</td><td>£5.20</td></tr>
-          <tr><td>Adafruit HX711</td><td>24-bit load-cell ADC. Set its RATE switch to <strong>H</strong> for 80 readings a second; the generic boards are stuck at 10, too slow to stop a grind on time.</td><td>£9.60</td></tr>
+          <tr><td>Adafruit HX711</td><td>24-bit load-cell ADC. Set its RATE switch to <strong>H</strong> for 80 readings a second (mine measured 84); the generic boards are stuck at 10, too slow to stop a grind on time.</td><td>£9.60</td></tr>
           <tr><td>1 kg single-point bar load cell</td><td>80 × 12.7 × 12.7 mm. M5 threads at the wire end, M4 at the other. Comes with a generic HX711 board you won't use.</td><td>£3</td></tr>
           <tr><td>LiPo 502030, 250 mAh</td><td>With a protection board. The plug comes off, one wire at a time, and the leads go to the XIAO's BAT pads.</td><td>£4.19</td></tr>
           <tr><td>2 × M5 × 16, 2 × M4 × 16 socket caps</td><td>Fixed end up through the box floor, free end up through the sleeve's arm. Four screws hold the whole thing together.</td><td>pennies</td></tr>
           <tr><td>About 85 g of PETG</td><td>Top ring, collar, sleeve, two lids, electronics carrier. PETG, not PLA: it sits next to a hot machine.</td><td>~£1.70</td></tr>
           <tr><td>30 AWG silicone wire</td><td>Load cell to HX711, HX711 to XIAO.</td><td>pennies</td></tr>
         </table>
-        <p style="color:var(--ink-2);font-size:15px"><strong style="color:var(--ink)">About £24 in the ring.</strong> Not counted: the trial prints. Every printed part went through several versions, the carrier is on its seventeenth, which is several times that filament again.</p>
+        <p style="color:var(--ink-2);font-size:15px"><strong style="color:var(--ink)">About £24 in the ring.</strong> That doesn't count the trial prints. Every printed part went through several versions (the electronics carrier is on its seventeenth), so the test prints used several times that filament again.</p>
       </div>
     </div>
-    <div class="callout rv"><span class="k">// safety</span><p>The scale is 5 V USB and a small battery, and it never touches the machine's wiring: the relay and its mains tap are already in from part one. The one hazard is non-electrical. Anything that pulses the cradle <strong>blind</strong> can start an unwanted grind, because a press on an idle grinder starts it. The firmware only ever presses after it has been armed, and it counts its presses.</p></div>
+    <div class="callout rv"><span class="k">// safety</span><p>The scale is 5 V USB and a small battery, and it never touches the machine's wiring: the relay and its mains tap are already in from part one. The only real risk isn't electrical. A press on an idle grinder starts it, so anything that presses <strong>at the wrong moment</strong> starts a grind nobody asked for. The firmware only presses after it's been armed, and it counts its presses.</p></div>
   </div>
 </section>
 
