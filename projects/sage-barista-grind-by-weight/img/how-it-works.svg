@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica, Arial, sans-serif">
+<defs>
+ <marker id="r" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#c0392b"/></marker>
+ <pattern id="h" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#b9bec4"/><line x1="0" y1="0" x2="0" y2="8" stroke="#8d949b" stroke-width="3"/></pattern>
+</defs>
+<rect width="1600" height="900" fill="#fff"/>
+<text x="40" y="50" font-size="30" font-weight="bold" fill="#222">How the weighing dosing ring works</text>
+<text x="40" y="84" font-size="19" fill="#555">Two parts that never touch each other. The only link between them is the load cell, so everything below it gets weighed.</text>
+<!-- legend -->
+<g font-size="17"><rect x="40" y="108" width="22" height="16" fill="#e8e2d6" stroke="#8a8272"/><text x="70" y="122">top ring: hangs on the hooks, NOT weighed</text>
+<rect x="470" y="108" width="22" height="16" fill="#d9b77e" stroke="#8a6a33"/><text x="500" y="122">sleeve: holds the portafilter, weighed</text>
+<rect x="850" y="108" width="22" height="16" fill="url(#h)"/><text x="880" y="122">portafilter</text>
+<rect x="1010" y="108" width="22" height="16" fill="#c9ccd0" stroke="#666"/><text x="1040" y="122">load cell</text>
+<line x1="1180" y1="116" x2="1212" y2="116" stroke="#c0392b" stroke-width="4" marker-end="url(#r)"/><text x="1235" y="122" fill="#c0392b">where the weight goes</text></g>
+
+<!-- ================= PANEL 1: side cut ================= -->
+<text x="40" y="175" font-size="22" font-weight="bold" fill="#222">1 · Cut down the middle, from the side</text>
+<text x="40" y="200" font-size="16" fill="#777">back on the left, front (handle) on the right</text>
+<g transform="translate(430,420) scale(1.5)">
+ <g fill="#e8e2d6" stroke="#8a8272" stroke-width="1.5">
+  <rect x="-123" y="-31" width="10" height="43"/><rect x="113" y="-31" width="10" height="43"/>
+  <rect x="-154" y="-19" width="32" height="19"/><rect x="60" y="-19" width="54" height="19"/>
+  <rect x="-113" y="12" width="8" height="24"/><rect x="105" y="12" width="8" height="24"/>
+  <rect x="135" y="-19" width="70" height="75" rx="12"/>
+  <rect x="113" y="-19" width="24" height="31"/>
+ </g>
+ <rect x="143" y="-9" width="51" height="51" fill="#c9ccd0" stroke="#666" stroke-width="1.5"/>
+ <g fill="#d9b77e" stroke="#8a6a33" stroke-width="1.5">
+  <rect x="-123" y="18" width="10" height="52"/><rect x="113" y="18" width="10" height="52"/>
+  <rect x="-166" y="70" width="332" height="14"/>
+  <path d="M -166 84 h 20 v 28 h -20 z"/><path d="M 166 84 h -20 v 28 h 20 z"/>
+  <path d="M 123 50 L 194 50 L 194 42 L 123 42 z" stroke-dasharray="4 3"/>
+ </g>
+ <g fill="url(#h)" stroke="#666" stroke-width="1.5">
+  <rect x="-154" y="88" width="30" height="18"/><rect x="124" y="88" width="30" height="18"/>
+  <path d="M -116 88 h 232 v 40 l -30 80 h -172 l -30 -80 z"/>
+  <path d="M 116 130 L 300 145 L 300 175 L 105 175 z"/>
+ </g>
+ <path d="M 0 -120 L 0 -45" stroke="#6b4a2f" stroke-width="4" marker-end="url(#r)"/>
+ <path d="M 40 170 C 90 130, 140 110, 160 60" fill="none" stroke="#c0392b" stroke-width="3" marker-end="url(#r)"/>
+</g>
+<g font-size="17" fill="#222">
+ <text x="445.0" y="265" fill="#6b4a2f">grounds from the chute</text>
+ <text x="40" y="340">collar: presses the</text><text x="40" y="360">machine's lip</text>
+ <line x1="150" y1="355" x2="253.0" y2="378.0" stroke="#888"/>
+ <text x="40" y="405" font-weight="bold">top ring</text><text x="40" y="425">(not weighed)</text>
+ <line x1="160" y1="410" x2="245.5" y2="410" stroke="#888"/>
+ <text x="40" y="465" fill="#c0392b">1.5 mm gap:</text><text x="40" y="485" fill="#c0392b">never touch</text>
+ <line x1="150" y1="465" x2="253.0" y2="442.5" stroke="#c0392b"/>
+ <text x="40" y="545" font-weight="bold">sleeve</text><text x="40" y="565">(weighed)</text>
+ <line x1="110" y1="540" x2="181.0" y2="535.5" stroke="#888"/>
+ <text x="757.5" y="385" fill="#555">nose (part of the top ring)</text><line x1="752.5" y1="380" x2="715.0" y2="397.5" stroke="#888"/>
+ <text x="757.5" y="425" font-weight="bold">load cell</text><text x="757.5" y="445" fill="#555">end-on here; it runs</text><text x="757.5" y="463" fill="#555">left-right (panel 2)</text>
+ <line x1="752.5" y1="420" x2="721.0" y2="430" stroke="#888"/>
+ <text x="757.5" y="505"><tspan font-weight="bold">arm</tspan> up to the cell's</text><text x="757.5" y="525">free end (behind the cut)</text>
+ <line x1="752.5" y1="500" x2="721.0" y2="489.0" stroke="#888"/>
+ <text x="340.0" y="650" font-weight="bold">portafilter</text><text x="340.0" y="670" font-size="15">hangs from the sleeve</text><text x="340.0" y="688" font-size="15">by its lugs, as today</text>
+</g>
+
+<!-- ================= PANEL 2: front cut through the cell ================= -->
+<line x1="990" y1="160" x2="990" y2="860" stroke="#ddd" stroke-width="2"/>
+<text x="1020" y="175" font-size="22" font-weight="bold" fill="#222">2 · The nose, cut along the load cell,</text>
+<text x="1020" y="202" font-size="22" font-weight="bold" fill="#222">seen from the front</text>
+<g transform="translate(1290,470)">
+ <!-- nose shell (top ring) -->
+ <rect x="-180" y="-80" width="360" height="92" rx="14" fill="#e8e2d6" stroke="#8a8272" stroke-width="2"/>
+ <rect x="-170" y="-70" width="340" height="72" rx="8" fill="#fff"/>
+ <!-- cell -->
+ <rect x="-160" y="-60" width="320" height="50" fill="#c9ccd0" stroke="#666" stroke-width="2"/>
+ <rect x="-45" y="-48" width="90" height="26" fill="#fff" stroke="#666"/>
+ <text x="0" y="-30" font-size="13" fill="#555" text-anchor="middle">bends here</text>
+ <!-- fixed end screws up into roof -->
+ <g fill="#333"><rect x="-140" y="-80" width="6" height="64"/><rect x="-100" y="-80" width="6" height="64"/></g>
+ <text x="-180" y="45" font-size="15" fill="#222"><tspan font-weight="bold">fixed end</tspan>: screwed up into</text>
+ <text x="-180" y="62" font-size="15" fill="#222">the nose (the top ring)</text>
+ <!-- free end on arm -->
+ <rect x="60" y="-10" width="100" height="40" fill="#d9b77e" stroke="#8a6a33" stroke-width="2"/>
+ <g fill="#333"><rect x="96" y="-60" width="6" height="80"/><rect x="136" y="-60" width="6" height="80"/></g>
+ <text x="20" y="-133" font-size="15" fill="#222"><tspan font-weight="bold">free end</tspan>: screwed down</text>
+ <text x="20" y="-116" font-size="15" fill="#222">onto the sleeve's arm</text>
+ <!-- sleeve + portafilter below -->
+ <path d="M 110 30 L 110 110" stroke="#8a6a33" stroke-width="8"/>
+ <rect x="-150" y="110" width="300" height="40" fill="#d9b77e" stroke="#8a6a33" stroke-width="2"/>
+ <text x="0" y="136" font-size="16" fill="#5b4318" text-anchor="middle" font-weight="bold">sleeve</text>
+ <path d="M -120 150 h 240 l -30 90 h -180 z" fill="url(#h)" stroke="#666" stroke-width="2"/>
+ <text x="0" y="205" font-size="16" fill="#333" text-anchor="middle" font-weight="bold">portafilter + grounds</text>
+ <!-- load path -->
+ <path d="M 105 218 C 170 205, 170 150, 125 45" fill="none" stroke="#c0392b" stroke-width="4" marker-end="url(#r)"/>
+ <path d="M 90 -40 L -80 -40" stroke="#c0392b" stroke-width="4" marker-end="url(#r)"/>
+ <path d="M -150 -65 L -150 -150" stroke="#c0392b" stroke-width="4" marker-end="url(#r)"/>
+ <text x="-140" y="-160" font-size="15" fill="#c0392b">to the top ring, then the hooks</text>
+</g>
+<g font-size="17" fill="#222">
+ <text x="1020" y="760"><tspan font-weight="bold">The weight's path:</tspan> portafilter → sleeve → arm →</text>
+ <text x="1020" y="785">free end of the load cell → through the cell (it bends</text>
+ <text x="1020" y="810">a hair, which is what it measures) → fixed end → nose</text>
+ <text x="1020" y="835">→ top ring → the machine's hooks.</text>
+</g>
+<g font-size="17" fill="#222">
+ <text x="40" y="760"><tspan font-weight="bold">In use:</tspan> it replaces your dosing ring. Twist the portafilter into the sleeve,</text>
+ <text x="40" y="785">hang the top ring on the hooks, press arm. The scale tares, starts the grinder,</text>
+ <text x="40" y="810">and stops it at target. Twist the portafilter out and tamp. The weight hangs</text>
+ <text x="40" y="835">in front of the hooks, so it tips back against the lip like today.</text>
+</g>
+</svg>
