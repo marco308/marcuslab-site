@@ -1,0 +1,139 @@
+{
+  "$description": "Marcus Lab design tokens. W3C Design Tokens Community Group format. This file is the source of truth: run tools/build.py to regenerate tokens.css, the logo SVGs and the contrast table.",
+  "color": {
+    "$type": "color",
+    "ink":    { "900": { "$value": "#17110d", "$description": "The dark ground. Also text on cream and on orange." },
+                "800": { "$value": "#221812", "$description": "Raised surfaces on the dark ground." },
+                "700": { "$value": "#2e221a", "$description": "Hover and pressed surfaces." } },
+    "cream":  { "100": { "$value": "#ffedd7", "$description": "All text and drawn lines on dark, olive and wood." },
+                "200": { "$value": "#f6ead2", "$description": "Paper: cards, beer mats, notes." } },
+    "olive":  { "500": { "$value": "#46583a", "$description": "The cutting mat. Loader and feature grounds." },
+                "600": { "$value": "#3f5031" },
+                "700": { "$value": "#33422a" } },
+    "wood":   { "500": { "$value": "#87572f", "$description": "The desk, lit." },
+                "600": { "$value": "#6f4425" },
+                "700": { "$value": "#693f22" } },
+    "orange": { "500": { "$value": "#e8590c", "$description": "The one signal colour: the centre line, cut faces, primary actions, focus." },
+                "600": { "$value": "#c24a08" } },
+    "type": {
+      "$description": "One colour per kind of project. Always paired with the kind's name; never the only cue.",
+      "app":      { "$value": "#62a3ea" },
+      "server":   { "$value": "#f08a3c" },
+      "hardware": { "$value": "#f5c12e" },
+      "printed":  { "$value": "#f486a3" },
+      "odds":     { "$value": "#cfc4b0" }
+    },
+    "status": {
+      "live":    { "$value": "#4fe06a", "$description": "Lamp lit: in use and maintained." },
+      "retired": { "$value": "#4a4038", "$description": "Lamp dark: no longer maintained." }
+    },
+    "material": {
+      "$description": "Base colours for 3D models, so a printed part or a steel one looks the same everywhere.",
+      "petg-cream":  { "$value": "#e8e2d6" },
+      "petg-tan":    { "$value": "#c9a66b" },
+      "petg-orange": { "$value": "#f07a2e" },
+      "steel":       { "$value": "#d3d8dd" },
+      "titanium":    { "$value": "#8f8f8c" },
+      "china":       { "$value": "#f7f4ee" },
+      "plywood":     { "$value": "#c9a877" },
+      "rubber":      { "$value": "#1b1b1d" }
+    },
+    "role": {
+      "$description": "What to reach for in a layout. Prefer these to the raw scales above.",
+      "ground":       { "$value": "{color.ink.900}" },
+      "surface":      { "$value": "{color.ink.800}" },
+      "text":         { "$value": "{color.cream.100}" },
+      "accent":       { "$value": "{color.orange.500}" },
+      "on-accent":    { "$value": "{color.ink.900}", "$description": "Text on orange is ink, never cream: cream on orange fails contrast." },
+      "mat":          { "$value": "{color.olive.500}" },
+      "focus":        { "$value": "{color.orange.500}" }
+    }
+  },
+  "opacity": {
+    "$type": "number",
+    "text-muted": { "$value": 0.75, "$description": "Secondary text: cream at this opacity." },
+    "rule":       { "$value": 0.45, "$description": "Dotted rules between rows." },
+    "grid-major": { "$value": 0.2 },
+    "grid-minor": { "$value": 0.08 }
+  },
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "display": { "$value": ["Outfit", "system-ui", "sans-serif"], "$description": "Headings, names, body. Self-host for production." },
+      "mono":    { "$value": ["DM Mono", "ui-monospace", "Menlo", "monospace"], "$description": "Labels, specs, tags, drawing notes." }
+    },
+    "weight": { "$type": "fontWeight", "body": { "$value": 500 }, "label": { "$value": 600 }, "display": { "$value": 700 } },
+    "size": {
+      "$type": "dimension",
+      "display-xl": { "$value": "clamp(64px, 8.6vw, 170px)", "$description": "The name on the landing page." },
+      "display-l":  { "$value": "clamp(34px, 6vw, 84px)", "$description": "Section headings." },
+      "display-m":  { "$value": "clamp(30px, 3.2vw, 46px)", "$description": "Panel headings." },
+      "title":      { "$value": "21px", "$description": "A project's name in a list." },
+      "lead":       { "$value": "clamp(17px, 1.5vw, 22px)" },
+      "body":       { "$value": "17px" },
+      "small":      { "$value": "15px" },
+      "label":      { "$value": "12.5px", "$description": "Mono, uppercase." },
+      "micro":      { "$value": "11px", "$description": "Mono, uppercase. The smallest size allowed." }
+    },
+    "leading":  { "$type": "number", "display": { "$value": 0.86 }, "heading": { "$value": 0.95 }, "body": { "$value": 1.5 } },
+    "tracking": { "$type": "dimension", "display": { "$value": "-0.03em" }, "heading": { "$value": "-0.02em" }, "nameplate": { "$value": "0.04em" }, "signature": { "$value": "0.34em" }, "label": { "$value": "0.08em" } }
+  },
+  "space": {
+    "$type": "dimension",
+    "1": { "$value": "4px" }, "2": { "$value": "8px" }, "3": { "$value": "12px" }, "4": { "$value": "16px" }, "5": { "$value": "24px" },
+    "6": { "$value": "32px" }, "7": { "$value": "48px" }, "8": { "$value": "64px" }, "9": { "$value": "96px" },
+    "page": { "$value": "clamp(18px, 4vw, 56px)", "$description": "Side padding of every page." }
+  },
+  "size": {
+    "$type": "dimension",
+    "nav":        { "$value": "72px" },
+    "nav-narrow": { "$value": "58px" },
+    "measure":    { "$value": "62ch", "$description": "Longest line of running text." },
+    "touch":      { "$value": "44px", "$description": "Smallest tap target on a phone." }
+  },
+  "radius": {
+    "$type": "dimension",
+    "none": { "$value": "0px", "$description": "Panels, cards, rows: square, like cut sheet." },
+    "pill": { "$value": "999px", "$description": "Buttons and filter chips." },
+    "round": { "$value": "50%", "$description": "Balloons and lamps." },
+    "icon": { "$value": "22%", "$description": "App-icon tiles." }
+  },
+  "border": {
+    "$type": "dimension",
+    "hair": { "$value": "1px" }, "rule": { "$value": "1.5px" }, "edge": { "$value": "3px", "$description": "A visible edge: the outline of a real thing." }
+  },
+  "breakpoint": {
+    "$type": "dimension",
+    "narrow": { "$value": "900px", "$description": "Below this: the phone layout. No pinned scroll." },
+    "small":  { "$value": "560px" }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "micro":  { "$value": "200ms" }, "short": { "$value": "450ms" }, "medium": { "$value": "900ms" }, "long": { "$value": "1600ms" },
+      "loader": { "$value": "4500ms", "$description": "The full logo drawing on a landing page. Inner pages: about half." }
+    },
+    "ease": {
+      "$description": "Named by job. Values are CSS equivalents of the GSAP eases used in the prototypes.",
+      "$type": "cubicBezier",
+      "flow":  { "$value": [0.37, 0, 0.63, 1], "$description": "sine.inOut. Drawing lines, wipes, anything continuous." },
+      "draw":  { "$value": [0.45, 0, 0.55, 1], "$description": "power1.inOut. A long single stroke." },
+      "move":  { "$value": [0.22, 1, 0.36, 1], "$description": "power3.out. Things arriving." },
+      "part":  { "$value": [0.87, 0, 0.13, 1], "$description": "expo.inOut. Big set pieces: the loader parting." }
+    },
+    "stagger": { "$type": "duration", "tight": { "$value": "40ms" }, "loose": { "$value": "70ms" } }
+  },
+  "logo": {
+    "$description": "Geometry of the Section A–A mark on a 64-unit square. tools/build.py draws every logo file from these.",
+    "outline":     { "$type": "string", "$value": "12,16 21.5,16 32,31 42.5,16 52,16 52,48 43.5,48 43.5,30.5 32,46.5 20.5,30.5 20.5,48 12,48" },
+    "centre-x":    { "$type": "number", "$value": 32 },
+    "hatch-angle": { "$type": "number", "$value": 45 },
+    "hatch-pitch": { "$type": "number", "$value": 6 },
+    "hatch-width": { "$type": "number", "$value": 2.3 },
+    "edge-width":  { "$type": "number", "$value": 2.6 },
+    "line-width":  { "$type": "number", "$value": 2 },
+    "line-dash":   { "$type": "string", "$value": "9 2.5 2 2.5" },
+    "clear-space": { "$type": "number", "$value": 9.5, "$description": "Units of empty space on every side: the width of one leg of the M." },
+    "min-size":    { "$type": "dimension", "$value": "24px", "$description": "Below this use the micro mark." }
+  }
+}

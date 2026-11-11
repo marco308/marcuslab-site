@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Marcus Lab design language</title>
+<link rel="icon" href="/brand/logo/svg/icon-olive.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/brand/tokens/tokens.css">
+<style>
+/* Everything here is built from the tokens: this page is also the test that they are enough. */
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--ml-color-role-ground); color:var(--ml-color-role-text); font-family:var(--ml-font-family-display); font-weight:var(--ml-font-weight-body); font-size:var(--ml-font-size-body); line-height:var(--ml-font-leading-body); -webkit-font-smoothing:antialiased; }
+h1,h2,h3,p,ul,ol,figure{ margin:0; } ul,ol{ padding:0; list-style:none; } a{ color:inherit; } img{ display:block; max-width:100%; height:auto; }
+:focus-visible{ outline:2px solid var(--ml-color-role-focus); outline-offset:3px; }
+.mono{ font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-label); letter-spacing:var(--ml-font-tracking-label); text-transform:uppercase; }
+.muted{ opacity:var(--ml-opacity-text-muted); }
+.accent{ color:var(--ml-color-role-accent); }
+.mat{ background-color:var(--ml-color-role-mat);
+  background-image:repeating-linear-gradient(0deg, rgba(255,237,215,.2) 0 1px, transparent 1px 100px), repeating-linear-gradient(90deg, rgba(255,237,215,.2) 0 1px, transparent 1px 100px), repeating-linear-gradient(0deg, rgba(255,237,215,.08) 0 1px, transparent 1px 20px), repeating-linear-gradient(90deg, rgba(255,237,215,.08) 0 1px, transparent 1px 20px); background-position:50% 50%; }
+.wood{ background:repeating-linear-gradient(93deg, rgba(40,20,5,.10) 0 2px, transparent 2px 12px), linear-gradient(100deg, var(--ml-color-wood-600), var(--ml-color-wood-500) 42%, var(--ml-color-wood-700)); }
+
+.cover{ min-height:74vh; display:grid; place-items:center; padding:var(--ml-space-9) var(--ml-space-page); text-align:center; }
+.cover div{ display:flex; flex-direction:column; align-items:center; gap:var(--ml-space-5); }
+.cover img{ width:min(70vw,420px); }
+.cover p{ max-width:34ch; font-size:var(--ml-font-size-lead); }
+
+section{ padding:var(--ml-space-8) var(--ml-space-page); border-top:var(--ml-border-rule) solid var(--ml-color-cream-100); display:grid; grid-template-columns:minmax(0,270px) minmax(0,1fr); gap:var(--ml-space-5) var(--ml-space-7); }
+section > header{ display:flex; flex-direction:column; gap:var(--ml-space-2); }
+section > header h2{ font-weight:var(--ml-font-weight-display); text-transform:uppercase; letter-spacing:var(--ml-font-tracking-heading); line-height:var(--ml-font-leading-heading); font-size:clamp(26px, 2.5vw, 36px); overflow-wrap:anywhere; }   /* sized so the longest heading, COMPONENTS, fits its column */
+.body{ display:flex; flex-direction:column; gap:var(--ml-space-6); min-width:0; }
+.body > p, .body li p{ max-width:var(--ml-size-measure); }
+@media (max-width:900px){ section{ grid-template-columns:minmax(0,1fr); padding-block:var(--ml-space-7); } }
+h3{ font-family:var(--ml-font-family-mono); font-weight:500; font-size:var(--ml-font-size-label); letter-spacing:var(--ml-font-tracking-label); text-transform:uppercase; color:var(--ml-color-role-accent); }
+.block{ display:flex; flex-direction:column; gap:var(--ml-space-4); }
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr)); gap:var(--ml-space-4); }
+.grid.wide{ grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr)); }
+
+.rules{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr)); gap:var(--ml-space-5); counter-reset:r; }
+.rules li{ counter-increment:r; display:flex; flex-direction:column; gap:var(--ml-space-2); border-top:var(--ml-border-edge) solid var(--ml-color-cream-100); padding-top:var(--ml-space-3); }
+.rules li::before{ content:"0" counter(r); font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-label); color:var(--ml-color-role-accent); }
+.rules b{ font-weight:var(--ml-font-weight-display); font-size:24px; line-height:1.1; text-transform:uppercase; letter-spacing:var(--ml-font-tracking-heading); }
+.rules p{ font-size:var(--ml-font-size-small); opacity:var(--ml-opacity-text-muted); }
+
+.tile{ display:flex; flex-direction:column; gap:var(--ml-space-2); }
+.tile .show{ aspect-ratio:4/3; display:grid; place-items:center; padding:var(--ml-space-5); border:1px solid rgba(255,237,215,.2); }
+.tile .show img{ max-height:100%; width:auto; max-width:78%; }
+.tile .show.sm img{ max-width:42%; }
+.on-ink{ background:var(--ml-color-ink-900); } .on-cream{ background:var(--ml-color-cream-100); } .on-white{ background:#fff; } .on-orange{ background:var(--ml-color-orange-500); }
+.sizes{ display:flex; align-items:flex-end; gap:var(--ml-space-5); flex-wrap:wrap; }
+.sizes figure{ display:flex; flex-direction:column; align-items:center; gap:var(--ml-space-2); }
+.clear{ width:min(100%,340px); }
+.dont{ position:relative; } .dont::after{ content:""; position:absolute; inset:0; background:linear-gradient(to top right, transparent calc(50% - 1.5px), var(--ml-color-orange-500) calc(50% - 1.5px), var(--ml-color-orange-500) calc(50% + 1.5px), transparent calc(50% + 1.5px)); pointer-events:none; }
+
+.sw{ display:flex; flex-direction:column; gap:6px; }
+.sw i{ display:block; height:84px; border:1px solid rgba(255,237,215,.25); }
+.sw b{ font-weight:var(--ml-font-weight-label); }
+.sw span{ font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-micro); letter-spacing:.04em; opacity:var(--ml-opacity-text-muted); }
+.kinds{ display:flex; flex-wrap:wrap; gap:var(--ml-space-3) var(--ml-space-5); }
+.kind{ display:inline-flex; align-items:center; gap:var(--ml-space-2); }
+.kind i{ width:11px; height:11px; background:var(--c); display:block; }
+table{ border-collapse:collapse; width:100%; max-width:640px; font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-label); }
+th,td{ text-align:left; padding:9px 14px 9px 0; border-top:1px dotted rgba(255,237,215,var(--ml-opacity-rule)); } thead th{ border-top:0; text-transform:uppercase; letter-spacing:var(--ml-font-tracking-label); font-weight:400; opacity:.7; }
+td.fail{ color:var(--ml-color-role-accent); }
+.scroll{ overflow-x:auto; }
+
+.spec{ display:flex; flex-direction:column; gap:var(--ml-space-5); }
+.spec > div{ display:grid; grid-template-columns:150px minmax(0,1fr); gap:var(--ml-space-2) var(--ml-space-5); align-items:baseline; }
+@media (max-width:560px){ .spec > div{ grid-template-columns:minmax(0,1fr); } }
+.t-xl{ font-weight:700; text-transform:uppercase; letter-spacing:var(--ml-font-tracking-display); line-height:var(--ml-font-leading-display); font-size:clamp(48px,8.6vw,130px); }
+.t-l{ font-weight:700; text-transform:uppercase; letter-spacing:var(--ml-font-tracking-heading); line-height:var(--ml-font-leading-heading); font-size:var(--ml-font-size-display-l); }
+.t-lead{ font-size:var(--ml-font-size-lead); line-height:1.32; max-width:34em; }
+
+.lines{ display:grid; grid-template-columns:minmax(110px,200px) minmax(0,1fr); gap:var(--ml-space-4) var(--ml-space-5); align-items:center; }
+.lines i{ display:block; }
+.l-edge{ border-top:var(--ml-border-edge) solid var(--ml-color-cream-100); } .l-rule{ border-top:var(--ml-border-rule) solid var(--ml-color-cream-100); } .l-dot{ border-top:1px dotted rgba(255,237,215,var(--ml-opacity-rule)); }
+.l-chain{ height:2px; background:repeating-linear-gradient(90deg, var(--ml-color-orange-500) 0 16px, transparent 16px 20px, var(--ml-color-orange-500) 20px 23px, transparent 23px 27px); }
+
+.demo{ display:flex; flex-wrap:wrap; gap:var(--ml-space-4) var(--ml-space-5); align-items:center; }
+.btn{ text-decoration:none; font-weight:600; font-size:14px; letter-spacing:.06em; text-transform:uppercase; padding:13px 22px; border-radius:var(--ml-radius-pill); border:var(--ml-border-rule) solid var(--ml-color-cream-100); transition:background var(--ml-motion-duration-micro), color var(--ml-motion-duration-micro), transform var(--ml-motion-duration-micro); display:inline-block; }
+.btn:hover{ background:var(--ml-color-cream-100); color:var(--ml-color-ink-900); transform:translateY(-2px); }
+.btn.primary{ background:var(--ml-color-role-accent); border-color:var(--ml-color-role-accent); color:var(--ml-color-role-on-accent); }
+.chip{ font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-micro); letter-spacing:.06em; text-transform:uppercase; padding:5px 10px; border:1px solid rgba(255,237,215,.4); border-radius:var(--ml-radius-pill); display:inline-flex; align-items:center; gap:7px; }
+.chip i{ width:8px; height:8px; background:var(--c); display:block; } .chip.on{ background:var(--ml-color-cream-100); color:var(--ml-color-ink-900); border-color:var(--ml-color-cream-100); }
+.lamp{ display:inline-flex; align-items:center; gap:8px; font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-micro); letter-spacing:var(--ml-font-tracking-label); text-transform:uppercase; }
+.lamp i{ width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #e9ffe2, var(--ml-color-status-live) 50%, #1f9c3c); box-shadow:0 0 9px 1px rgba(79,224,106,.6); display:block; }
+.lamp.off i{ background:var(--ml-color-status-retired); box-shadow:none; }
+.bom{ border-top:var(--ml-border-rule) solid var(--ml-color-cream-100); max-width:640px; }
+.row{ display:grid; grid-template-columns:34px minmax(0,1fr) auto auto; gap:6px 16px; align-items:center; padding:10px 8px 10px 4px; border-bottom:1px dotted rgba(255,237,215,var(--ml-opacity-rule)); }
+.row .no, .tag b{ font-family:var(--ml-font-family-mono); font-size:13px; width:28px; height:28px; border-radius:50%; border:var(--ml-border-rule) solid var(--c); display:grid; place-items:center; font-weight:500; }
+.row .nm{ font-weight:700; font-size:var(--ml-font-size-title); line-height:1.1; text-transform:uppercase; display:block; } .row .ds{ font-size:14px; opacity:var(--ml-opacity-text-muted); }
+.tag{ display:inline-flex; align-items:center; font-family:var(--ml-font-family-mono); font-size:11.5px; letter-spacing:var(--ml-font-tracking-label); text-transform:uppercase; }
+.tag b{ background:var(--c); color:var(--ml-color-ink-900); position:relative; z-index:1; } .tag span{ background:var(--ml-color-ink-900); height:28px; line-height:28px; padding:0 12px 0 22px; margin-left:-14px; border-radius:0 14px 14px 0; border:1px solid rgba(255,237,215,.2); }
+.frost{ background:rgba(23,17,13,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); padding:.9em 1.1em 1em; max-width:26em; font-size:var(--ml-font-size-small); }
+.photo{ background:var(--ml-color-cream-100); padding:10px 10px 34px; transform:rotate(2deg); box-shadow:0 14px 26px rgba(0,0,0,.35); position:relative; width:190px; }
+.photo::before{ content:""; position:absolute; top:-12px; left:50%; width:86px; height:24px; margin-left:-43px; background:rgba(232,89,12,.8); transform:rotate(-4deg); }
+.photo span{ position:absolute; left:0; right:0; bottom:9px; text-align:center; color:var(--ml-color-ink-900); font-family:var(--ml-font-family-mono); font-size:10.5px; letter-spacing:.06em; }
+
+.eases{ display:flex; flex-direction:column; gap:var(--ml-space-4); max-width:640px; }
+.ease{ display:grid; grid-template-columns:150px minmax(0,1fr); gap:var(--ml-space-4); align-items:center; }
+.track{ height:22px; border-bottom:1px dotted rgba(255,237,215,var(--ml-opacity-rule)); position:relative; }
+.track i{ position:absolute; left:0; bottom:-6px; width:12px; height:12px; border-radius:50%; background:var(--ml-color-role-accent); animation:run 2.6s var(--e) infinite alternate; }
+@keyframes run{ from{ left:0; } to{ left:calc(100% - 12px); } }
+.drawn path{ stroke-dasharray:1; stroke-dashoffset:1; animation:stroke 2.4s var(--ml-motion-ease-flow) infinite alternate; }
+@keyframes stroke{ to{ stroke-dashoffset:0; } }
+@media (prefers-reduced-motion: reduce){ .track i{ animation:none; left:calc(100% - 12px); } .drawn path{ animation:none; stroke-dashoffset:0; } }
+.cols{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr)); gap:var(--ml-space-5) var(--ml-space-7); }
+.cols ul{ display:flex; flex-direction:column; gap:var(--ml-space-2); font-size:var(--ml-font-size-small); }
+.cols li{ padding-left:20px; position:relative; } .cols li::before{ content:"—"; position:absolute; left:0; opacity:.6; } .cols .no li::before{ content:"×"; color:var(--ml-color-role-accent); opacity:1; }
+footer{ padding:var(--ml-space-5) var(--ml-space-page) var(--ml-space-7); border-top:1px dotted rgba(255,237,215,var(--ml-opacity-rule)); display:flex; flex-wrap:wrap; justify-content:space-between; gap:var(--ml-space-3); }
+</style>
+</head>
+<body>
+
+<div class="cover mat">
+  <div>
+    <img src="/brand/logo/svg/lockup-signature-cream.svg" alt="Marcus Lab">
+    <p>The design language. A workbench: everything on it is real, made by the person showing it to you, and can be taken apart.</p>
+    <span class="mono">Version 0.1 · November 2026 · draft</span>
+  </div>
+</div>
+
+<section>
+  <header><span class="mono accent">01</span><h2>The idea</h2></header>
+  <div class="body">
+    <ol class="rules">
+      <li><b>Show the real thing</b><p>Real CAD models, real screenshots, real photos, Marcus's own words. A bad stand-in is worse than a gap.</p></li>
+      <li><b>Draw it in</b><p>Nothing just appears. Lines are stroked, shapes fill, objects arrive from somewhere.</p></li>
+      <li><b>Cut it open</b><p>The logo is a section view. The site shows how things work, mistakes included.</p></li>
+      <li><b>Say it plainly</b><p>Dry, specific, first person. The engineering references are real ones, used correctly.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <header><span class="mono accent">02</span><h2>Logo</h2><p class="muted">Section A–A: an M drawn as a half section.</p></header>
+  <div class="body">
+    <div class="block"><h3>The mark, on each ground</h3>
+      <div class="grid">
+        <figure class="tile"><div class="show mat"><img src="/brand/logo/svg/mark-cream.svg" alt=""></div><span class="mono">On the mat</span></figure>
+        <figure class="tile"><div class="show on-ink"><img src="/brand/logo/svg/mark-cream.svg" alt=""></div><span class="mono">On dark</span></figure>
+        <figure class="tile"><div class="show wood"><img src="/brand/logo/svg/mark-cream.svg" alt=""></div><span class="mono">On the desk</span></figure>
+        <figure class="tile"><div class="show on-cream"><img src="/brand/logo/svg/mark-ink.svg" alt=""></div><span class="mono">On cream</span></figure>
+      </div>
+    </div>
+    <div class="block"><h3>With the section arrows · 96 px and up</h3>
+      <div class="grid">
+        <figure class="tile"><div class="show mat"><img src="/brand/logo/svg/mark-full-cream.svg" alt=""></div><span class="mono">Full mark</span></figure>
+        <figure class="tile"><div class="show on-cream"><img src="/brand/logo/svg/mark-full-ink.svg" alt=""></div><span class="mono">Full mark, ink</span></figure>
+        <figure class="tile"><div class="show on-ink"><img src="/brand/logo/svg/mark-mono-cream.svg" alt=""></div><span class="mono">One colour</span></figure>
+        <figure class="tile"><div class="show on-white"><img src="/brand/logo/svg/mark-mono-black.svg" alt=""></div><span class="mono">One colour, black</span></figure>
+      </div>
+    </div>
+    <div class="block"><h3>Lockups</h3>
+      <div class="grid wide">
+        <figure class="tile"><div class="show on-ink"><img src="/brand/logo/svg/lockup-nameplate-cream.svg" alt="Marcus Lab"></div><span class="mono">Nameplate · beside the name</span></figure>
+        <figure class="tile"><div class="show on-cream"><img src="/brand/logo/svg/lockup-nameplate-ink.svg" alt="Marcus Lab"></div><span class="mono">Nameplate, ink</span></figure>
+        <figure class="tile"><div class="show mat sm"><img src="/brand/logo/svg/lockup-signature-cream.svg" alt="Marcus Lab"></div><span class="mono">Signature · above the name</span></figure>
+        <figure class="tile"><div class="show on-cream sm"><img src="/brand/logo/svg/lockup-signature-ink.svg" alt="Marcus Lab"></div><span class="mono">Signature, ink</span></figure>
+      </div>
+    </div>
+    <div class="block"><h3>Icons and sizes</h3>
+      <div class="sizes">
+        <figure><img src="/brand/logo/svg/icon-olive.svg" width="96" height="96" alt=""><span class="mono">96</span></figure>
+        <figure><img src="/brand/logo/svg/icon-olive.svg" width="48" height="48" alt=""><span class="mono">48</span></figure>
+        <figure><img src="/brand/logo/svg/icon-olive.svg" width="32" height="32" alt=""><span class="mono">32</span></figure>
+        <figure><img src="/brand/logo/svg/icon-olive.svg" width="24" height="24" alt=""><span class="mono">24 · smallest</span></figure>
+        <figure><img src="/brand/logo/svg/icon-micro-olive.svg" width="16" height="16" alt=""><span class="mono">16 · micro</span></figure>
+        <figure><img src="/brand/logo/svg/icon-ink.svg" width="64" height="64" alt=""><span class="mono">Dark</span></figure>
+        <figure><img src="/brand/logo/svg/icon-cream.svg" width="64" height="64" alt=""><span class="mono">Cream</span></figure>
+      </div>
+      <p class="muted">Below 24 px the hatching closes up, so the micro mark takes over: a solid half, a lighter half, and a gap for the cut.</p>
+    </div>
+    <div class="block"><h3>Clear space</h3>
+      <svg class="clear" viewBox="-12 -8 88 80" role="img" aria-label="The mark with one leg-width of clear space marked on every side">
+        <rect x="2.5" y="6.5" width="59" height="51" fill="none" stroke="#e8590c" stroke-width=".5" stroke-dasharray="2 1.5"/>
+        <image href="/brand/logo/svg/mark-cream.svg" x="4" y="4" width="56" height="56"/>
+        <g stroke="#ffedd7" stroke-width=".5" fill="none"><path d="M2.5 62 v4 M12 62 v4 M2.5 64 H12"/></g>
+        <text x="7.25" y="71" text-anchor="middle" font-family="DM Mono, monospace" font-size="3.4" fill="#ffedd7">1 LEG</text>
+      </svg>
+      <p class="muted">Keep one leg-width of the M clear on every side.</p>
+    </div>
+    <div class="block"><h3>Don't</h3>
+      <div class="grid">
+        <figure class="tile"><div class="show on-ink dont"><img src="/brand/logo/svg/mark-cream.svg" style="transform:rotate(-14deg)" alt=""></div><span class="mono">Rotate it</span></figure>
+        <figure class="tile"><div class="show on-ink dont"><img src="/brand/logo/svg/mark-cream.svg" style="transform:scaleX(1.5)" alt=""></div><span class="mono">Stretch it</span></figure>
+        <figure class="tile"><div class="show on-orange dont"><img src="/brand/logo/svg/mark-cream.svg" alt=""></div><span class="mono">Put it on orange</span></figure>
+        <figure class="tile"><div class="show on-ink dont"><img src="/brand/logo/svg/mark-cream.svg" style="filter:drop-shadow(0 0 10px #ffedd7)" alt=""></div><span class="mono">Add a glow or shadow</span></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <header><span class="mono accent">03</span><h2>Colour</h2><p class="muted">A warm dark ground, cream line, one signal colour.</p></header>
+  <div class="body">
+    <div class="block"><h3>Roles</h3>
+      <div class="grid">
+        <div class="sw"><i style="background:var(--ml-color-ink-900)"></i><b>Ground</b><span>#17110D · THE PAGE</span></div>
+        <div class="sw"><i style="background:var(--ml-color-ink-800)"></i><b>Surface</b><span>#221812 · PANELS, ROWS</span></div>
+        <div class="sw"><i style="background:var(--ml-color-cream-100)"></i><b>Text</b><span>#FFEDD7 · TEXT AND LINE</span></div>
+        <div class="sw"><i style="background:var(--ml-color-orange-500)"></i><b>Accent</b><span>#E8590C · THE ONE SIGNAL</span></div>
+        <div class="sw"><i class="mat"></i><b>Mat</b><span>#46583A · FEATURE GROUND</span></div>
+        <div class="sw"><i class="wood"></i><b>Desk</b><span>#693F22 TO #87572F</span></div>
+      </div>
+    </div>
+    <div class="block"><h3>Kinds of project · always with the name</h3>
+      <div class="kinds">
+        <span class="kind" style="--c:var(--ml-color-type-app)"><i></i>App <span class="mono muted">#62A3EA</span></span>
+        <span class="kind" style="--c:var(--ml-color-type-server)"><i></i>Server <span class="mono muted">#F08A3C</span></span>
+        <span class="kind" style="--c:var(--ml-color-type-hardware)"><i></i>Hardware <span class="mono muted">#F5C12E</span></span>
+        <span class="kind" style="--c:var(--ml-color-type-printed)"><i></i>Printed <span class="mono muted">#F486A3</span></span>
+        <span class="kind" style="--c:var(--ml-color-type-odds)"><i></i>Odds &amp; ends <span class="mono muted">#CFC4B0</span></span>
+      </div>
+      <div class="demo"><span class="lamp"><i></i>Live</span><span class="lamp off"><i></i>Retired</span></div>
+    </div>
+    <div class="block"><h3>Contrast that matters</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Pair</th><th>Ratio</th><th>Body text</th></tr></thead>
+        <tbody>
+          <tr><td>Cream on the dark ground</td><td>16.3</td><td>Pass</td></tr>
+          <tr><td>Cream on the mat</td><td>6.8</td><td>Pass</td></tr>
+          <tr><td>Cream on the desk</td><td>5.3</td><td>Pass</td></tr>
+          <tr><td>Orange on the dark ground</td><td>5.2</td><td>Pass</td></tr>
+          <tr><td>Ink on orange</td><td>5.2</td><td>Pass</td></tr>
+          <tr><td>Cream on orange</td><td>3.1</td><td class="fail">Fail: use ink</td></tr>
+          <tr><td>Orange on the mat</td><td>2.2</td><td class="fail">Fail: logo only</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <header><span class="mono accent">04</span><h2>Type</h2><p class="muted">Outfit is Marcus talking. DM Mono is the bench talking.</p></header>
+  <div class="body spec">
+    <div><span class="mono muted">Outfit 700 · the name</span><span class="t-xl">Marcus Lab</span></div>
+    <div><span class="mono muted">Outfit 700 · headings</span><span class="t-l">Things I've made</span></div>
+    <div><span class="mono muted">Outfit 500 · lead</span><span class="t-lead">I make Swift apps for iPhone and Mac, small servers that run in my homelab, and build logs for when the coffee machine needs a Zigbee relay.</span></div>
+    <div><span class="mono muted">Outfit 500 · body</span><span style="max-width:var(--ml-size-measure)">The apps are Swift, because I like software that feels at home on the iPhone and doesn't nag. The servers are Python, running on a homelab that's bigger than one house needs.</span></div>
+    <div><span class="mono muted">DM Mono · labels</span><span class="mono">Parts list · 8 items · Fig. 3 · Do not scale</span></div>
+  </div>
+</section>
+
+<section>
+  <header><span class="mono accent">05</span><h2>Line</h2><p class="muted">Each line means one thing.</p></header>
+  <div class="body">
+    <div class="lines">
+      <i class="l-edge"></i><span><b>Edge, 3 px.</b> The outline of a real thing.</span>
+      <i class="l-rule"></i><span><b>Rule, 1.5 px.</b> The top of a list or a section.</span>
+      <i class="l-dot"></i><span><b>Dotted, 1 px.</b> Between rows.</span>
+      <i class="l-chain"></i><span><b>Chain line, orange.</b> A centre line. At most one on a screen.</span>
+    </div>
+    <div class="mat" style="height:150px; border:1px solid rgba(255,237,215,.25)" role="img" aria-label="The mat grid"></div>
+    <p class="muted">The mat grid: cream lines every 20 px at 8% and every 100 px at 20%.</p>
+  </div>
+</section>
+
+<section>
+  <header><span class="mono accent">06</span><h2>Components</h2></header>
+  <div class="body">
+    <div class="block"><h3>Buttons and chips</h3>
+      <div class="demo"><a class="btn primary" href="#top">Email me</a><a class="btn" href="#top">GitHub</a>
+        <span class="chip on">All</span><span class="chip" style="--c:var(--ml-color-type-app)"><i></i>Apps</span><span class="chip" style="--c:var(--ml-color-type-hardware)"><i></i>Hardware</span></div>
+    </div>
+    <div class="block"><h3>Parts list and balloon tags</h3>
+      <div class="bom">
+        <div class="row" style="--c:var(--ml-color-type-server)"><span class="no">01</span><span><span class="nm">YAMP</span><span class="ds">Self-hosted meal planner</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Server</span><span class="lamp"><i></i>Live</span></div>
+        <div class="row" style="--c:var(--ml-color-type-hardware)"><span class="no">03</span><span><span class="nm">zigbrew</span><span class="ds">A smart Sage Barista Express</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Hardware</span><span class="lamp"><i></i>Live</span></div>
+        <div class="row" style="--c:var(--ml-color-type-odds); opacity:.7"><span class="no">08</span><span><span class="nm">HA TickTick</span><span class="ds">TickTick tasks in Home Assistant</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Odds &amp; ends</span><span class="lamp off"><i></i>Retired</span></div>
+      </div>
+      <div class="demo"><span class="tag" style="--c:var(--ml-color-type-hardware)"><b>03</b><span>zigbrew</span></span><span class="tag" style="--c:var(--ml-color-type-app)"><b>05</b><span>mDone</span></span></div>
+    </div>
+    <div class="block"><h3>Over the bench</h3>
+      <div class="demo wood" style="padding:var(--ml-space-6); align-items:flex-start">
+        <p class="frost">Text that sits over the bench goes in a frosted card: ink at 50% with a blur behind it.</p>
+        <figure class="photo"><img src="/avatar.jpg" width="400" height="300" alt="Marcus in a cap by the sea"><span>FIG. 3 · THE OPERATOR</span></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <header><span class="mono accent">07</span><h2>Motion</h2><p class="muted">Drawn in, never popped in.</p></header>
+  <div class="body">
+    <div class="block"><h3>Eases, by job</h3>
+      <div class="eases">
+        <div class="ease"><span class="mono">Flow · lines, wipes</span><div class="track" style="--e:var(--ml-motion-ease-flow)"><i></i></div></div>
+        <div class="ease"><span class="mono">Draw · one stroke</span><div class="track" style="--e:var(--ml-motion-ease-draw)"><i></i></div></div>
+        <div class="ease"><span class="mono">Move · arriving</span><div class="track" style="--e:var(--ml-motion-ease-move)"><i></i></div></div>
+        <div class="ease"><span class="mono">Part · set pieces</span><div class="track" style="--e:var(--ml-motion-ease-part)"><i></i></div></div>
+      </div>
+    </div>
+    <div class="block"><h3>Stroked by its own length</h3>
+      <svg class="drawn" viewBox="6 10 52 44" style="width:150px" role="img" aria-label="The outline of the mark drawing itself"><path d="M12 48 V16 H21.5 L32 31 L42.5 16 H52 V48 H43.5 V30.5 L32 46.5 L20.5 30.5 V48 Z" pathLength="1" fill="none" stroke="#ffedd7" stroke-width="1.6"/></svg>
+    </div>
+    <div class="cols">
+      <ul><li>Stroke lines, wipe fills, write text then ink it.</li><li>Overlap: the next thing starts before the last ends.</li><li>200 ms feedback, 450 ms small moves, 900 ms a stroke, 1.6 s a camera move.</li><li>Pin scroll only on wide screens, only for a page's main story.</li><li>With reduced motion or no JavaScript, everything is visible as a plain page.</li></ul>
+      <ul class="no"><li>Fading up from nothing as the main effect.</li><li>Pops, bounces, overshoot.</li><li>Still images cross-fading in place of animation.</li><li>Sideways-scrolling carousels.</li><li>Pinned scrolling on phones.</li></ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <header><span class="mono accent">08</span><h2>3D and voice</h2></header>
+  <div class="body">
+    <div class="cols">
+      <div class="block"><h3>3D</h3><ul><li>Real geometry first, one file per part, in assembled coordinates.</li><li>Millimetres. Objects are their true size against each other.</li><li>One warm key light, a hemisphere fill, a neutral room for reflections.</li><li>A section is a clipping plane. Cut faces are flat orange on printed parts.</li><li>A stand-in must look right at the size shown, or it goes.</li></ul></div>
+      <div class="block"><h3>Voice</h3><ul><li>First person, dry, specific. British English, metric.</li><li>Labels are short capitals in mono.</li><li>Drawing notes where they are true: DO NOT SCALE, IF IN DOUBT, ASK.</li><li>Never invent facts, numbers or steps.</li><li>No exclamation marks, no marketing adjectives.</li></ul></div>
+    </div>
+    <div class="block"><h3>Materials</h3>
+      <div class="grid">
+        <div class="sw"><i style="background:var(--ml-color-material-petg-cream)"></i><b>PETG, cream</b><span>#E8E2D6</span></div>
+        <div class="sw"><i style="background:var(--ml-color-material-petg-tan)"></i><b>PETG, tan</b><span>#C9A66B</span></div>
+        <div class="sw"><i style="background:var(--ml-color-material-petg-orange)"></i><b>PETG, orange</b><span>#F07A2E</span></div>
+        <div class="sw"><i style="background:var(--ml-color-material-steel)"></i><b>Steel</b><span>#D3D8DD</span></div>
+        <div class="sw"><i style="background:var(--ml-color-material-titanium)"></i><b>Titanium</b><span>#8F8F8C</span></div>
+        <div class="sw"><i style="background:var(--ml-color-material-plywood)"></i><b>Plywood</b><span>#C9A877</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="mono"><span>Marcus Lab design language · v0.1 · do not scale</span><span>Source: brand/tokens/marcuslab.tokens.json</span></footer>
+</body>
+</html>
