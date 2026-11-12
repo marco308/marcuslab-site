@@ -98,15 +98,14 @@ Raw scales are in the tokens. In layouts, use the roles.
 | Mat | `color.role.mat` | `#46583a` | The cutting mat: the loader, feature grounds, the icon. |
 | Desk | `color.wood.*` | `#693f22` to `#87572f` | Wood, as a gradient with grain. A ground for big type, not for long text. |
 
-**Kinds of project** each have a colour, used as a small square or a ring beside the kind's name. Colour is never the only cue.
+**Two kinds of thing** each have a colour, used as a small square or a ring beside the kind's name. Colour is never the only cue.
 
-| Kind | Colour |
-|---|---|
-| App | `#62a3ea` |
-| Server | `#f08a3c` |
-| Hardware | `#f5c12e` |
-| Printed | `#f486a3` |
-| Odds & ends | `#cfc4b0` |
+| Kind | Colour | What it covers |
+|---|---|---|
+| Software | `#62a3ea` | Apps, servers and anything else that is code |
+| Build | `#f5c12e` | Things you can hold: hardware and printed parts |
+
+There were five kinds at first (app, server, hardware, printed, odds and ends). Apps and servers overlapped too much to be worth telling apart, so they were merged.
 
 **Status** is a lamp: lit green (`#4fe06a`) for live, dark (`#4a4038`) for retired. Always with the word beside it.
 

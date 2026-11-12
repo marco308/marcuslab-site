@@ -16,12 +16,9 @@
     "orange": { "500": { "$value": "#e8590c", "$description": "The one signal colour: the centre line, cut faces, primary actions, focus." },
                 "600": { "$value": "#c24a08" } },
     "type": {
-      "$description": "One colour per kind of project. Always paired with the kind's name; never the only cue.",
-      "app":      { "$value": "#62a3ea" },
-      "server":   { "$value": "#f08a3c" },
-      "hardware": { "$value": "#f5c12e" },
-      "printed":  { "$value": "#f486a3" },
-      "odds":     { "$value": "#cfc4b0" }
+      "$description": "One colour per kind of thing. Always paired with the kind's name; never the only cue.",
+      "software": { "$value": "#62a3ea", "$description": "Apps, servers and anything else that is code." },
+      "build":    { "$value": "#f5c12e", "$description": "Things you can hold: hardware and printed parts." }
     },
     "status": {
       "live":    { "$value": "#4fe06a", "$description": "Lamp lit: in use and maintained." },

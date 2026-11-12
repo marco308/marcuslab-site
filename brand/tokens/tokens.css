@@ -15,11 +15,8 @@
   --ml-color-wood-700: #693f22;
   --ml-color-orange-500: #e8590c;  /* The one signal colour: the centre line, cut faces, primary actions, focus. */
   --ml-color-orange-600: #c24a08;
-  --ml-color-type-app: #62a3ea;
-  --ml-color-type-server: #f08a3c;
-  --ml-color-type-hardware: #f5c12e;
-  --ml-color-type-printed: #f486a3;
-  --ml-color-type-odds: #cfc4b0;
+  --ml-color-type-software: #62a3ea;  /* Apps, servers and anything else that is code. */
+  --ml-color-type-build: #f5c12e;  /* Things you can hold: hardware and printed parts. */
   --ml-color-status-live: #4fe06a;  /* Lamp lit: in use and maintained. */
   --ml-color-status-retired: #4a4038;  /* Lamp dark: no longer maintained. */
   --ml-color-material-petg-cream: #e8e2d6;

@@ -41,7 +41,7 @@ window.LAB = { S: { cam:0, shift:0, over:0 }, hover:null, selected:null, filter:
 <style>
 :root{
   --olive:#46583a; --cream:#ffedd7; --dark:#17110d; --dark-2:#221812; --orange:#e8590c;
-  --app:#62a3ea; --server:#f08a3c; --hardware:#f5c12e; --printed:#f486a3; --odds:#cfc4b0;
+  --software:#62a3ea; --build:#f5c12e;      /* the two kinds of thing: software, and builds you can hold */
   --mono:"DM Mono",ui-monospace,Menlo,monospace; --sans:"Outfit",system-ui,sans-serif;
   --pad:clamp(18px,4vw,56px); --navh:72px;
 }
@@ -52,7 +52,7 @@ a{ color:inherit; } img{ max-width:100%; height:auto; display:block; } h1,h2,h3,
 button{ font:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer; text-align:left; }
 .mono{ font-family:var(--mono); letter-spacing:.08em; text-transform:uppercase; font-size:12.5px; }
 :focus-visible{ outline:2px solid var(--orange); outline-offset:3px; }
-[data-type="app"]{ --c:var(--app); } [data-type="server"]{ --c:var(--server); } [data-type="hardware"]{ --c:var(--hardware); } [data-type="printed"]{ --c:var(--printed); } [data-type="odds"]{ --c:var(--odds); }
+[data-type="software"]{ --c:var(--software); } [data-type="build"]{ --c:var(--build); }
 
 /* loader: the mark draws itself on a cutting mat, then the screen parts along its centre line */
 #loader{ display:none; }
@@ -254,81 +254,78 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     <div class="panel-head"><h2>Parts list</h2><span class="mono">8 items · everything on the bench</span></div>
     <div class="filters" role="group" aria-label="Filter by type">
       <button type="button" data-f="" aria-pressed="true">All</button>
-      <button type="button" data-f="app" data-type="app" aria-pressed="false"><i></i>Apps</button>
-      <button type="button" data-f="server" data-type="server" aria-pressed="false"><i></i>Servers</button>
-      <button type="button" data-f="hardware" data-type="hardware" aria-pressed="false"><i></i>Hardware</button>
-      <button type="button" data-f="printed" data-type="printed" aria-pressed="false"><i></i>Printed</button>
-      <button type="button" data-f="odds" data-type="odds" aria-pressed="false"><i></i>Odds &amp; ends</button>
+      <button type="button" data-f="software" data-type="software" aria-pressed="false"><i></i>Software</button>
+      <button type="button" data-f="build" data-type="build" aria-pressed="false"><i></i>Builds</button>
     </div>
     <ol class="bom">
-      <li class="row" data-id="yamp" data-type="server">
+      <li class="row" data-id="yamp" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">01</span>
           <span class="what"><span class="nm">YAMP</span><span class="ds">Self-hosted meal planner</span></span>
-          <span class="ty"><i></i>Server</span>
+          <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
         <div class="more"><p>A self-hosted recipe library, meal planner and shopping list. There's no AI inside; it has an API and an MCP server instead, so the assistant you already use can drive it. Paste a recipe link, ask for five dinners, get a list sorted by aisle.</p><p class="mo">FastAPI · MCP · SwiftUI · AGPL</p><p class="lk"><a href="https://marco308.github.io/meals/">Website →</a><a href="https://github.com/marco308/meals">GitHub →</a></p></div>
       </li>
-      <li class="row" data-id="podcasts" data-type="server">
+      <li class="row" data-id="podcasts" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">02</span>
           <span class="what"><span class="nm">Podcast Manager</span><span class="ds">Sorts Spotify podcasts into playlists</span></span>
-          <span class="ty"><i></i>Server</span>
+          <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
         <div class="more"><p>Spotify puts every podcast you follow into one feed. This splits them into playlists you define, like news for the commute or the next episode of a serial, and rebuilds them on Spotify every morning. Self-hosted, with an iOS app.</p><p class="mo">Spotify · FastAPI · SwiftUI</p><p class="lk"><a href="https://marco308.github.io/podcast-manager/">Website →</a><a href="https://github.com/marco308/podcast-manager">GitHub →</a></p></div>
       </li>
-      <li class="row" data-id="zigbrew" data-type="hardware">
+      <li class="row" data-id="zigbrew" data-type="build">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">03</span>
           <span class="what"><span class="nm">zigbrew</span><span class="ds">A smart Sage Barista Express</span></span>
-          <span class="ty"><i></i>Hardware</span>
+          <span class="ty"><i></i>Build</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
         <div class="more"><p>How my coffee machine joined the smart home. Part one: two Zigbee relays soldered across the power and grinder switches. Part two: a load cell in a 3D-printed dosing ring, so it grinds by weight instead of time.</p><p class="mo">Zigbee · ESP32-C6 · 3D printed · Home Assistant</p><p class="lk"><a href="/projects/sage-barista-zigbee/">Part one: relays →</a><a href="/projects/sage-barista-grind-by-weight/">Part two: grind by weight →</a></p></div>
       </li>
-      <li class="row" data-id="lids" data-type="printed">
+      <li class="row" data-id="lids" data-type="build">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">04</span>
           <span class="what"><span class="nm">Pan lid generator</span><span class="ds">A lid rack for any cupboard door</span></span>
-          <span class="ty"><i></i>Printed</span>
+          <span class="ty"><i></i>Build</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
         <div class="more"><p>Seven glass lids lived in a heap in the pan cupboard and clattered every time the door shut. Now six hang on the inside of the door. The generator does it for any door: enter your door, printer bed and lids, and it renders every STL in the browser.</p><p class="mo">PETG · OpenSCAD · WebAssembly</p><p class="lk"><a href="https://lids.marcuslab.uk/">Generator →</a><a href="https://www.printables.com/model/1893301-pan-lid-rack-for-the-inside-of-a-kitchen-cupboard">Printables →</a></p></div>
       </li>
-      <li class="row" data-id="mdone" data-type="app">
+      <li class="row" data-id="mdone" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">05</span>
           <span class="what"><span class="nm">mDone</span><span class="ds">iPhone and Mac app for Vikunja</span></span>
-          <span class="ty"><i></i>App</span>
+          <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
         <div class="more"><p>An iPhone and Mac app for Vikunja, the self-hosted to-do server. Smart lists, widgets, a focus timer and offline sync. Open source.</p><p class="mo">Swift · iOS · macOS · MIT</p><p class="lk"><a href="https://apps.apple.com/app/id6760613430">App Store →</a><a href="https://marco308.github.io/mdone/">Website →</a><a href="https://github.com/marco308/mdone">GitHub →</a></p></div>
       </li>
-      <li class="row" data-id="chukkatimer" data-type="app">
+      <li class="row" data-id="chukkatimer" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">06</span>
           <span class="what"><span class="nm">ChukkaTimer</span><span class="ds">A polo timer</span></span>
-          <span class="ty"><i></i>App</span>
+          <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
         <div class="more"><p>One tap starts a chukka with warning bells. Game mode adds teams, handicaps and the score, and spectators can follow along in a browser.</p><p class="mo">Swift · iPhone</p><p class="lk"><a href="https://apps.apple.com/app/id6740096681">App Store →</a><a href="https://marco308.github.io/chukkatimer-site/">Website →</a></p></div>
       </li>
-      <li class="row" data-id="pmaas" data-type="odds">
+      <li class="row" data-id="pmaas" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">07</span>
           <span class="what"><span class="nm">PMaaS</span><span class="ds">Pub Meeting as a Service</span></span>
-          <span class="ty"><i></i>Odds & ends</span>
+          <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
         <div class="more"><p>An API that generates legitimate-sounding business meeting names. Pop a “Quarterly Pint Review” in your calendar and nobody questions where you've gone. Faintly ridiculous.</p><p class="mo">Python · API · MIT</p><p class="lk"><a href="https://pmaas.marcuslab.uk/docs">API docs →</a><a href="https://github.com/marco308/PMaaS">GitHub →</a></p></div>
       </li>
-      <li class="row retired" data-id="haticktick" data-type="odds">
+      <li class="row retired" data-id="haticktick" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">08</span>
           <span class="what"><span class="nm">HA TickTick</span><span class="ds">TickTick tasks in Home Assistant</span></span>
-          <span class="ty"><i></i>Odds & ends</span>
+          <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Retired</span>
         </button>
         <div class="more"><p>A Home Assistant integration that pulls your TickTick projects and tasks into HA and fires events you can automate on. I've since moved to Vikunja, so it isn't actively maintained.</p><p class="mo">Home Assistant · Python</p><p class="lk"><a href="https://github.com/marco308/HA_ticktick">GitHub →</a></p></div>

@@ -48,8 +48,7 @@ woodTex.wrapS = woodTex.wrapT = THREE.RepeatWrapping; woodTex.repeat.set(3, 3);
 /* the cutting mat, with its zones printed on it. World x,z in mm map straight onto the canvas. */
 const MAT_W = 860, MAT_D = 580, PX = 2.6;
 const ZONES = [
-  { name: 'HARDWARE', x: -400, z: -262 }, { name: 'PRINTED', x: 40, z: -262 },
-  { name: 'APPS', x: -400, z: 8 }, { name: 'SERVERS', x: -105, z: 8 }, { name: 'ODDS & ENDS', x: 180, z: 8 },
+  { name: 'BUILDS', x: -400, z: -262 }, { name: 'SOFTWARE', x: -400, z: 8 },
 ];
 const matTex = tex(MAT_W * PX, MAT_D * PX, (g, w, h) => {
   const X = x => (x + MAT_W / 2) * PX, Z = z => (z + MAT_D / 2) * PX;
@@ -61,7 +60,7 @@ const matTex = tex(MAT_W * PX, MAT_D * PX, (g, w, h) => {
   // zone boundaries and names
   g.strokeStyle = 'rgba(255,237,215,.85)'; g.lineWidth = 3;
   g.strokeRect(X(-410), Z(-270), 820 * PX, 540 * PX);
-  [[-410, 0, 410, 0], [30, -270, 30, 0], [-115, 0, -115, 270], [170, 0, 170, 270]].forEach(l => { g.beginPath(); g.moveTo(X(l[0]), Z(l[1])); g.lineTo(X(l[2]), Z(l[3])); g.stroke(); });
+  [[-410, 0, 410, 0]].forEach(l => { g.beginPath(); g.moveTo(X(l[0]), Z(l[1])); g.lineTo(X(l[2]), Z(l[3])); g.stroke(); });
   g.fillStyle = 'rgba(255,237,215,.85)'; g.font = `500 ${9.5 * PX}px ${MONO}`; g.textBaseline = 'top';
   ZONES.forEach(z => g.fillText(z.name, X(z.x + 6), Z(z.z + 4)));
   g.font = `${5 * PX}px ${MONO}`; g.textAlign = 'center'; g.fillStyle = 'rgba(255,237,215,.6)';
