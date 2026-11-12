@@ -35,7 +35,7 @@ Four rules follow from that. When a decision is unclear, these settle it.
 
 ## Logo
 
-The mark is **Section A–A**: a capital M drawn as a half section. The left half is the solid part, the right half is the cut face with 45° hatching, and an orange chain line (the centre line of an engineering drawing) runs between them.
+The mark is **Section A–A**: a capital M drawn as a half section. The left half is the solid part, the right half is the cut face with 45° hatching that falls to the right (so it crosses the M's diagonal instead of running along it), and an orange chain line (the centre line of an engineering drawing) runs between them.
 
 ### Which file
 
@@ -45,7 +45,7 @@ The mark is **Section A–A**: a capital M drawn as a half section. The left hal
 | On cream or white | `mark-ink.svg` |
 | One colour only (engraving, embossing into a print, a single-ink job) | `mark-mono-*.svg` |
 | Large and with room to breathe: a hero, the loader, a cover | `mark-full-*.svg`, which adds the A–A section arrows |
-| 16 to 23 px | `mark-micro-*.svg` or `icon-micro-*.svg` |
+| 16 to 23 px, and tab icons up to 32 px | `mark-micro-*.svg` or `icon-micro-*.svg` |
 | App icon, favicon, avatar | `icon-olive.svg` (default), `icon-ink.svg`, `icon-cream.svg` |
 | iOS and Android icons that the system rounds itself | `icon-square-olive.svg` |
 | Mark beside the name, as in a nav bar | `lockup-nameplate-*` |
@@ -55,10 +55,10 @@ The name in the lockups is live text in Outfit 700. Use the PNG wherever the fon
 
 ### Rules
 
-- **Clear space:** keep one leg-width of the M (9.5 units of the 64-unit grid, about 17% of the mark's width) empty on every side.
-- **Smallest size:** 24 px for the mark. Below that the hatching closes up, so use the micro mark: a solid left half, a lighter right half and a gap for the cut. Never smaller than 16 px.
+- **Clear space:** keep one leg-width of the M (9 units of the 64-unit grid, about 16% of the mark's width) empty on every side.
+- **Smallest size:** 24 px for the mark. Below that the hatching closes up, so use the micro mark: a solid left half, a lighter right half and the cut as a solid orange bar, one pixel wide at 16 px. Never smaller than 16 px.
 - **The arrows** only appear at 96 px and above.
-- **The centre line is orange** on every ground except in the one-colour versions. It has low contrast on olive (2.2:1). That is accepted for the logo only: never set orange text or controls on olive.
+- **The centre line** is three long dashes and two dots, with a long dash at each end. It is orange on every ground except in the one-colour versions, where the two halves stop short of it so the cut still shows. It has low contrast on olive (2.2:1). That is accepted for the logo only: never set orange text or controls on olive.
 - **Don't** redraw it, change the hatch angle, fill the hatched half, drop the outline, recolour the two halves differently, rotate it, add a shadow or glow, or put it in a terminal-style tile.
 
 ### Colourways

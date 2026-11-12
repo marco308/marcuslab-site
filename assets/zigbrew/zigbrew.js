@@ -8,15 +8,18 @@
   const ZB = window.ZB = { anim: false, narrow: matchMedia('(max-width: 899px)').matches, lenis: null };
 
   /* ---------- the mark ---------- */
-  const BIGM = '12,16 21.5,16 32,31 42.5,16 52,16 52,48 43.5,48 43.5,30.5 32,46.5 20.5,30.5 20.5,48 12,48';
+  const BIGM = '12,16 21,16 32,31 43,16 52,16 52,48 43,48 43,30.5 32,45.5 21,30.5 21,48 12,48';
+  // hatching that falls to the right, 5.2 apart, placed as in brand/tokens (logo.hatch-offset)
+  const HATCH = (() => { const step = 5.2 * Math.SQRT2; let d = ''; for (let x = 36.68 - 14 * step; x < 64; x += step) d += `M${x.toFixed(2)} 0 l64 64`; return d; })();
   document.querySelectorAll('[data-mark]').forEach((el, n) => {
     const [fg, line] = el.dataset.mark.split(','), id = 'mk' + n;
     el.innerHTML = `<svg viewBox="6 6 52 52" style="display:block;width:100%;height:auto" aria-hidden="true">
       <defs><clipPath id="${id}l"><rect x="0" y="0" width="32" height="64"/></clipPath><clipPath id="${id}r"><rect x="32" y="0" width="32" height="64"/></clipPath>
-      <pattern id="${id}h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45 32 32)"><path d="M0 0 V6" stroke="${fg}" stroke-width="2.3"/></pattern></defs>
-      <polygon points="${BIGM}" fill="${fg}" clip-path="url(#${id}l)"/><polygon points="${BIGM}" fill="url(#${id}h)" clip-path="url(#${id}r)"/>
+      <clipPath id="${id}o"><polygon points="${BIGM}"/></clipPath></defs>
+      <polygon points="${BIGM}" fill="${fg}" clip-path="url(#${id}l)"/>
+      <g clip-path="url(#${id}r)"><path d="${HATCH}" clip-path="url(#${id}o)" fill="none" stroke="${fg}" stroke-width="1.9"/></g>
       <polygon points="${BIGM}" fill="none" stroke="${fg}" stroke-width="2.6"/>
-      <path d="M32 8 V56" stroke="${line}" stroke-width="2" stroke-dasharray="9 2.5 2 2.5" fill="none"/></svg>`;
+      <path d="M32 10 V54" stroke="${line}" stroke-width="2" stroke-dasharray="10 2.5 2 2.5" fill="none"/></svg>`;
   });
 
   const plain = () => { root.classList.remove('anim'); ZB.anim = false; };
@@ -35,24 +38,25 @@
   }
 
   /* ---------- loader ---------- */
-  const M = 'M12 48 V16 H21.5 L32 31 L42.5 16 H52 V48 H43.5 V30.5 L32 46.5 L20.5 30.5 V48 Z';
+  const M = 'M12 48 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 Z';
   const loaderSvg = cap => `<svg viewBox="0 0 64 90" fill="none">
     <defs>
       <clipPath id="ldm"><path d="${M}"/></clipPath>
       <clipPath id="ldl"><rect x="0" y="0" width="32" height="64"/></clipPath>
       <clipPath id="ldr"><rect x="32" y="0" width="32" height="64"/></clipPath>
-      <clipPath id="ldw"><rect class="l-wipe" x="10" y="48" width="24" height="0"/></clipPath>
+      <clipPath id="ldw"><rect class="l-wipe" x="10" y="48" width="44" height="0"/></clipPath>
+      <clipPath id="ldx"><rect class="l-cutwipe" x="32" y="3" width="32" height="64"/></clipPath>
       <clipPath id="ldc"><rect class="l-linewipe" x="29" y="3" width="6" height="0"/></clipPath>
       <clipPath id="ldt"><rect class="l-rulewipe" x="13" y="72" width="0" height="8"/></clipPath>
       <clipPath id="ldn"><rect class="l-countwipe" x="4" y="81" width="0" height="5"/></clipPath>
     </defs>
     <g class="l-guides" stroke="#ffedd7" stroke-opacity=".45" stroke-width=".3"><path class="dr" d="M32 16 H3"/><path class="dr" d="M32 16 H61"/><path class="dr" d="M32 48 H3"/><path class="dr" d="M32 48 H61"/><path class="dr" d="M12 32 V7"/><path class="dr" d="M12 32 V57"/><path class="dr" d="M52 32 V7"/><path class="dr" d="M52 32 V57"/></g>
-    <g clip-path="url(#ldl)"><g clip-path="url(#ldw)"><path d="${M}" fill="#ffedd7"/></g></g>
-    <g clip-path="url(#ldr)"><g clip-path="url(#ldm)" class="ld-hatch" stroke="#ffedd7" stroke-width="1.5" stroke-linecap="round"></g></g>
-    <path class="l-out dr" d="${M}" stroke="#ffedd7" stroke-width="1.6" stroke-linejoin="miter"/>
+    <g clip-path="url(#ldw)"><g clip-path="url(#ldl)"><path d="${M}" fill="#ffedd7"/></g><g clip-path="url(#ldr)"><g clip-path="url(#ldx)"><path d="${M}" fill="#ffedd7"/></g></g></g>
+    <g clip-path="url(#ldr)"><g clip-path="url(#ldm)" class="ld-hatch" stroke="#ffedd7" stroke-width="1.9"></g></g>
+    <path class="l-out dr" d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#ffedd7" stroke-width="2.6" stroke-linejoin="miter"/>
     <circle class="l-pen" r="1.1" fill="#e8590c"/>
-    <g clip-path="url(#ldc)"><path d="M32 4 V60" stroke="#e8590c" stroke-width="1.1" stroke-dasharray="8 2 1.6 2"/></g>
-    <g class="l-arrows" stroke="#e8590c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path class="dr" d="M32 4 H42 M39.5 1.8 L42.4 4 L39.5 6.2"/><path class="dr" d="M32 60 H42 M39.5 57.8 L42.4 60 L39.5 62.2"/></g>
+    <g clip-path="url(#ldc)"><path d="M32 4 V60" stroke="#e8590c" stroke-width="2" stroke-dasharray="14 2.5 2 2.5"/></g>
+    <g class="l-arrows" opacity="0" stroke="#e8590c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="dr" d="M32 4 H42"/><path class="dr" d="M39.4 1.7 L42.5 4 L39.4 6.3"/><path class="dr" d="M32 60 H42"/><path class="dr" d="M39.4 57.7 L42.5 60 L39.4 62.3"/></g>
     <text class="l-cap" x="32.9" y="69.4" text-anchor="middle" font-family="Outfit, system-ui, sans-serif" font-weight="700" font-size="4.3" letter-spacing="1.7" fill="#ffedd7" fill-opacity="0" stroke="#ffedd7" stroke-width=".22" stroke-dasharray="26" stroke-dashoffset="26">MARCUS LAB</text>
     <g class="l-foot">
       <g clip-path="url(#ldt)"><path d="M14 77 H50" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/><path d="M14 77 v-2.6 M17 77 v-1.3 M20 77 v-1.3 M23 77 v-2.6 M26 77 v-1.3 M29 77 v-1.3 M32 77 v-2.6 M35 77 v-1.3 M38 77 v-1.3 M41 77 v-2.6 M44 77 v-1.3 M47 77 v-1.3 M50 77 v-2.6" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/></g>
@@ -67,12 +71,27 @@
       return;
     }
     document.querySelectorAll('#loader .lc').forEach(lc => { lc.innerHTML = loaderSvg(opts.caption || ''); });
-    document.querySelectorAll('.ld-hatch').forEach(h => { for (let k = -30; k <= 30; k += 4.4) h.insertAdjacentHTML('beforeend', `<path class="dr" d="M${k} 64 L${k + 64} 0"/>`); });
+    // hatching: the logo's own lines (5.2 apart, placed by logo.hatch-offset), each cut to the part that crosses the right half of the M
+    const MP = [[12,16],[21,16],[32,31],[43,16],[52,16],[52,48],[43,48],[43,30.5],[32,45.5],[21,30.5],[21,48],[12,48]], hatchSegs = [];
+    for (let k = 36.68, step = 5.2 * Math.SQRT2; k > -18; k -= step) {
+      const xs = [];
+      MP.forEach(([x1, y1], i) => { const [x2, y2] = MP[(i + 1) % MP.length], t = (k - x1 + y1) / ((x2 - x1) - (y2 - y1)); if (t >= 0 && t < 1) xs.push(x1 + t * (x2 - x1)); });
+      xs.sort((a, b) => a - b);
+      for (let i = 0; i + 1 < xs.length; i += 2) { const a = Math.max(xs[i], 32), b = xs[i + 1]; if (b - a > .4) hatchSegs.push([a - 1, a - 1 - k, b + 1, b + 1 - k, a - k]); }
+    }
+    document.querySelectorAll('.ld-hatch').forEach(g => hatchSegs.forEach(([x1, y1, x2, y2, top]) => { g.insertAdjacentHTML('beforeend', `<path class="dr" d="M${x1} ${y1} L${x2} ${y2}"/>`); g.lastChild._top = top; }));
     document.querySelectorAll('#loader .dr').forEach(el => { const n = el.getTotalLength(); el.style.strokeDasharray = n; el.style.strokeDashoffset = n; el._len = n; });
     const outlines = [...document.querySelectorAll('.l-out')], pens = [...document.querySelectorAll('.l-pen')];
     const pen = { t: 0 };
     const movePen = () => outlines.forEach((o, i) => { const pt = o.getPointAtLength(o._len * pen.t); pens[i].setAttribute('cx', pt.x); pens[i].setAttribute('cy', pt.y); });
     movePen(); gsap.set(pens, { opacity: 0 });
+    // the cut: as the centre line comes down, the solid right half is taken away above its tip and the hatching is ruled in behind it
+    const cut = { y: 3 };
+    const showCut = () => {
+      document.querySelectorAll('.l-linewipe').forEach(r => r.setAttribute('height', cut.y - 3));
+      document.querySelectorAll('.l-cutwipe').forEach(r => r.setAttribute('y', cut.y));
+      document.querySelectorAll('.ld-hatch .dr').forEach(h => { const p = Math.min(1, Math.max(0, (cut.y - h._top) / 9)); h.style.strokeDashoffset = h._len * (1 - p * p * (3 - 2 * p)); });
+    };
     const flow = 'sine.inOut';
     const draw = gsap.timeline({ defaults: { ease: flow } })
       .to('.l-guides .dr', { strokeDashoffset: 0, duration: 1.1, stagger: .05 }, 0)
@@ -83,13 +102,13 @@
       .to('.l-cap', { fillOpacity: 1, duration: .8 }, 1.7)
       .to('.l-rulewipe', { attr: { width: 38 }, duration: 1.3 }, .9)
       .to('.l-countwipe', { attr: { width: 56 }, duration: 1.3 }, 1.2)
-      .to('.l-bar', { strokeDashoffset: 0, duration: 2.2, ease: 'power1.inOut' }, 1.1)
+      .to({ v: 1 }, { v: 0, duration: 2.2, ease: 'power1.inOut', onUpdate() { const v = this.targets()[0].v; document.querySelectorAll('.l-bar').forEach(b => { b.style.strokeDashoffset = v; }); } }, 1.1)   // set directly: GSAP rounds this to whole pixels, and the bar is one unit long
       .to('.l-wipe', { attr: { y: 14, height: 36 }, duration: 1.3, ease: 'power2.inOut' }, 1.6)
-      .to('.ld-hatch .dr', { strokeDashoffset: 0, duration: .9, stagger: .045, ease: 'sine.out' }, 1.8)
       .to(pens, { opacity: 0, duration: .35 }, 2.15)
-      .to('.l-linewipe', { attr: { height: 58 }, duration: 1.1, ease: 'power1.inOut' }, 2.5)
-      .to('.l-arrows .dr', { strokeDashoffset: 0, duration: .6, stagger: .12 }, 3.2)
-      .to('.l-guides', { opacity: 0, duration: .9 }, 3.1)
+      .to(cut, { y: 61, duration: 1.35, ease: 'power1.inOut', onUpdate: showCut }, 2.6)
+      .set('.l-arrows', { opacity: 1 }, 3.6)
+      .to('.l-arrows .dr', { strokeDashoffset: 0, duration: .45, stagger: .1 }, 3.6)
+      .to('.l-guides', { opacity: 0, duration: .9 }, 3.4)
       .to({}, { duration: .3 });
     draw.timeScale(1.9);                       // inner pages: the same drawing in about half the time
     // opts.wait: something that must be ready before the screen opens (the 3D parts). opts.before runs while still covered.

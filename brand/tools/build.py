@@ -89,41 +89,52 @@ OUT, CX = L["outline"], L["centre-x"]
 INK, CREAM, OLIVE, ORANGE = (resolve(f"color.{r}") for r in ("ink.900", "cream.100", "olive.500", "orange.500"))
 
 def hatch(fg):
-    """45° lines at the token pitch, drawn as plain lines so every renderer agrees."""
+    """45° lines falling to the right at the token pitch, drawn as plain lines so every renderer agrees."""
     step = L["hatch-pitch"] * math.sqrt(2)
-    xs, x = [], CX - 64 - step * 4
+    xs, x = [], L["hatch-offset"] % step - 64 - step
     while x < 64:
         xs.append(x); x += step
-    return "".join(f'<path d="M{x:.2f} 64 L{x + 64:.2f} 0"/>' for x in xs)
+    return "".join(f'<path d="M{x:.2f} 0 L{x + 64:.2f} 64"/>' for x in xs)
+
+def chain(y0, y1, line, width=None):
+    """The centre line: three long dashes and two dots, with a long dash at each end."""
+    gap, dot = (float(n) for n in L["line-dash"].split()[1:3])
+    long = (y1 - y0 - 4 * gap - 2 * dot) / 3
+    return f'<path d="M{CX} {y0} V{y1}" fill="none" stroke="{line}" stroke-width="{width or L["line-width"]}" stroke-dasharray="{long:.4g} {gap:g} {dot:g} {gap:g}"/>'
 
 def mark(fg, line, uid="m", arrows=False):
-    """The Section A–A mark: solid left half, hatched right half, an outline, and the chain centre line."""
-    y0, y1 = (4, 60) if arrows else (8, 56)
+    """The Section A–A mark: solid left half, hatched right half, an outline, and the chain centre line.
+    When the line is the same colour as the mark (one-colour files) the halves stop short of it, so the cut still shows."""
+    y0, y1 = (4, 60) if arrows else (L["line-top"], L["line-bottom"])
+    gap, lw = (L["cut-gap"], L["mono-line-width"]) if line == fg else (0, None)
     extra = ""
     if arrows:
         a = lambda y: f'<path d="M{CX} {y} H42 M39.4 {y - 2.3} L42.5 {y} L39.4 {y + 2.3}"/>'
         extra = f'<g fill="none" stroke="{line}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">{a(4)}{a(60)}</g>'
-    return (f'<defs><clipPath id="{uid}l"><rect x="0" y="0" width="{CX}" height="64"/></clipPath>'
-            f'<clipPath id="{uid}r"><rect x="{CX}" y="0" width="{64 - CX}" height="64"/></clipPath>'
-            f'<clipPath id="{uid}o"><polygon points="{OUT}"/></clipPath></defs>'
+    edge = f'<polygon points="{OUT}" fill="none" stroke="{fg}" stroke-width="{L["edge-width"]}" stroke-linejoin="miter"/>'
+    both = f'<clipPath id="{uid}b"><rect x="0" y="0" width="{CX - gap}" height="64"/><rect x="{CX + gap}" y="0" width="{64 - CX}" height="64"/></clipPath>' if gap else ""
+    return (f'<defs><clipPath id="{uid}l"><rect x="0" y="0" width="{CX - gap}" height="64"/></clipPath>'
+            f'<clipPath id="{uid}r"><rect x="{CX + gap}" y="0" width="{64 - CX}" height="64"/></clipPath>'
+            f'<clipPath id="{uid}o"><polygon points="{OUT}"/></clipPath>{both}</defs>'
             f'<polygon points="{OUT}" fill="{fg}" clip-path="url(#{uid}l)"/>'
             f'<g clip-path="url(#{uid}r)"><g clip-path="url(#{uid}o)" fill="none" stroke="{fg}" stroke-width="{L["hatch-width"]}">{hatch(fg)}</g></g>'
-            f'<polygon points="{OUT}" fill="none" stroke="{fg}" stroke-width="{L["edge-width"]}" stroke-linejoin="miter"/>'
-            f'<path d="M{CX} {y0} V{y1}" fill="none" stroke="{line}" stroke-width="{L["line-width"]}" stroke-dasharray="{L["line-dash"]}"/>{extra}')
+            + (f'<g clip-path="url(#{uid}b)">{edge}</g>' if gap else edge) + chain(y0, y1, line, lw) + extra)
 
-def micro(fg, uid="u"):
-    """For 16 to 23 px: no hatching or line. Solid left half, lighter right half, a gap where the cut is."""
-    return (f'<defs><clipPath id="{uid}l"><rect x="0" y="0" width="{CX - 1.4}" height="64"/></clipPath>'
-            f'<clipPath id="{uid}r"><rect x="{CX + 1.4}" y="0" width="{64 - CX}" height="64"/></clipPath></defs>'
-            f'<polygon points="{OUT}" fill="{fg}" clip-path="url(#{uid}l)"/><polygon points="{OUT}" fill="{fg}" fill-opacity=".5" clip-path="url(#{uid}r)"/>')
+def micro(fg, uid="u", cut=None):
+    """For small sizes: no hatching. Solid left half, lighter right half, and the cut as a solid orange bar one pixel wide."""
+    h = (cut or L["micro-cut"]) / 2
+    return (f'<defs><clipPath id="{uid}l"><rect x="0" y="0" width="{CX - h:.4g}" height="64"/></clipPath>'
+            f'<clipPath id="{uid}r"><rect x="{CX + h:.4g}" y="0" width="{64 - CX}" height="64"/></clipPath></defs>'
+            f'<polygon points="{OUT}" fill="{fg}" clip-path="url(#{uid}l)"/><polygon points="{OUT}" fill="{fg}" fill-opacity=".55" clip-path="url(#{uid}r)"/>'
+            f'<rect x="{CX - h:.4g}" y="12" width="{2 * h:.4g}" height="39" fill="{ORANGE}"/>')
 
 def svg(name, viewbox, body, title, w=None, h=None):
     x, y, vw, vh = viewbox
     size = f' width="{w or vw}" height="{h or vh}"'
     (SVG / name).write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x} {y} {vw} {vh}"{size} role="img" aria-label="{title}"><title>{title}</title>{body}</svg>\n')
 
-def tile(bg, inner, scale=.8):
-    return f'<rect width="64" height="64" rx="14" fill="{bg}"/><g transform="translate(32 32) scale({scale}) translate(-32 -32)">{inner}</g>'
+def tile(bg, inner, scale=.88, dx=0):
+    return f'<rect width="64" height="64" rx="14" fill="{bg}"/><g transform="translate({32 + dx} 32) scale({scale}) translate(-32 -32)">{inner}</g>'
 
 def text(x, y, size, track, fill, anchor="start"):
     return (f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-family="Outfit, system-ui, sans-serif" font-weight="700" font-size="{size}" '
@@ -131,7 +142,7 @@ def text(x, y, size, track, fill, anchor="start"):
 
 def build_logos():
     SVG.mkdir(parents=True, exist_ok=True)
-    sq, full, mi = (4, 4, 56, 56), (0, -2, 64, 68), (8, 8, 48, 48)
+    sq, full, mi = (4, 4, 56, 56), (0, -2, 64, 68), (9.5, 9, 48, 48)   # mi: 3 units a pixel at 16 px, the cut on a pixel column
     for name, fg, line in (("cream", CREAM, ORANGE), ("ink", INK, ORANGE), ("mono-cream", CREAM, CREAM), ("mono-ink", INK, INK),
                            ("mono-white", "#ffffff", "#ffffff"), ("mono-black", "#000000", "#000000")):
         svg(f"mark-{name}.svg", sq, mark(fg, line), "Marcus Lab mark")
@@ -140,13 +151,14 @@ def build_logos():
         svg(f"mark-micro-{name}.svg", mi, micro(fg), "Marcus Lab mark, small sizes")
     for name, bg, fg in (("olive", OLIVE, CREAM), ("ink", INK, CREAM), ("cream", CREAM, INK)):
         svg(f"icon-{name}.svg", (0, 0, 64, 64), tile(bg, mark(fg, ORANGE)), "Marcus Lab icon", 512, 512)
-        svg(f"icon-micro-{name}.svg", (0, 0, 64, 64), tile(bg, micro(fg), .86), "Marcus Lab icon, small sizes", 64, 64)
+        # at 16 px a pixel is 4 units: the M is 9 px wide, shifted half a pixel so the cut is one whole column
+        svg(f"icon-micro-{name}.svg", (0, 0, 64, 64), tile(bg, micro(fg, cut=4 / .9), .9, dx=2), "Marcus Lab icon, small sizes", 64, 64)
     # full-bleed square for platforms that round the corners themselves (iOS, Android maskable)
-    svg("icon-square-olive.svg", (0, 0, 64, 64), f'<rect width="64" height="64" fill="{OLIVE}"/><g transform="translate(32 32) scale(.7) translate(-32 -32)">{mark(CREAM, ORANGE)}</g>', "Marcus Lab icon", 512, 512)
+    svg("icon-square-olive.svg", (0, 0, 64, 64), f'<rect width="64" height="64" fill="{OLIVE}"/><g transform="translate(32 32) scale(.78) translate(-32 -32)">{mark(CREAM, ORANGE)}</g>', "Marcus Lab icon", 512, 512)
     # lockups. The name is live text in Outfit 700: use the PNG where the font cannot be guaranteed, outline it before print.
     for name, fg in (("cream", CREAM), ("ink", INK)):
-        body = f'<svg x="0" y="4" width="56" height="56" viewBox="4 4 56 56">{mark(fg, ORANGE)}</svg>' + text(68, 41.5, 27, 1.08, fg)
-        svg(f"lockup-nameplate-{name}.svg", (0, 0, 262, 64), body, "Marcus Lab")
+        body = f'<svg x="0" y="4" width="56" height="56" viewBox="4 4 56 56">{mark(fg, ORANGE)}</svg>' + text(62, 41.5, 27, 1.08, fg)
+        svg(f"lockup-nameplate-{name}.svg", (0, 0, 256, 64), body, "Marcus Lab")
         body = f'<svg x="66" y="0" width="68" height="72.25" viewBox="0 -2 64 68">{mark(fg, ORANGE, arrows=True)}</svg>' + text(102.7, 96, 15.5, 5.27, fg, "middle")
         svg(f"lockup-signature-{name}.svg", (0, 0, 200, 106), body, "Marcus Lab")
 
@@ -175,7 +187,7 @@ def shape_mark(d, fg, line, uid="z"):
             f'<path d="{d}" fill="{fg}" fill-rule="evenodd" clip-path="url(#{uid}l)"/>'
             f'<g clip-path="url(#{uid}r)"><g clip-path="url(#{uid}o)" fill="none" stroke="{fg}" stroke-width="{L["hatch-width"]}">{hatch(fg)}</g></g>'
             f'<path d="{d}" fill="none" stroke="{fg}" stroke-width="{L["edge-width"]}" stroke-linejoin="miter"/>'
-            f'<path d="M{CX} 5 V59" fill="none" stroke="{line}" stroke-width="{L["line-width"]}" stroke-dasharray="{L["line-dash"]}"/>')
+            + chain(5, 59, line))
 
 def shape_micro(d, fg, uid="y"):
     return (f'<defs><clipPath id="{uid}l"><rect x="0" y="0" width="{CX - 1.4}" height="64"/></clipPath>'
@@ -212,10 +224,9 @@ FONTS = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=O
 
 def build_pngs():
     PNG.mkdir(parents=True, exist_ok=True)
-    for px in (16,):
+    for px in (16, 32):
         rsvg("icon-micro-olive.svg", f"favicon-{px}.png", px)
-    for px in (32, 48):
-        rsvg("icon-olive.svg", f"favicon-{px}.png", px)
+    rsvg("icon-olive.svg", "favicon-48.png", 48)
     rsvg("icon-square-olive.svg", "apple-touch-icon-180.png", 180)
     for px in (192, 512):
         rsvg("icon-olive.svg", f"icon-{px}.png", px)
@@ -228,7 +239,7 @@ def build_pngs():
     rsvg("zigbrew-icon-olive.svg", "zigbrew-icon-512.png", 512)
     for name in ("cream", "ink"):
         rsvg(f"zigbrew-mark-{name}.svg", f"zigbrew-mark-{name}-512.png", 512)
-    for kind, (w, h) in (("nameplate", (262, 64)), ("signature", (200, 106))):
+    for kind, (w, h) in (("nameplate", (256, 64)), ("signature", (200, 106))):
         for name in ("cream", "ink"):
             body = (SVG / f"lockup-{kind}-{name}.svg").read_text()
             chrome_shot(f'<!doctype html><meta charset="utf-8">{FONTS}<style>html,body{{margin:0;background:transparent}}svg{{display:block;width:{w * 4}px;height:{h * 4}px}}</style>{body}',
@@ -241,10 +252,24 @@ def build_pngs():
       <div>{sig}<p>APPS, SERVERS &amp; HARDWARE · MARCUSLAB.UK</p></div>''', "og-image-1200x630.png", 1200, 630, transparent=False)
 
 
+def build_site_icons():
+    """The copies the site serves from its root."""
+    import struct
+    root = BRAND.parent
+    shutil.copy(SVG / "icon-micro-olive.svg", root / "favicon.svg")
+    for src, dst in (("favicon-32.png", "favicon-32.png"), ("apple-touch-icon-180.png", "apple-touch-icon.png"), ("og-image-1200x630.png", "og-image.png")):
+        shutil.copy(PNG / src, root / dst)
+    pngs = [(px, (PNG / f"favicon-{px}.png").read_bytes()) for px in (16, 32, 48)]
+    head, body, off = struct.pack("<HHH", 0, 1, len(pngs)), b"", 6 + 16 * len(pngs)
+    for px, data in pngs:
+        head += struct.pack("<BBBBHHII", px, px, 0, 0, 1, 32, len(data), off); body += data; off += len(data)
+    (root / "favicon.ico").write_bytes(head + body)
+
+
 if __name__ == "__main__":
     build_css(); build_contrast(); build_logos(); build_project_marks()
     print(f"tokens.css, contrast.md and {len(list(SVG.glob('*.svg')))} SVGs written")
     if "--png" in sys.argv:
         if not shutil.which("rsvg-convert") or not Path(CHROME).exists():
             sys.exit("PNG export needs rsvg-convert and Google Chrome")
-        build_pngs(); print(f"{len(list(PNG.glob('*.png')))} PNGs written")
+        build_pngs(); build_site_icons(); print(f"{len(list(PNG.glob('*.png')))} PNGs and the site's root icons written")
