@@ -8,9 +8,9 @@
 <meta name="description" content="This page has been demolished to make way for a hyperspace bypass.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#17110d">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=2" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
 <link rel="stylesheet" href="/brand/tokens/tokens.css">
 <style>
@@ -71,8 +71,8 @@ footer{ padding:var(--ml-space-5) var(--ml-space-page) var(--ml-space-6); border
   @keyframes arrive{ to{ opacity:1; transform:none; } }
 }
 </style>
-<!-- Cookieless analytics: Umami at stats.marcuslab.uk (marco308/umami). data-domains keeps local previews out of the numbers. -->
-<script defer src="https://stats.marcuslab.uk/m.js" data-website-id="91f11161-cf9b-4e81-a77b-114e94374a5d" data-domains="marcuslab.uk"></script>
+<!-- Cookieless analytics: Umami at stats.marcuslab.uk (marco308/umami). data-domains keeps local previews out of the numbers. Added after the page has loaded, so a slow or blocked stats host can never hold the page up. -->
+<script>addEventListener('load', function(){ var s = document.createElement('script'); s.src = 'https://stats.marcuslab.uk/m.js'; s.dataset.websiteId = '91f11161-cf9b-4e81-a77b-114e94374a5d'; s.dataset.domains = 'marcuslab.uk'; document.head.appendChild(s); });</script>
 </head>
 <body>
 

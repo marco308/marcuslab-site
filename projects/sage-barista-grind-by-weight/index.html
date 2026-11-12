@@ -14,7 +14,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <meta name="description" content="A follow-up to zigbrew. A 3D-printed dosing ring with a load cell inside hangs the portafilter in the Sage Barista Express's cradle, weighs the grounds as they land, and stops the grinder itself over a direct Zigbee binding.">
 <meta name="theme-color" content="#17110d">
 <link rel="icon" href="/brand/logo/svg/zigbrew-icon-micro-olive.svg" type="image/svg+xml">
@@ -29,8 +29,8 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
 <script type="importmap">{ "imports": { "three": "/vendor/three/build/three.module.min.js", "three/addons/": "/vendor/three/addons/" } }</script>
 <link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
 <link rel="stylesheet" href="/assets/zigbrew/zigbrew.css">
-<!-- Cookieless analytics: Umami at stats.marcuslab.uk (marco308/umami). data-domains keeps local previews out of the numbers. -->
-<script defer src="https://stats.marcuslab.uk/m.js" data-website-id="91f11161-cf9b-4e81-a77b-114e94374a5d" data-domains="marcuslab.uk"></script>
+<!-- Cookieless analytics: Umami at stats.marcuslab.uk (marco308/umami). data-domains keeps local previews out of the numbers. Added after the page has loaded, so a slow or blocked stats host can never hold the page up. -->
+<script>addEventListener('load', function(){ var s = document.createElement('script'); s.src = 'https://stats.marcuslab.uk/m.js'; s.dataset.websiteId = '91f11161-cf9b-4e81-a77b-114e94374a5d'; s.dataset.domains = 'marcuslab.uk'; document.head.appendChild(s); });</script>
 <script defer src="/links.js"></script>
 </head>
 <body>

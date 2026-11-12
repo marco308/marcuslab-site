@@ -19,9 +19,9 @@
 <meta name="twitter:description" content="iPhone and Mac apps, self-hosted tools and hardware build logs. mDone, ChukkaTimer, YAMP, Podcast Manager and zigbrew.">
 <meta name="twitter:image" content="https://marcuslab.uk/og-image.png">
 <meta name="theme-color" content="#17110d">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png?v=2" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <script>
 /* "anim" turns on the pinned 3D bench. Without it (no JS, reduced motion, a narrow screen, or no WebGL)
    the page is a plain document: a heading and the parts list, with every description visible. */
@@ -205,8 +205,8 @@ html.narrow .tag{ font-size:12px; } html.narrow .tag b{ width:22px; height:22px;
 footer{ background:var(--dark); padding:26px var(--pad) 34px; display:flex; flex-wrap:wrap; gap:12px 26px; align-items:center; justify-content:space-between; opacity:.9; }
 footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decoration:none; } footer a:hover{ color:var(--orange); }
 </style>
-<!-- Cookieless analytics: Umami at stats.marcuslab.uk (marco308/umami). data-domains keeps local previews out of the numbers. -->
-<script defer src="https://stats.marcuslab.uk/m.js" data-website-id="91f11161-cf9b-4e81-a77b-114e94374a5d" data-domains="marcuslab.uk"></script>
+<!-- Cookieless analytics: Umami at stats.marcuslab.uk (marco308/umami). data-domains keeps local previews out of the numbers. Added after the page has loaded, so a slow or blocked stats host can never hold the page up. -->
+<script>addEventListener('load', function(){ var s = document.createElement('script'); s.src = 'https://stats.marcuslab.uk/m.js'; s.dataset.websiteId = '91f11161-cf9b-4e81-a77b-114e94374a5d'; s.dataset.domains = 'marcuslab.uk'; document.head.appendChild(s); });</script>
 <script defer src="/links.js"></script>
 </head>
 <body>
