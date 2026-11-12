@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Marcus Lab · bench prototype</title>
+<script>
+/* "anim" turns on the pinned, scroll-driven layout. Without it (no JS, reduced motion, or a narrow
+   screen) the page is a plain stacked document with everything visible. */
+(function(){
+  var d = document.documentElement; d.classList.add('js');
+  var ok = !matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(min-width: 821px)').matches;
+  if (ok) d.classList.add('anim');
+})();
+/* Scroll drives these numbers; bench3d.js reads them every frame. */
+window.BENCH = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, labels:0 }, ready: function(){}, fail: function(){} };
+</script>
+<script type="importmap">{ "imports": { "three": "/vendor/three/build/three.module.min.js", "three/addons/": "/vendor/three/addons/" } }</script>
+<link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
+<style>
+:root{
+  --olive:#46583a; --cream:#ffedd7; --dark:#17110d; --dark-2:#221812; --orange:#e8590c; --wood:#96643b;
+  --mono:"DM Mono",ui-monospace,Menlo,monospace; --sans:"Outfit",system-ui,sans-serif;
+  --pad:clamp(18px,4vw,56px);
+}
+*{ box-sizing:border-box; }
+html.lenis, html.lenis body{ height:auto; scroll-behavior:auto !important; }
+body{ margin:0; background:var(--dark); color:var(--cream); font-family:var(--sans); font-size:17px; line-height:1.5; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+a{ color:inherit; }
+img{ max-width:100%; height:auto; display:block; }
+h1,h2,h3,p{ margin:0; }
+.mono{ font-family:var(--mono); letter-spacing:.08em; text-transform:uppercase; font-size:12.5px; }
+.anim-only{ display:none; }
+html.anim .anim-only{ display:block; }
+html:not(.anim) .work-head .anim-only{ display:none !important; }
+html.anim .static-only{ display:none; }
+
+/* ---------- loader ---------- */
+#loader{ display:none; }
+html.anim #loader{ display:grid; place-items:center; position:fixed; inset:0; z-index:100; background:var(--olive); }
+#loader svg{ width:min(46vw,420px); height:auto; overflow:visible; }
+
+/* ---------- nav ---------- */
+.nav{ position:fixed; z-index:50; top:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px var(--pad) 26px; pointer-events:none; background:linear-gradient(rgba(23,17,13,.7), rgba(23,17,13,0)); }
+.nav > *{ pointer-events:auto; }
+.brand{ display:flex; align-items:center; gap:12px; text-decoration:none; font-weight:600; font-size:15px; letter-spacing:.04em; text-transform:uppercase; }
+.brand .mk{ width:38px; flex:none; }
+.nav-links{ display:flex; gap:clamp(12px,2.2vw,30px); font-weight:600; font-size:13px; letter-spacing:.06em; text-transform:uppercase; }
+.nav-links a{ text-decoration:none; padding-bottom:3px; border-bottom:1px dotted transparent; }
+.nav-links a:hover{ border-bottom-color:var(--cream); }
+@media (max-width:560px){ .brand span.t{ display:none; } .nav-links a.opt{ display:none; } }
+
+/* ---------- stage: hero scene + beats ---------- */
+.stage{ position:relative; }
+.scene{ position:relative; aspect-ratio:16/9; overflow:hidden; container-type:inline-size;
+  background:repeating-linear-gradient(93deg, rgba(40,20,5,.10) 0 .15cqw, transparent .15cqw .9cqw), linear-gradient(100deg,#8b5a33,#a56f41 42%,#7f512d); }
+.scene > *{ position:absolute; }
+html.anim .stage{ height:100vh; overflow:hidden; }
+html.anim .scene{ position:absolute; inset:0; aspect-ratio:auto; }
+.mat{ left:27%; top:-9%; width:82%; height:94%; transform:rotate(-3deg); border-radius:1.6cqw; box-shadow:0 1.2cqw 2.4cqw rgba(0,0,0,.4);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,237,215,.5) 0 .09cqw, transparent .09cqw 10cqw),
+    repeating-linear-gradient(90deg, rgba(255,237,215,.5) 0 .09cqw, transparent .09cqw 10cqw),
+    repeating-linear-gradient(0deg, rgba(255,237,215,.2) 0 .06cqw, transparent .06cqw 2cqw),
+    repeating-linear-gradient(90deg, rgba(255,237,215,.2) 0 .06cqw, transparent .06cqw 2cqw),
+    radial-gradient(ellipse at 40% 40%, #52663f, var(--olive) 70%); }
+.mat::after{ content:"0   20   40   60   80   100   120   140   160   180"; position:absolute; left:2cqw; bottom:.7cqw; font-family:var(--mono); font-size:.8cqw; letter-spacing:.06em; white-space:pre; color:rgba(255,237,215,.75); }
+.pencil{ left:5%; top:56%; width:24cqw; height:1.15cqw; transform:rotate(-27deg); background:linear-gradient(#2b2b2b,#111 55%,#2b2b2b); clip-path:polygon(0 0,91% 0,100% 50%,91% 100%,0 100%); filter:drop-shadow(.4cqw .7cqw .5cqw rgba(0,0,0,.45)); }
+.rule{ left:86%; top:12%; width:34cqw; height:2.7cqw; transform:rotate(58deg); transform-origin:0 0; filter:drop-shadow(.5cqw .8cqw .6cqw rgba(0,0,0,.45));
+  background:repeating-linear-gradient(90deg, #3a3d40 0 .08cqw, transparent .08cqw 2cqw) 0 0 / 100% 55% no-repeat, repeating-linear-gradient(90deg, #3a3d40 0 .06cqw, transparent .06cqw .4cqw) 0 0 / 100% 28% no-repeat, linear-gradient(#e7eaec,#b9bfc4); }
+.nut{ width:2.6cqw; height:2.6cqw; filter:drop-shadow(.3cqw .5cqw .35cqw rgba(0,0,0,.5)); }
+.dim{ inset:0; background:radial-gradient(ellipse at 50% 55%, #2a1c12, var(--dark) 65%); opacity:0; pointer-events:none; }
+.b-tag{ left:var(--pad); top:15%; font-weight:600; font-size:1.25cqw; letter-spacing:.02em; }
+.b-title{ left:2.6%; top:19%; font-weight:700; font-size:11.4cqw; line-height:.8; letter-spacing:-.035em; text-transform:uppercase; }
+.b-title .ch{ display:inline-block; will-change:transform,filter,opacity; }
+.partwrap{ left:38%; top:24%; width:50cqw; aspect-ratio:1200/679; }
+html.anim .partwrap{ left:63%; top:50%; }
+.partwrap img{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); filter:drop-shadow(1.1cqw 1.6cqw 1.3cqw rgba(0,0,0,.5)); }
+.partwrap .p-render{ width:100%; }
+.partwrap .p-cut{ width:58%; max-width:none; opacity:0; }
+.partwrap .p-bay{ width:62%; max-width:none; opacity:0; }
+.b-para{ left:59%; top:74%; width:36cqw; font-weight:500; font-size:1.55cqw; line-height:1.32; text-shadow:0 .1cqw .8cqw rgba(0,0,0,.4); }
+.b-card{ left:var(--pad); bottom:7%; width:22cqw; padding:1.6cqw 1.7cqw 1.5cqw; background:rgba(255,237,215,.16); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; flex-direction:column; gap:1.3cqw; }
+.b-card b{ font-weight:600; font-size:1.55cqw; line-height:1.15; text-transform:uppercase; }
+.b-card i{ display:block; border-top:.12cqw dotted var(--cream); width:70%; }
+.b-card span{ font-size:1.15cqw; font-weight:500; text-align:right; line-height:1.3; }
+.b-scroll{ left:50%; bottom:3.4%; transform:translateX(-50%); font-family:var(--mono); font-size:.8cqw; letter-spacing:.08em; display:none; }
+html.anim .b-scroll{ display:block; }
+.cline{ display:none; }
+html.anim .cline{ display:block; left:50%; top:6%; bottom:6%; width:max(1.5px,.13cqw); margin-left:-.06cqw; transform-origin:50% 0; transform:scaleY(0);
+  background:repeating-linear-gradient(180deg, var(--orange) 0 1.7cqw, transparent 1.7cqw 2.1cqw, var(--orange) 2.1cqw 2.4cqw, transparent 2.4cqw 2.8cqw); }
+.cline::before, .cline::after{ content:"A"; position:absolute; left:1.1cqw; font-family:var(--mono); font-size:1.1cqw; color:var(--orange); }
+.cline::before{ top:0; } .cline::after{ bottom:0; }
+
+/* live 3D scene: replaces the drawn desk and the still renders when WebGL and the models load */
+#gl, .labels{ display:none; }
+html.gl #gl{ display:block; inset:0; width:100%; height:100%; }
+html.gl .mat, html.gl .rule, html.gl .pencil, html.gl .nut, html.gl .partwrap, html.gl .dim, html.gl .cline{ display:none; }
+html.gl .labels{ display:block; inset:0; pointer-events:none; opacity:0; }
+.labels svg{ position:absolute; inset:0; width:100%; height:100%; }
+.labels line{ stroke:var(--cream); stroke-width:1; opacity:.65; } .labels circle{ fill:var(--orange); }
+.lab{ position:absolute; left:0; top:0; font-family:var(--mono); font-size:max(10px,.85cqw); letter-spacing:.1em; white-space:nowrap; }
+html.gl .b-title, html.gl .b-para, html.gl .b-tag{ text-shadow:0 .2cqw 1.6cqw rgba(30,15,5,.35); }
+html.anim .beat-x .bl{ left:var(--pad); top:17%; font-size:4.2cqw; }
+html.anim .beat-x .br{ left:var(--pad); top:72%; width:27cqw; }
+
+/* beats: overlaid on the scene when animated, stacked blocks otherwise */
+.beat{ background:var(--dark); padding:56px var(--pad); display:grid; gap:22px; justify-items:start; }
+.beat img{ width:min(100%,420px); }
+.beat .bl{ font-weight:700; font-size:clamp(34px,7vw,64px); line-height:.95; letter-spacing:-.02em; text-transform:uppercase; }
+.beat .br{ font-weight:500; font-size:clamp(18px,2.4vw,24px); line-height:1.3; max-width:30ch; display:flex; flex-direction:column; gap:14px; }
+.beat .fig{ color:var(--orange); }
+.beat dl{ margin:0; font-family:var(--mono); font-size:13px; letter-spacing:.06em; text-transform:uppercase; width:100%; max-width:360px; }
+.beat dl div{ display:flex; justify-content:space-between; gap:12px; border-top:1px dotted rgba(255,237,215,.45); padding:8px 0; }
+.beat dt{ opacity:.6; } .beat dd{ margin:0; text-align:right; }
+html.anim .beats{ position:absolute; inset:0; container-type:inline-size; pointer-events:none; }
+html.anim .beat{ position:absolute; inset:0; background:none; padding:0; display:block; }
+html.anim .beat > *{ position:absolute; visibility:hidden; }
+html.anim .beat .bl{ font-size:4.6cqw; }
+html.anim .beat .br{ font-size:1.7cqw; max-width:none; gap:1.4cqw; }
+html.anim .beat-a .bl{ right:67%; top:38%; text-align:right; }
+html.anim .beat-a .br{ left:67%; top:38%; width:26cqw; }
+html.anim .beat-b .bl{ left:var(--pad); top:30%; width:31cqw; font-size:4.2cqw; }
+html.anim .beat-b .br{ left:70%; top:30%; width:25cqw; }
+html.anim .beat dl{ font-size:max(11px,.9cqw); max-width:none; }
+html.anim .beat .fig{ font-size:max(10px,.85cqw); }
+
+/* ---------- work carousel ---------- */
+.work{ background:var(--dark); padding:72px 0 64px; }
+.work-head{ padding:0 var(--pad); display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:28px; }
+.work-head h2, .range h2, .about h2, .contact h2{ font-weight:700; text-transform:uppercase; letter-spacing:-.02em; line-height:.95; font-size:clamp(34px,6vw,84px); }
+.work-head .mono{ color:var(--orange); }
+.track{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr)); gap:18px; padding:0 var(--pad); }
+.card{ --c:var(--olive); background:var(--dark-2); display:flex; flex-direction:column; min-width:0; border:1px solid rgba(255,237,215,.14); }
+.card .top{ height:92px; background:var(--c); display:flex; align-items:flex-end; justify-content:space-between; padding:10px 14px; position:relative; overflow:hidden; }
+.card .top::before{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(0deg, rgba(255,237,215,.22) 0 1px, transparent 1px 16px), repeating-linear-gradient(90deg, rgba(255,237,215,.22) 0 1px, transparent 1px 16px); }
+.card .top span{ position:relative; }
+.card .in{ padding:18px 18px 20px; display:flex; flex-direction:column; gap:10px; flex:1; }
+.card h3{ font-weight:700; font-size:30px; line-height:1; text-transform:uppercase; letter-spacing:-.01em; }
+.card .tagline{ font-family:var(--mono); font-size:12.5px; color:var(--orange); }
+.card p{ font-size:15px; line-height:1.45; opacity:.9; }
+.card .tags{ display:flex; flex-wrap:wrap; gap:5px; margin-top:auto; padding-top:6px; }
+.card .tags span{ font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; border:1px solid rgba(255,237,215,.4); padding:2px 7px; }
+.card .links{ display:flex; flex-wrap:wrap; gap:6px 16px; font-weight:600; font-size:14px; }
+.card .links a{ text-decoration:none; border-bottom:1px dotted var(--cream); }
+.card .links a:hover{ color:var(--orange); border-color:var(--orange); }
+.card.wood{ --c:#96643b; } .card.orange{ --c:var(--orange); } .card.grey{ --c:#5a524a; }
+html.anim .work{ height:100vh; padding:0; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
+html.anim .track{ display:flex; flex-wrap:nowrap; width:max-content; will-change:transform; }
+html.anim .card{ width:clamp(320px,29vw,440px); min-height:min(64vh,560px); }
+
+/* ---------- range ---------- */
+.range{ background:var(--dark); padding:80px var(--pad) 90px; display:flex; flex-direction:column; gap:28px; }
+.range .mono.sub{ color:var(--orange); }
+.tbl-wrap{ overflow-x:auto; }
+table{ border-collapse:collapse; width:100%; min-width:980px; font-family:var(--mono); font-size:12.5px; letter-spacing:.04em; text-transform:uppercase; }
+th, td{ text-align:left; vertical-align:top; padding:10px 14px 10px 0; border-top:1px dotted rgba(255,237,215,.45); }
+thead th{ border-top:0; font-family:var(--sans); font-weight:700; font-size:19px; letter-spacing:0; padding-bottom:14px; }
+tbody th{ font-weight:400; opacity:.6; white-space:nowrap; }
+td.off{ opacity:.55; }
+
+/* ---------- about ---------- */
+.about{ position:relative; padding:96px var(--pad); color:var(--cream);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,237,215,.35) 0 1px, transparent 1px 200px),
+    repeating-linear-gradient(90deg, rgba(255,237,215,.35) 0 1px, transparent 1px 200px),
+    repeating-linear-gradient(0deg, rgba(255,237,215,.14) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(255,237,215,.14) 0 1px, transparent 1px 40px),
+    radial-gradient(ellipse at 40% 40%, #52663f, var(--olive) 70%); }
+.about-grid{ display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr); gap:40px 60px; align-items:center; max-width:1200px; margin:0 auto; }
+.about-text{ display:flex; flex-direction:column; gap:18px; }
+.about-text .lead{ font-weight:600; font-size:clamp(22px,2.6vw,32px); line-height:1.2; max-width:24ch; }
+.about-text p{ max-width:52ch; font-weight:500; }
+.photo{ background:var(--cream); padding:12px 12px 40px; transform:rotate(3deg); box-shadow:0 18px 30px rgba(0,0,0,.35); max-width:360px; justify-self:center; position:relative; }
+.photo::before{ content:""; position:absolute; top:-14px; left:50%; width:110px; height:28px; margin-left:-55px; background:rgba(232,89,12,.8); transform:rotate(-4deg); }
+.photo span{ position:absolute; left:0; right:0; bottom:11px; text-align:center; color:var(--dark); font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; }
+@media (max-width:820px){ .about-grid{ grid-template-columns:minmax(0,1fr); } }
+
+/* ---------- contact + footer ---------- */
+.contact{ padding:110px var(--pad); text-align:center; display:flex; flex-direction:column; align-items:center; gap:22px;
+  background:repeating-linear-gradient(93deg, rgba(40,20,5,.10) 0 2px, transparent 2px 12px), linear-gradient(100deg,#8b5a33,#a56f41 42%,#7f512d); }
+.contact h2{ font-size:clamp(48px,11vw,170px); }
+.contact p{ font-weight:500; font-size:19px; max-width:40ch; }
+.btns{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.btn{ text-decoration:none; font-weight:600; font-size:14px; letter-spacing:.06em; text-transform:uppercase; padding:13px 22px; border-radius:999px; border:1.5px solid var(--cream); transition:background .2s, color .2s, transform .2s; }
+.btn:hover{ background:var(--cream); color:var(--dark); transform:translateY(-2px); }
+.btn.primary{ background:var(--orange); border-color:var(--orange); }
+.btn.primary:hover{ background:var(--cream); border-color:var(--cream); }
+footer{ background:var(--dark); padding:26px var(--pad) 34px; display:flex; flex-wrap:wrap; gap:12px 26px; align-items:center; justify-content:space-between; opacity:.9; }
+footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; }
+footer a{ text-decoration:none; } footer a:hover{ color:var(--orange); }
+
+/* ---------- phone: hero becomes a taller, simpler scene ---------- */
+@media (max-width:820px){
+  .scene{ aspect-ratio:4/5; }
+  .pencil, .rule, .b-card, .nut{ display:none; }
+  .mat{ left:-6%; top:30%; width:118%; height:50%; }
+  .b-tag{ top:11%; font-size:3.4cqw; }
+  .b-title{ top:15%; font-size:19cqw; left:4%; }
+  .partwrap{ left:4%; top:38%; width:94cqw; }
+  .b-para{ left:var(--pad); right:var(--pad); width:auto; top:81%; font-size:4cqw; }
+}
+:focus-visible{ outline:2px solid var(--orange); outline-offset:3px; }
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <svg viewBox="0 0 200 200" fill="none">
+    <g stroke="#ffedd7" stroke-opacity=".3" stroke-width=".5" stroke-dasharray="2 2"><path d="M0 40 H200 M0 160 H200 M40 0 V200 M160 0 V200 M0 100 H200 M100 0 V200"/></g>
+    <circle class="l-c" cx="100" cy="100" r="60" stroke="#ffedd7" stroke-width="1" stroke-dasharray="377" stroke-dashoffset="377" transform="rotate(-90 100 100)"/>
+    <circle class="l-c" cx="100" cy="100" r="30" stroke="#ffedd7" stroke-width="1" stroke-dasharray="189" stroke-dashoffset="189" transform="rotate(-90 100 100)"/>
+    <g class="l-h" stroke="#e8590c" stroke-width="1.2" fill="#e8590c">
+      <g><path d="M67 40 H133"/><circle cx="67" cy="40" r="2"/><circle cx="133" cy="40" r="2"/><rect x="97.5" y="37.5" width="5" height="5"/></g>
+      <g><path d="M67 160 H133"/><circle cx="67" cy="160" r="2"/><circle cx="133" cy="160" r="2"/><rect x="97.5" y="157.5" width="5" height="5"/></g>
+      <g><path d="M40 67 V133"/><circle cx="40" cy="67" r="2"/><circle cx="40" cy="133" r="2"/><rect x="37.5" y="97.5" width="5" height="5"/></g>
+      <g><path d="M160 67 V133"/><circle cx="160" cy="67" r="2"/><circle cx="160" cy="133" r="2"/><rect x="157.5" y="97.5" width="5" height="5"/></g>
+    </g>
+  </svg>
+</div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Marcus Lab, top of page"><span class="mk" data-mark="#ffedd7,#e8590c"></span><span class="t">Marcus Lab</span></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a>
+    <a class="opt" href="https://github.com/marco308">GitHub</a><a class="opt" href="https://www.printables.com/@MarcoPolo_2354790">Printables</a>
+  </nav>
+</header>
+
+<main id="top">
+<section class="stage" id="stage">
+  <div class="scene">
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <div class="mat"></div>
+    <div class="rule"></div>
+    <div class="pencil"></div>
+    <svg class="nut" style="left:30.5%;top:72%" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,1 21.5,6.5 21.5,17.5 12,23 2.5,17.5 2.5,6.5" fill="#b9bfc4"/><circle cx="12" cy="12" r="5.2" fill="#3a2a1c"/><circle cx="12" cy="12" r="8.6" fill="none" stroke="#e7eaec" stroke-width=".8"/></svg>
+    <svg class="nut" style="left:34.5%;top:79%;transform:rotate(20deg)" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,1 21.5,6.5 21.5,17.5 12,23 2.5,17.5 2.5,6.5" fill="#aab1b7"/><circle cx="12" cy="12" r="5.2" fill="#2f3c2a"/><circle cx="12" cy="12" r="8.6" fill="none" stroke="#e7eaec" stroke-width=".8"/></svg>
+    <div class="dim"></div>
+    <div class="b-tag">APPS, SERVERS &amp; HARDWARE.</div>
+    <h1 class="b-title" aria-label="Marcus Lab">Marcus<br>Lab</h1>
+    <div class="partwrap">
+      <img class="p-render" src="/projects/sage-barista-grind-by-weight/img/ring-render.png" width="1899" height="1075" alt="Render of the 3D-printed dosing ring fitted to a portafilter">
+      <img class="p-cut anim-only" src="/projects/sage-barista-grind-by-weight/img/ring-cutaway.png" width="1763" height="1692" alt="" aria-hidden="true">
+      <img class="p-bay anim-only" src="/projects/sage-barista-grind-by-weight/img/ring-bay.png" width="1723" height="1529" alt="" aria-hidden="true">
+    </div>
+    <div class="cline" aria-hidden="true"></div>
+    <div class="labels" aria-hidden="true"></div>
+    <p class="b-para">I'm Marcus. I make Swift apps for iPhone and Mac, small servers that run in my homelab, and build logs for when the coffee machine needs a Zigbee relay.</p>
+    <div class="b-card"><b>Made by Marcus, nights and weekends.</b><i></i><span>I use everything<br>here myself.</span></div>
+    <div class="b-scroll" aria-hidden="true">◦ SCROLL TO CONTINUE</div>
+  </div>
+
+  <div class="beats">
+    <div class="beat beat-x anim-only">
+      <h2 class="bl">Taken<br>apart.</h2>
+      <div class="br"><span>Photos, wiring diagrams and every mistake along the way.</span><span class="fig mono">Fig. 1 · every part, straight from the CAD</span></div>
+    </div>
+    <div class="beat beat-a">
+      <h2 class="bl">Section<br>A–A</h2>
+      <img class="static-only" src="/projects/sage-barista-grind-by-weight/img/ring-cutaway.png" width="1763" height="1692" loading="lazy" alt="Cutaway render of the dosing ring">
+      <div class="br"><span>A load cell in a 3D-printed dosing ring, so it grinds by weight instead of time.</span><span class="fig mono">Fig. 2 · zigbrew, part two · do not scale</span></div>
+    </div>
+    <div class="beat beat-b">
+      <h2 class="bl">Grinds by weight, not time.</h2>
+      <img class="static-only" src="/projects/sage-barista-grind-by-weight/img/ring-bay.png" width="1723" height="1529" loading="lazy" alt="Render of the electronics bay beside the dosing ring">
+      <div class="br">
+        <span>How my coffee machine joined the smart home.</span>
+        <dl>
+          <div><dt>Zigbee relays</dt><dd>2</dd></div>
+          <div><dt>Load cells</dt><dd>1</dd></div>
+          <div><dt>Build logs</dt><dd>2</dd></div>
+          <div><dt>Warms up</dt><dd>When I get in the shower</dd></div>
+          <div><dt>Mistakes</dt><dd>All included</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="work" id="work">
+  <div class="work-head"><h2 data-split>Things I've made</h2><span class="mono">8 models<span class="anim-only" style="display:inline"> · scroll →</span></span></div>
+  <div class="track" id="track">
+    <article class="card orange"><div class="top"><span class="mono">Self-hosted</span><span class="mono">01</span></div><div class="in">
+      <h3>YAMP</h3><span class="tagline">yet another meal planner. fortunately, this one is good.</span>
+      <p>A self-hosted recipe library, meal planner and shopping list. There's no AI inside; it has an API and an MCP server instead, so the assistant you already use can drive it. Paste a recipe link, ask for five dinners, get a list sorted by aisle.</p>
+      <div class="tags"><span>FastAPI</span><span>MCP</span><span>SwiftUI</span><span>AGPL</span></div>
+      <div class="links"><a href="https://marco308.github.io/meals/">Website →</a><a href="https://github.com/marco308/meals">GitHub →</a></div></div></article>
+    <article class="card"><div class="top"><span class="mono">Self-hosted · beta</span><span class="mono">02</span></div><div class="in">
+      <h3>Podcast Manager</h3>
+      <p>Spotify puts every podcast you follow into one feed. This splits them into playlists you define, like news for the commute or the next episode of a serial, and rebuilds them on Spotify every morning. Self-hosted, with an iOS app. Free for non-commercial use.</p>
+      <div class="tags"><span>Spotify</span><span>FastAPI</span><span>SwiftUI</span></div>
+      <div class="links"><a href="https://marco308.github.io/podcast-manager/">Website →</a><a href="https://github.com/marco308/podcast-manager">GitHub →</a></div></div></article>
+    <article class="card wood"><div class="top"><span class="mono">Builds</span><span class="mono">03</span></div><div class="in">
+      <h3>zigbrew</h3><span class="tagline">a smart Sage Barista Express, in two build logs.</span>
+      <p>Part one: two Zigbee relays soldered across the power and grinder switches, so it warms up when I get in the shower and grinds when I walk into the kitchen. Part two: a load cell in a 3D-printed dosing ring, so it grinds by weight instead of time. Photos, wiring diagrams and every mistake along the way.</p>
+      <div class="tags"><span>Zigbee</span><span>ESP32-C6</span><span>3D printed</span><span>Home Assistant</span></div>
+      <div class="links"><a href="/projects/sage-barista-zigbee/">Part one: relays →</a><a href="/projects/sage-barista-grind-by-weight/">Part two: grind by weight →</a></div></div></article>
+    <article class="card orange"><div class="top"><span class="mono">Builds</span><span class="mono">04</span></div><div class="in">
+      <h3>Pan lid generator</h3>
+      <p>Seven glass lids lived in a heap in the pan cupboard and clattered every time the door shut. Now six hang on the inside of the door. The generator does it for any door: enter your door, printer bed and lids, and it arranges them and renders every STL in the browser, plus a fitting sheet.</p>
+      <div class="tags"><span>3D printed</span><span>PETG</span><span>OpenSCAD</span><span>WebAssembly</span></div>
+      <div class="links"><a href="https://lids.marcuslab.uk/">Generator →</a><a href="https://www.printables.com/model/1893301-pan-lid-rack-for-the-inside-of-a-kitchen-cupboard">Printables →</a></div></div></article>
+    <article class="card"><div class="top"><span class="mono">Apps</span><span class="mono">05</span></div><div class="in">
+      <h3>mDone</h3>
+      <p>An iPhone and Mac app for Vikunja, the self-hosted to-do server. Smart lists, widgets, a focus timer and offline sync. Open source (MIT).</p>
+      <div class="tags"><span>iOS · macOS</span><span>Swift</span><span>OSS</span></div>
+      <div class="links"><a href="https://apps.apple.com/app/id6760613430">App Store →</a><a href="https://marco308.github.io/mdone/">Website →</a><a href="https://github.com/marco308/mdone">GitHub →</a></div></div></article>
+    <article class="card wood"><div class="top"><span class="mono">Apps · live</span><span class="mono">06</span></div><div class="in">
+      <h3>ChukkaTimer</h3>
+      <p>A polo timer. One tap starts a chukka with warning bells. Game mode adds teams, handicaps and the score, and spectators can follow along in a browser.</p>
+      <div class="tags"><span>iPhone</span><span>Swift</span></div>
+      <div class="links"><a href="https://apps.apple.com/app/id6740096681">App Store →</a><a href="https://marco308.github.io/chukkatimer-site/">Website →</a></div></div></article>
+    <article class="card orange"><div class="top"><span class="mono">Odds and ends</span><span class="mono">07</span></div><div class="in">
+      <h3>PMaaS</h3>
+      <p>Pub Meeting as a Service. An API that generates legitimate-sounding business meeting names. Pop a "Quarterly Pint Review" in your calendar and nobody questions where you've gone. Tested, MIT, faintly ridiculous.</p>
+      <div class="tags"><span>Python API</span><span>For fun</span></div>
+      <div class="links"><a href="https://pmaas.marcuslab.uk/docs">API docs →</a><a href="https://github.com/marco308/PMaaS">GitHub →</a></div></div></article>
+    <article class="card grey"><div class="top"><span class="mono">Odds and ends · retired</span><span class="mono">08</span></div><div class="in">
+      <h3>HA TickTick</h3>
+      <p>A Home Assistant integration that pulls your TickTick projects and tasks into HA and fires events you can automate on. I've since moved to Vikunja, so it isn't actively maintained.</p>
+      <div class="tags"><span>Home Assistant</span><span>Python</span></div>
+      <div class="links"><a href="https://github.com/marco308/HA_ticktick">GitHub →</a></div></div></article>
+  </div>
+</section>
+
+<section class="range" id="range">
+  <span class="mono sub">The range</span>
+  <h2 data-split>Choose your Marcus Lab</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th scope="col"><span class="mono">Model</span></th><th scope="col">YAMP</th><th scope="col">Podcast Manager</th><th scope="col">zigbrew</th><th scope="col">Pan lids</th><th scope="col">mDone</th><th scope="col">ChukkaTimer</th><th scope="col">PMaaS</th><th scope="col">HA TickTick</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Type</th><td>Self-hosted</td><td>Self-hosted</td><td>Build log, 2 parts</td><td>Generator</td><td>App</td><td>App</td><td>API</td><td>Integration</td></tr>
+      <tr><th scope="row">Made of</th><td>FastAPI, MCP, SwiftUI</td><td>Spotify, FastAPI, SwiftUI</td><td>Zigbee, ESP32-C6</td><td>PETG, OpenSCAD</td><td>Swift</td><td>Swift</td><td>Python</td><td>Python</td></tr>
+      <tr><th scope="row">Runs on</th><td>Your server, iPhone</td><td>Your server, iOS</td><td>Home Assistant</td><td>The browser</td><td>iPhone, Mac</td><td>iPhone</td><td>Your calendar</td><td>Home Assistant</td></tr>
+      <tr><th scope="row">Licence</th><td>AGPL</td><td>Free, non-commercial</td><td class="off">—</td><td class="off">—</td><td>MIT</td><td class="off">—</td><td>MIT</td><td class="off">—</td></tr>
+      <tr><th scope="row">Notable</th><td>No AI inside</td><td>Rebuilt every morning</td><td>Every mistake included</td><td>Works for any door</td><td>Offline sync</td><td>Warning bells</td><td>Faintly ridiculous</td><td class="off">No longer maintained</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="about" id="about">
+  <div class="about-grid">
+    <div class="about-text">
+      <span class="mono">About</span>
+      <h2 data-split>The person behind it.</h2>
+      <p class="lead">I build small software I want to use myself, and lately some hardware too.</p>
+      <p>The apps are Swift, because I like software that feels at home on the iPhone and doesn't nag. The servers are Python, running on a homelab that's bigger than one house needs.</p>
+      <p>When I'm not at a keyboard I'm usually on a polo pony, which is where ChukkaTimer came from.</p>
+    </div>
+    <figure class="photo" style="margin:0"><img src="/avatar.jpg" width="400" height="300" loading="lazy" alt="Marcus in a cap by the sea"><span>FIG. 3 · THE OPERATOR</span></figure>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <span class="mono">Get in touch</span>
+  <h2 data-split>Say hello.</h2>
+  <p>Email hello@marcuslab.uk, or open an issue on GitHub if something's broken.</p>
+  <div class="btns">
+    <a class="btn primary" href="mailto:hello@marcuslab.uk">Email me</a>
+    <a class="btn" href="https://github.com/marco308">GitHub</a>
+    <a class="btn" href="https://www.printables.com/@MarcoPolo_2354790">Printables</a>
+    <a class="btn" href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span class="mono">© 2026 Marcus · marcuslab.uk · do not scale</span>
+  <div class="fl mono">
+    <a href="#work">work</a><a href="https://github.com/marco308">github</a><a href="https://www.printables.com/@MarcoPolo_2354790">printables</a>
+    <a href="https://marco308.github.io/meals/">YAMP</a><a href="https://apps.apple.com/app/id6760613430">mDone</a><a href="https://apps.apple.com/app/id6740096681">ChukkaTimer</a><a href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
+  </div>
+</footer>
+
+<script src="/vendor/gsap/gsap.min.js"></script>
+<script src="/vendor/gsap/ScrollTrigger.min.js"></script>
+<script src="/vendor/gsap/SplitText.min.js"></script>
+<script src="/vendor/lenis/lenis.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  /* the Section A–A mark */
+  const BIGM = "12,16 21.5,16 32,31 42.5,16 52,16 52,48 43.5,48 43.5,30.5 32,46.5 20.5,30.5 20.5,48 12,48";
+  let n = 0;
+  document.querySelectorAll('[data-mark]').forEach(el => {
+    const [fg, line] = el.dataset.mark.split(','), id = 'mk' + (++n);
+    el.innerHTML = `<svg viewBox="6 6 52 52" style="display:block;width:100%;height:auto" aria-hidden="true">
+      <defs><clipPath id="${id}l"><rect x="0" y="0" width="32" height="64"/></clipPath><clipPath id="${id}r"><rect x="32" y="0" width="32" height="64"/></clipPath>
+      <pattern id="${id}h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45 32 32)"><path d="M0 0 V6" stroke="${fg}" stroke-width="2.3"/></pattern></defs>
+      <polygon points="${BIGM}" fill="${fg}" clip-path="url(#${id}l)"/><polygon points="${BIGM}" fill="url(#${id}h)" clip-path="url(#${id}r)"/>
+      <polygon points="${BIGM}" fill="none" stroke="${fg}" stroke-width="2.6"/>
+      <path d="M32 8 V56" stroke="${line}" stroke-width="2" stroke-dasharray="9 2.5 2 2.5" fill="none"/></svg>`;
+  });
+
+  const root = document.documentElement;
+  const anim = root.classList.contains('anim');
+  if (!window.gsap || !window.ScrollTrigger || !window.SplitText) { root.classList.remove('anim'); return; }
+  if (!anim) return;   // reduced motion or phone: the stacked page is already complete
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  gsap.defaults({ ease: 'power3.out' });
+
+  let lenis = null;
+  if (window.Lenis) {
+    lenis = new Lenis({ autoRaf: false, anchors: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* ---------- hero: one pinned, scrubbed story ---------- */
+  const title = document.querySelector('.b-title');
+  const split = SplitText.create(title, { type: 'chars', charsClass: 'ch' });
+  gsap.set('.partwrap', { xPercent: -50, yPercent: -50 });
+
+  const S = window.BENCH.S;
+
+  /* fallback: the still renders cross-fading (no WebGL, or the models didn't load) */
+  function heroImages() {
+  const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: '#stage', start: 'top top', end: '+=380%', pin: true, scrub: 0.6, anticipatePin: 1 }
+    });
+    tl.to(split.chars, { yPercent: -70, opacity: 0, filter: 'blur(14px)', stagger: .04, duration: .55 }, 0)
+      .to(['.b-tag', '.b-para', '.b-card', '.b-scroll'], { opacity: 0, duration: .35 }, 0)
+      .to('.pencil', { xPercent: -60, opacity: 0, duration: .8 }, 0)
+      .to('.rule', { xPercent: 40, opacity: 0, duration: .8 }, 0)
+      .to('.nut', { opacity: 0, duration: .5 }, 0)
+      .to('.mat', { scale: 1.18, duration: 1 }, 0)
+      .to('.dim', { opacity: 1, duration: .85 }, .15)
+      .to('.partwrap', { left: '50%', scale: .9, duration: 1, ease: 'power1.inOut' }, 0)
+      // Section A–A
+      .to('.p-render', { opacity: 0, duration: .3 }, 1)
+      .to('.p-cut', { opacity: 1, duration: .3 }, 1)
+      .to('.cline', { scaleY: 1, duration: .55 }, 1.05)
+      .fromTo('.beat-a .bl', { autoAlpha: 0, x: -50 }, { autoAlpha: 1, x: 0, duration: .35 }, 1.2)
+      .fromTo('.beat-a .br', { autoAlpha: 0, x: 50 }, { autoAlpha: 1, x: 0, duration: .35 }, 1.28)
+      .to(['.beat-a .bl', '.beat-a .br'], { autoAlpha: 0, duration: .25 }, 2.05)
+      .to('.cline', { opacity: 0, duration: .25 }, 2.05)
+      // grinds by weight
+      .to('.p-cut', { opacity: 0, duration: .3 }, 2.15)
+      .to('.p-bay', { opacity: 1, duration: .3 }, 2.15)
+      .fromTo('.beat-b .bl', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: .35 }, 2.35)
+      .fromTo('.beat-b .br', { autoAlpha: 0 }, { autoAlpha: 1, duration: .2 }, 2.45)
+      .from('.beat-b .br dl div', { opacity: 0, y: 14, stagger: .06, duration: .25 }, 2.5)
+      .to({}, { duration: .45 });
+  }
+
+  /* the real thing: one pinned story told by moving a live 3D model */
+  function hero3D() {
+    const io = 'power2.inOut', TAU = Math.PI * 2;
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { trigger: '#stage', start: 'top top', end: '+=640%', pin: true, scrub: 0.9, anticipatePin: 1 }
+    });
+    tl.to(split.chars, { yPercent: -70, opacity: 0, filter: 'blur(14px)', stagger: .04, duration: .55 }, 0)
+      .to(['.b-tag', '.b-para', '.b-card', '.b-scroll'], { opacity: 0, duration: .35 }, 0)
+      // off the desk: lights down, the part lifts and turns
+      .to(S, { lift: 1, duration: 1, ease: io }, 0)
+      .to(S, { cam: 1, duration: 1, ease: 'power1.inOut' }, 0)
+      .to(S, { dark: 1, duration: .8, ease: 'power1.inOut' }, .1)
+      .to(S, { rot: 2.3, duration: 1 }, 0)
+      // taken apart
+      .to(S, { explode: 1, duration: .8, ease: io }, 1)
+      .to(S, { cam: 2, duration: .8, ease: 'power1.inOut' }, 1)
+      .to(S, { rot: 3.5, duration: 1.3 }, 1)
+      .fromTo('.beat-x .bl', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: .3 }, 1.25)
+      .fromTo('.beat-x .br', { autoAlpha: 0 }, { autoAlpha: 1, duration: .3 }, 1.4)
+      .to(S, { labels: 1, duration: .25 }, 1.6)
+      .to(S, { labels: 0, duration: .2 }, 2.25)
+      .to(['.beat-x .bl', '.beat-x .br'], { autoAlpha: 0, duration: .2 }, 2.25)
+      // back together, turned to face us, then cut down the centre line
+      .to(S, { explode: 0, duration: .7, ease: io }, 2.45)
+      .to(S, { rot: TAU - .5, duration: 1 }, 2.45)
+      .to(S, { cam: 3, duration: .9, ease: 'power1.inOut' }, 2.45)
+      .to(S, { cut: 1, duration: .9, ease: 'power1.inOut' }, 3.3)
+      .fromTo('.beat-a .bl', { autoAlpha: 0, x: -50 }, { autoAlpha: 1, x: 0, duration: .35 }, 3.55)
+      .fromTo('.beat-a .br', { autoAlpha: 0, x: 50 }, { autoAlpha: 1, x: 0, duration: .35 }, 3.63)
+      .to(['.beat-a .bl', '.beat-a .br'], { autoAlpha: 0, duration: .25 }, 4.5)
+      // in close on the load cell
+      .to(S, { focus: 1, duration: .6 }, 4.55)
+      .to(S, { cam: 4, duration: .8, ease: 'power1.inOut' }, 4.55)
+      .to(S, { rot: TAU - .25, duration: .8 }, 4.55)
+      .fromTo('.beat-b .bl', { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: .35 }, 4.85)
+      .fromTo('.beat-b .br', { autoAlpha: 0 }, { autoAlpha: 1, duration: .2 }, 4.95)
+      .from('.beat-b .br dl div', { opacity: 0, y: 14, stagger: .06, duration: .25 }, 5)
+      .to({}, { duration: .6 });
+  }
+
+  /* ---------- loader: draws while the models load, then the hero arrives ---------- */
+  const webgl = (() => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } })();
+  const decided = new Promise(res => {
+    if (!webgl) return res(false);
+    window.BENCH.ready = () => res(true);
+    window.BENCH.fail = () => res(false);
+    setTimeout(() => res(false), 12000);
+    const m = document.createElement('script'); m.type = 'module'; m.src = '/archive/bench3d.js'; m.onerror = () => res(false);
+    document.body.appendChild(m);
+  });
+  if (lenis) lenis.stop();
+  const draw = gsap.timeline()
+    .to('#loader .l-c', { strokeDashoffset: 0, duration: .9, stagger: .12, ease: 'power2.inOut' })
+    .from('#loader .l-h > g', { opacity: 0, scale: .6, transformOrigin: '50% 50%', stagger: .07, duration: .3 }, .35);
+  Promise.all([decided, new Promise(r => draw.eventCallback('onComplete', r))]).then(([gl]) => {
+    if (gl) { root.classList.add('gl'); hero3D(); } else heroImages();
+    ScrollTrigger.sort(); ScrollTrigger.refresh();   // the hero pin was created after the sections below it
+    const intro = gsap.timeline({ onComplete: () => { if (lenis) lenis.start(); } });
+    intro
+      .to('#loader svg', { scale: 1.6, opacity: 0, duration: .45, ease: 'power2.in' }, .1)
+      .to('#loader', { autoAlpha: 0, duration: .35 }, '<.2')
+      .from(title, { yPercent: 18, opacity: 0, duration: .7 }, '<');
+    if (gl) intro.from(S, { rot: S.rot - 1.5, duration: 1.6, ease: 'power3.out' }, '<');
+    else intro.from('.partwrap', { y: -60, opacity: 0, rotation: -4, duration: .8 }, '<.05');
+    intro.from(['.b-tag', '.b-para', '.b-card', '.nav'], { y: 26, stagger: .07, duration: .6 }, '<.15');   // the loader hides them until now, so only move them: opacity belongs to the scroll timeline
+  });
+
+  /* ---------- work: sideways carousel driven by scroll ---------- */
+  const track = document.getElementById('track');
+  const dist = () => Math.max(0, track.scrollWidth - window.innerWidth);
+  gsap.to(track, {
+    x: () => -dist(), ease: 'none',
+    scrollTrigger: { trigger: '#work', start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 0.5, invalidateOnRefresh: true, anticipatePin: 1 }
+  });
+
+  /* ---------- headings and rows ---------- */
+  document.querySelectorAll('[data-split]').forEach(h => {
+    const s = SplitText.create(h, { type: 'chars,words' });
+    gsap.from(s.chars, { yPercent: 60, opacity: 0, filter: 'blur(8px)', stagger: .025, duration: .6,
+      scrollTrigger: { trigger: h, start: 'top 88%', once: true } });
+  });
+  gsap.from('.range tbody tr', { opacity: 0, y: 18, stagger: .08, duration: .5, scrollTrigger: { trigger: '.range table', start: 'top 80%', once: true } });
+  gsap.from('.about-text > *:not(h2)', { opacity: 0, y: 22, stagger: .08, duration: .6, scrollTrigger: { trigger: '.about', start: 'top 65%', once: true } });
+  gsap.from('.photo', { opacity: 0, y: 40, rotation: -6, duration: .8, scrollTrigger: { trigger: '.about', start: 'top 60%', once: true } });
+  gsap.from('.btns .btn', { opacity: 0, y: 18, stagger: .07, duration: .45, scrollTrigger: { trigger: '.btns', start: 'top 92%', once: true } });
+
+  window.addEventListener('load', () => ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
