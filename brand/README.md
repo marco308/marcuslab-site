@@ -11,7 +11,7 @@ Open [`guide.html`](guide.html) through the local server (`http://localhost:8000
 | `tokens/marcuslab.tokens.json` | **The source of truth.** Every colour, size, duration and the logo's geometry, in the W3C Design Tokens format. |
 | `tokens/tokens.css` | The same values as CSS custom properties (`--ml-…`). Generated. |
 | `tokens/contrast.md` | WCAG contrast for every colour pairing that matters. Generated. |
-| `logo/svg/` | The mark, icons and lockups as SVG. Generated. |
+| `logo/svg/` | The mark, icons and lockups as SVG, and project marks (`zigbrew-*`). Generated. |
 | `logo/png/` | Favicons, app icons, the social card and lockups as PNG. Generated. |
 | `guide.html` | The visual guide. |
 | `tools/build.py` | Regenerates everything above from the tokens. |
@@ -64,6 +64,25 @@ The name in the lockups is live text in Outfit 700. Use the PNG wherever the fon
 ### Colourways
 
 Olive tile with a cream mark is the default icon. Dark tile and cream tile are alternatives for when olive clashes with its surroundings.
+
+### Project marks
+
+A project can have its own mark. It is a different shape drawn by the same rules, so it reads as a sibling of Section A–A: the same 64-unit square, cut down the centre line, left half solid, right half hatched at 45°, the same edge weight and the orange chain line. The shape is something real from the project. Geometry lives in the `project-marks` group of the tokens file and `tools/build.py` draws the files.
+
+**zigbrew** is the dosing ring from part two, seen from above: a ring with three lugs, one at the top.
+
+| Use | File |
+|---|---|
+| On dark, olive or wood | `zigbrew-mark-cream.svg` |
+| On cream or white | `zigbrew-mark-ink.svg` |
+| One colour only | `zigbrew-mark-mono-cream.svg`, `zigbrew-mark-mono-ink.svg` |
+| 16 to 23 px | `zigbrew-mark-micro-*.svg`, `zigbrew-icon-micro-olive.svg` |
+| Favicon or icon for the project's pages | `zigbrew-icon-olive.svg` |
+
+- The Marcus Lab mark's rules apply: 24 px smallest for the full mark, 16 px for the micro one, no rotating, stretching, recolouring, shadows or orange grounds.
+- A project mark never replaces the Marcus Lab mark in the nav. It sits with the project's own name: a breadcrumb, a page's favicon, a card.
+- The ring's lugs reach further out than the M does, so its file has a slightly larger canvas. At the same pixel size it reads a little smaller than the M; give it about 8% more when the two sit side by side.
+- There are no zigbrew lockups yet.
 
 ## Colour
 
@@ -185,7 +204,8 @@ These were tried and turned down while this language was being worked out.
 
 - **Fonts** need self-hosting before launch.
 - **three.js** is loaded from a CDN in the prototypes and needs vendoring.
-- **The portafilter model** is a published Breville model; check its licence before it goes public.
+- **The portafilter model** in the zigbrew scenes is a published Breville model (espressoshock's BES870 portafilter on GrabCAD). Marcus checked its licence on 12 November 2026 and it is fine to use; keep the credit where the model appears. This one is closed.
+- **The zigbrew mark** has no lockups, and `pf-basket.stl` in `prototypes/models/` is a second copy of the whole portafilter head rather than the basket alone.
 - **Lockup SVGs** contain live text. Outlined versions need the Outfit font file and a tool to convert it.
 - **A light theme** has not been designed.
 - **The live site** (`index.html`, the favicon, the social image) still uses the old terminal look.

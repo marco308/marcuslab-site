@@ -135,5 +135,20 @@
     "line-dash":   { "$type": "string", "$value": "9 2.5 2 2.5" },
     "clear-space": { "$type": "number", "$value": 9.5, "$description": "Units of empty space on every side: the width of one leg of the M." },
     "min-size":    { "$type": "dimension", "$value": "24px", "$description": "Below this use the micro mark." }
+  },
+
+  "project-marks": {
+    "$description": "Marks for individual projects. Each is its own shape, drawn by the logo's rules (same square, centre line, hatching and edge) so it reads as a sibling of the Section A–A mark.",
+    "zigbrew": {
+      "$description": "The zigbrew dosing ring seen from above: a ring with three lugs 120 degrees apart, one at the top. Radii are in units of the 64-unit square, about its centre.",
+      "outer":      { "$type": "number", "$value": 18.5 },
+      "inner":      { "$type": "number", "$value": 11.5 },
+      "lug":        { "$type": "number", "$value": 23.5, "$description": "Radius the lugs reach." },
+      "lug-half":   { "$type": "number", "$value": 12, "$description": "Half the angle each lug spans, in degrees." },
+      "micro-outer":    { "$type": "number", "$value": 19, "$description": "The small-size version is heavier so it survives 16 px." },
+      "micro-inner":    { "$type": "number", "$value": 9.5 },
+      "micro-lug":      { "$type": "number", "$value": 24.5 },
+      "micro-lug-half": { "$type": "number", "$value": 14 }
+    }
   }
 }
