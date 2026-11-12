@@ -1,6 +1,6 @@
 # Marcus Lab design language
 
-Version 0.1, November 2026. Status: draft, taken from the `prototypes/` work. Nothing on the live site uses it yet.
+Version 0.1, November 2026. Status: in use. marcuslab.uk has run on it since 12 November 2026: the homepage, both zigbrew build logs and the 404 page.
 
 Open [`guide.html`](guide.html) through the local server (`http://localhost:8000/brand/guide.html`) to see all of this drawn.
 
@@ -135,7 +135,7 @@ See [`tokens/contrast.md`](tokens/contrast.md). The pairings to avoid: cream tex
 
 ## Components
 
-Built in `prototypes/landing.html`; drawn in the guide.
+Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The build-log versions are in `assets/zigbrew/` and `projects/`. All are drawn in the guide.
 
 - **Nav:** the mark and name on the left, links in Outfit 600 caps on the right, over a fade from the ground colour. Solid on phones.
 - **Button:** a pill with a 1.5 px cream outline, Outfit 600 caps. The primary is filled orange with ink text.
@@ -144,8 +144,8 @@ Built in `prototypes/landing.html`; drawn in the guide.
 - **Balloon tag:** the same number floating over an object. On hover it fills with the kind's colour and the name slides out.
 - **Lamp:** a small glowing dot with its word.
 - **Frosted card:** ink at 50% with a blur, for text that has to sit over the bench.
-- **Figure:** a photo on cream with a strip of orange tape, captioned in mono as `FIG. 3 · THE OPERATOR`.
-- **Loader:** the mark draws itself on the mat, then the screen parts along the centre line.
+- **Figure:** a photo on cream with a strip of orange tape. In a build log, figures are numbered in mono (`FIG. 12`) with a sentence after the number. A lone photo has no caption.
+- **Loader:** the mark draws itself on the mat, then the screen parts along the centre line. It plays once per visit, not on every page.
 
 ## Motion
 
@@ -170,10 +170,10 @@ Built in `prototypes/landing.html`; drawn in the guide.
 
 ## Voice
 
-- First person, dry, specific. "Fortunately, this one is good." "Faintly ridiculous."
+- First person, dry, specific. "Fortunately, this one is good." Make the joke once and don't explain it.
 - British English and metric units.
 - **Labels** are short capitals in mono, as on a machine or a drawing: `PARTS LIST`, `LIVE`, `RETIRED`.
-- **Drawing notes** are reused where they happen to be true: `DO NOT SCALE` in a footer, `IF IN DOUBT, ASK` for contact, `FIG. 2` for captions.
+- **Drawing notes** are reused where they happen to be true: `DO NOT SCALE` in a footer, `IF IN DOUBT, ASK` for contact, `FIG. 2` for captions. Number figures only when there is a real sequence of them.
 - Never invent facts, numbers or steps. Copy comes from Marcus.
 - No exclamation marks, no marketing adjectives, no emoji as decoration.
 
@@ -202,7 +202,6 @@ These were tried and turned down while this language was being worked out.
 ## Open questions
 
 - **The portafilter model** in the zigbrew scenes is a published Breville model (espressoshock's BES870 portafilter on GrabCAD). Marcus checked its licence on 12 November 2026 and it is fine to use; keep the credit where the model appears. This one is closed.
-- **The zigbrew mark** has no lockups, and `pf-basket.stl` in `prototypes/models/` is a second copy of the whole portafilter head rather than the basket alone.
+- **The zigbrew mark** has no lockups, and `pf-basket.stl` in `assets/bench/models/` is a second copy of the whole portafilter head rather than the basket alone.
 - **Lockup SVGs** contain live text. Outlined versions need the Outfit font file and a tool to convert it.
 - **A light theme** has not been designed.
-- **The live site** (`index.html`, the favicon, the social image) still uses the old terminal look.
