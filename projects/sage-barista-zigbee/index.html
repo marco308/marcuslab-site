@@ -21,7 +21,7 @@
 <script>
 /* "anim" turns on the loader and everything that is drawn or moved in. Without it (no JS, or reduced motion)
    this is a plain article with every word, photo and diagram visible. */
-(function(){ var d = document.documentElement; d.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim'); })();
+(function(){ var d = document.documentElement; d.classList.add('js'); try{ if (sessionStorage.getItem('ml-seen')) d.classList.add('seen'); }catch(e){} if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim'); })();
 </script>
 <link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
 <link rel="stylesheet" href="/assets/zigbrew/zigbrew.css">

@@ -22,7 +22,7 @@
 /* "anim" turns on the loader, the opening scene and everything that is drawn or moved in. "gl" is added once the
    dosing ring's parts have loaded. Without them (no JS, reduced motion, no WebGL, or the models failing to load)
    this is a plain article with every word, photo and diagram visible. */
-(function(){ var d = document.documentElement; d.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim'); })();
+(function(){ var d = document.documentElement; d.classList.add('js'); try{ if (sessionStorage.getItem('ml-seen')) d.classList.add('seen'); }catch(e){} if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim'); })();
 /* Scroll drives these numbers; ring3d.js reads them every frame. */
 window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, labels:0 }, ready: function(){}, fail: function(){}, progress: function(){} };
 </script>

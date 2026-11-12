@@ -62,6 +62,10 @@
 
   /* opts.caption: the line under the scale. Returns a promise that resolves once the two halves have parted. */
   ZB.start = (opts = {}) => new Promise(done => {
+    if (document.documentElement.classList.contains('seen')) {      // not the first page of this visit: no loader, straight in
+      Promise.resolve(opts.wait).then(v => { if (opts.before) opts.before(v); if (ZB.lenis) ZB.lenis.start(); done(v); });
+      return;
+    }
     document.querySelectorAll('#loader .lc').forEach(lc => { lc.innerHTML = loaderSvg(opts.caption || ''); });
     document.querySelectorAll('.ld-hatch').forEach(h => { for (let k = -30; k <= 30; k += 4.4) h.insertAdjacentHTML('beforeend', `<path class="dr" d="M${k} 64 L${k + 64} 0"/>`); });
     document.querySelectorAll('#loader .dr').forEach(el => { const n = el.getTotalLength(); el.style.strokeDasharray = n; el.style.strokeDashoffset = n; el._len = n; });
@@ -91,7 +95,7 @@
     // opts.wait: something that must be ready before the screen opens (the 3D parts). opts.before runs while still covered.
     draw.eventCallback('onComplete', () => Promise.resolve(opts.wait).then(v => {
       if (opts.before) opts.before(v);
-      gsap.timeline({ onComplete: () => { document.getElementById('loader').style.display = 'none'; } })
+      gsap.timeline({ onComplete: () => { document.getElementById('loader').style.display = 'none'; try { sessionStorage.setItem('ml-seen', '1'); } catch (e) {} } })
         .to('.l-foot', { opacity: 0, duration: .3, ease: 'sine.inOut' }, 0)
         .to('.l-seam', { scaleY: 1, duration: .45, ease: 'power2.inOut' }, 0)
         .to('.lh.l', { xPercent: -101, duration: 1.0, ease: 'expo.inOut' }, .3)

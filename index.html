@@ -28,6 +28,8 @@
 (function(){
   var d = document.documentElement; d.classList.add('js');
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim');
+  /* The logo loader plays once, when someone first arrives. Moving between pages afterwards goes straight in. */
+  try{ if (sessionStorage.getItem('ml-seen')) d.classList.add('seen'); }catch(e){}
   if (matchMedia('(max-width: 899px)').matches) d.classList.add('narrow');
 })();
 /* Shared with landing3d.js: scroll state, and what is hovered, selected and filtered. */
@@ -54,6 +56,7 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; curso
 
 /* loader: the mark draws itself on a cutting mat, then the screen parts along its centre line */
 #loader{ display:none; }
+html.seen #loader{ display:none !important; }
 html.anim #loader{ display:block; position:fixed; inset:0; z-index:100; pointer-events:none; background:var(--olive); --u:calc(min(64vw, 400px) / 64); }   /* --u: one unit of the mark's 64-unit grid, on screen */
 /* The mat grid is ruled in the mark's own units, 4 and 20 to a square, and anchored to the centre of the screen,
    so the M's edges, its construction lines and the centre line all sit exactly on grid lines. */
@@ -491,9 +494,12 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     document.body.appendChild(m);
   });
 
-  Promise.all([decided, new Promise(r => draw.eventCallback('onComplete', r))]).then(([gl]) => {
+  const seen = root.classList.contains('seen');                 // already been welcomed in this visit: no loader
+  const at = t => seen ? Math.max(0, t - .45) : t;              // without the loader, the page's own arrival starts at once
+  if (seen) { draw.kill(); if (lenis) lenis.start(); }
+  Promise.all([decided, seen ? null : new Promise(r => draw.eventCallback('onComplete', r))]).then(([gl]) => {
     // the centre line keeps going to the edges of the screen, and the two halves ease apart along it
-    const out = gsap.timeline({ onComplete: () => { if (lenis) lenis.start(); document.getElementById('loader').style.display = 'none'; } })
+    const out = gsap.timeline({ onComplete: () => { if (lenis) lenis.start(); document.getElementById('loader').style.display = 'none'; try { sessionStorage.setItem('ml-seen', '1'); } catch (e) {} } })
       .to('.l-foot', { opacity: 0, duration: .5, ease: 'sine.inOut' }, 0)
       .set('.l-seam', { opacity: 1 }, 0)
       .set('#loader', { background: 'transparent' }, .4)
@@ -506,8 +512,8 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     if (narrow) {
       // phones: no pinning. The bench sits under the nav in its overview and the list scrolls beneath it
       S.shift = 0;
-      out.fromTo(S, { cam: .5 }, { cam: 1, duration: 2.2, ease: 'power3.out' }, .5).to(S, { over: 1, duration: .5 }, 1.7)
-         .from(['.h-tag', '.h-title', '.h-para'], { y: 22, opacity: 0, stagger: .07, duration: .7 }, .95);
+      out.fromTo(S, { cam: .5 }, { cam: 1, duration: 2.2, ease: 'power3.out' }, at(.5)).to(S, { over: 1, duration: .5 }, at(1.7))
+         .from(['.h-tag', '.h-title', '.h-para'], { y: 22, opacity: 0, stagger: .07, duration: .7 }, at(.95));
       gsap.from('.bom .row', { opacity: 0, y: 18, stagger: .05, duration: .4, scrollTrigger: { trigger: '.bom', start: 'top 92%', once: true } });
       return;
     }
@@ -530,9 +536,9 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       .to({}, { duration: 1.1 });          // hold here: this is where people look around
     ScrollTrigger.sort(); ScrollTrigger.refresh();
 
-    out.from(S, { cam: -.3, duration: 2.6, ease: 'power3.out' }, .45)
-       .from(title, { yPercent: 18, opacity: 0, duration: .9 }, .95)
-       .from(['.h-tag', '.h-para', '.h-hint', '.nav'], { y: 26, stagger: .07, duration: .7 }, 1.05);
+    out.from(S, { cam: -.3, duration: seen ? 1.6 : 2.6, ease: 'power3.out' }, at(.45))
+       .from(title, { yPercent: 18, opacity: 0, duration: .9 }, at(.95))
+       .from(['.h-tag', '.h-para', '.h-hint', '.nav'], { y: 26, stagger: .07, duration: .7 }, at(1.05));
 
     document.querySelectorAll('[data-split]').forEach(h => {
       const s = SplitText.create(h, { type: 'chars,words' });

@@ -21,6 +21,7 @@ code,kbd{ font-family:var(--mono); font-size:.86em; background:rgba(255,237,215,
 
 /* ---------- loader (copied from the landing page, played faster) ---------- */
 #loader{ display:none; }
+html.seen #loader{ display:none !important; }   /* the loader plays once per visit, on the first page only */
 html.anim #loader{ display:block; position:fixed; inset:0; z-index:100; pointer-events:none; }
 .lh{ position:absolute; top:0; bottom:0; width:50.2%; overflow:hidden; background-color:var(--olive);
   background-image:repeating-linear-gradient(0deg, rgba(255,237,215,.2) 0 1px, transparent 1px 100px), repeating-linear-gradient(90deg, rgba(255,237,215,.2) 0 1px, transparent 1px 100px), repeating-linear-gradient(0deg, rgba(255,237,215,.08) 0 1px, transparent 1px 20px), repeating-linear-gradient(90deg, rgba(255,237,215,.08) 0 1px, transparent 1px 20px); background-position:50% 50%; }
