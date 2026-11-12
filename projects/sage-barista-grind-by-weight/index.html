@@ -26,9 +26,8 @@
 /* Scroll drives these numbers; ring3d.js reads them every frame. */
 window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, labels:0 }, ready: function(){}, fail: function(){}, progress: function(){} };
 </script>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<script type="importmap">{ "imports": { "three": "/vendor/three/build/three.module.min.js", "three/addons/": "/vendor/three/addons/" } }</script>
+<link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
 <link rel="stylesheet" href="/assets/zigbrew/zigbrew.css">
 <!-- Cookieless analytics: Umami at stats.marcuslab.uk (marco308/umami). data-domains keeps local previews out of the numbers. -->
 <script defer src="https://stats.marcuslab.uk/m.js" data-website-id="91f11161-cf9b-4e81-a77b-114e94374a5d" data-domains="marcuslab.uk"></script>

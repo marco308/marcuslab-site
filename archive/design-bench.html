@@ -16,9 +16,8 @@
 /* Scroll drives these numbers; bench3d.js reads them every frame. */
 window.BENCH = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, labels:0 }, ready: function(){}, fail: function(){} };
 </script>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<script type="importmap">{ "imports": { "three": "/vendor/three/build/three.module.min.js", "three/addons/": "/vendor/three/addons/" } }</script>
+<link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
 <style>
 :root{
   --olive:#46583a; --cream:#ffedd7; --dark:#17110d; --dark-2:#221812; --orange:#e8590c; --wood:#96643b;

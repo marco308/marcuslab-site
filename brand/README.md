@@ -123,7 +123,7 @@ See [`tokens/contrast.md`](tokens/contrast.md). The pairings to avoid: cream tex
 
 - Outfit is for anything Marcus says. DM Mono is for anything the bench says: labels, part numbers, drawing notes.
 - Nothing is set smaller than 11 px.
-- Both faces come from Google Fonts in the prototypes. The live site makes no third-party requests, so self-host them before launch.
+- Both faces are self-hosted on the site, in `vendor/fonts/bench-fonts.css`.
 
 ## Layout
 
@@ -202,8 +202,6 @@ These were tried and turned down while this language was being worked out.
 
 ## Open questions
 
-- **Fonts** need self-hosting before launch.
-- **three.js** is loaded from a CDN in the prototypes and needs vendoring.
 - **The portafilter model** in the zigbrew scenes is a published Breville model (espressoshock's BES870 portafilter on GrabCAD). Marcus checked its licence on 12 November 2026 and it is fine to use; keep the credit where the model appears. This one is closed.
 - **The zigbrew mark** has no lockups, and `pf-basket.stl` in `prototypes/models/` is a second copy of the whole portafilter head rather than the basket alone.
 - **Lockup SVGs** contain live text. Outlined versions need the Outfit font file and a tool to convert it.

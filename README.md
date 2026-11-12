@@ -16,8 +16,9 @@ under **marcuslab.uk**.
 - Assets: `assets/bench/` holds the homepage scene and the dosing ring's part models (STL,
   exported from the `zigbrew-scales` CAD); `assets/zigbrew/` holds the build logs' shared
   styles and scripts. `archive/` keeps earlier design explorations.
-- Not yet self-hosted: the Outfit and DM Mono fonts (Google Fonts) and three.js (jsDelivr).
-  Until they are vendored the pages make third-party requests.
+- Self-hosted: the Outfit and DM Mono fonts (`vendor/fonts/bench-fonts.css`) and three.js r160 with
+  the three add-ons the pages use (`vendor/three/`), so the pages make no third-party requests
+  apart from the analytics below.
 - Analytics: cookieless [Umami](https://umami.is), self-hosted at
   `stats.marcuslab.uk` (repo `marco308/umami`). Every page loads its tracker
   (`/m.js`) in `<head>`; the pages with outbound links also load `links.js`,
