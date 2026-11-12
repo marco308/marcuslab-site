@@ -15,7 +15,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="Two Sonoff Zigbee dry-contact relays, a soldering iron and Home Assistant: the espresso machine is warm and the dose is ground by the time I reach the kitchen. Every step, every photo, every trap.">
+<meta name="description" content="Two Sonoff Zigbee dry-contact relays, a soldering iron and Home Assistant: the espresso machine is warm and the dose is ground by the time I reach the kitchen.">
 <meta name="theme-color" content="#17110d">
 <link rel="icon" href="/brand/logo/svg/zigbrew-icon-micro-olive.svg" type="image/svg+xml">
 <script>
@@ -245,7 +245,7 @@
   <figure class="wide sheetfig">
     <div class="frame"><img data-inline src="/projects/sage-barista-zigbee/img/step1-mains-tap.svg" alt="WireViz harness drawing for the mains tap: cord, two WAGOs, machine wiring, relay L and N" loading="lazy" width="2213" height="356"></div>
     <div class="tb"><span>Step 4 · mains tap</span><span class="grow">WireViz harness</span><span class="pan">Drag to pan</span><span>Do not scale</span><a href="/projects/sage-barista-zigbee/img/step1-mains-tap.svg" target="_blank" rel="noopener">Open full size ↗</a></div>
-    <figcaption>The same step as a harness drawing, generated from a short WireViz description. Every wire, colour and terminal, nothing implied.</figcaption>
+    <figcaption>The same step as a harness drawing, generated from a short WireViz description.</figcaption>
   </figure>
   <figure class="wide mid fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/mains-tap.jpg" alt="Two WAGO blocks in place of the bullets, leads running to a relay on the bench" loading="lazy"></div><figcaption>The tap as built, relay on the bench for the first power-up. Top block all blue, bottom block all brown. The one mistake that goes bang is mixing them, so check twice.</figcaption></figure>
 </section>
@@ -397,14 +397,9 @@
       <span class="eyebrow">before you start</span>
       <h2>What I'd tell you</h2>
       <ol class="gnotes">
-        <li><span class="k">the hidden screw</span><p>Under the cap in the tank recess, right of the inlet. Look there first.</p></li>
-        <li><span class="k">tray off = hopper unlocked</span><p>No grinder, and flashing filter-size lights. Not a fault.</p></li>
         <li><span class="k">tank off = pump primes dry</span><p>Every power-up. Keep test runs to seconds, or put the tank back before testing.</p></li>
-        <li><span class="k">WAGOs won't fit up top</span><p>Solder the button breakouts. WAGOs are fine at the bottom for the mains tap.</p></li>
-        <li><span class="k">don't power the relay from the board</span><p>The 12 V is there, but it's referenced to mains.</p></li>
         <li><span class="k">HA can't see if the machine is on</span><p>POWER toggles. If it were already on when the shower fired, the press would turn it off. A power-monitoring plug fixes this; the heater draw is unmistakable. That's the next change.</p></li>
         <li><span class="k">the grind lands where the cradle points</span><p>Portafilter in the cradle at night.</p></li>
-        <li><span class="k">configure before you connect</span><p>Inching and power-on-off first, with COM and NO empty. Then wire the button. Never the other way round.</p></li>
       </ol>
     </div>
   </div>

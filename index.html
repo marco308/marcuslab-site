@@ -44,7 +44,15 @@ window.LAB = { S: { cam:0, shift:0, over:0 }, hover:null, selected:null, filter:
   --software:#62a3ea; --build:#f5c12e;      /* the two kinds of thing: software, and builds you can hold */
   --mono:"DM Mono",ui-monospace,Menlo,monospace; --sans:"Outfit",system-ui,sans-serif;
   --pad:clamp(18px,4vw,56px); --navh:72px;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='420'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .32' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .14  0 0 0 0 .07  0 0 0 0 .02  0 0 0 1.5 -.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23g%29'/%3E%3C/svg%3E");      /* wood grain as real noise, not ruled stripes */
+  --arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' fill='none' stroke='black' stroke-width='1.7'%3E%3Cpath d='M0 6h14M9 1l5 5-5 5'/%3E%3C/svg%3E");
 }
+/* the parts of the page the browser draws: selection, caret, scrollbars, underlines */
+html{ scrollbar-color:rgba(255,237,215,.45) var(--dark); caret-color:var(--orange); accent-color:var(--orange); }
+::selection{ background:var(--orange); color:var(--dark); }
+h1,h2{ text-wrap:balance; } p{ text-wrap:pretty; }
+a{ text-underline-offset:.22em; text-decoration-thickness:1px; }
+.skip{ position:fixed; left:var(--pad); top:-70px; z-index:120; background:var(--cream); color:var(--dark); padding:11px 18px; font-weight:600; text-decoration:none; } .skip:focus{ top:12px; }
 *{ box-sizing:border-box; }
 html.lenis, html.lenis body{ height:auto; scroll-behavior:auto !important; }
 body{ margin:0; background:var(--dark); color:var(--cream); font-family:var(--sans); font-size:17px; line-height:1.5; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
@@ -83,43 +91,47 @@ html.anim #loader{ display:block; position:fixed; inset:0; z-index:100; pointer-
 @media (max-width:560px){ .brand .t{ display:none; } .nav-links a.opt{ display:none; } }
 
 /* stage: plain version first */
-.stage{ position:relative; background:repeating-linear-gradient(93deg, rgba(40,20,5,.10) 0 2px, transparent 2px 12px), linear-gradient(100deg,#6f4425,#87572f 42%,#693f22); }
+.stage{ position:relative; background:var(--grain), linear-gradient(100deg,#6f4425,#87572f 42%,#693f22); }
 #gl, .tags{ display:none; }
 .hero{ padding:calc(var(--navh) + 6vh) var(--pad) 56px; display:flex; flex-direction:column; gap:18px; max-width:900px; }
-.h-tag{ font-weight:600; letter-spacing:.02em; font-size:clamp(14px,1.3vw,19px); }
 .h-title{ font-weight:700; text-transform:uppercase; letter-spacing:-.035em; line-height:.82; font-size:clamp(64px,11vw,190px); }
 .h-title .ch{ display:inline-block; will-change:transform,filter,opacity; }
-.h-para{ font-weight:500; font-size:clamp(17px,1.5vw,22px); line-height:1.32; max-width:32em; }
+.h-para{ font-weight:500; font-size:clamp(17px,1.5vw,22px); line-height:1.45; max-width:32em; }
 .h-hint{ display:none; }
 
 /* parts list */
 .panel{ background:var(--dark); padding:44px var(--pad) 56px; display:flex; flex-direction:column; gap:18px; }
 .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap; }
 .panel-head h2{ font-weight:700; text-transform:uppercase; letter-spacing:-.02em; line-height:.95; font-size:clamp(30px,3.2vw,46px); }
-.panel-head .mono{ color:var(--orange); }
+#count{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 .filters{ display:flex; flex-wrap:wrap; gap:6px; }
-.filters button{ --c:var(--cream); font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; padding:5px 9px; border:1px solid rgba(255,237,215,.4); border-radius:999px; display:inline-flex; align-items:center; gap:7px; transition:background .15s, color .15s; }
+.filters button{ --c:var(--cream); font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; min-height:32px; padding:6px 12px; border:1px solid rgba(255,237,215,.4); border-radius:999px; display:inline-flex; align-items:center; gap:7px; transition:background .15s, color .15s, border-color .15s, transform .1s; }
+.filters button:hover{ border-color:var(--cream); background:rgba(255,237,215,.1); }
+.filters button:active{ transform:translateY(1px); }
 .filters button i{ width:8px; height:8px; background:var(--c); display:block; }
 .filters button[aria-pressed="true"]{ background:var(--cream); color:var(--dark); border-color:var(--cream); }
 .bom{ border-top:1.5px solid var(--cream); }
 .row{ border-bottom:1px dotted rgba(255,237,215,.45); }
-.rowhead{ width:100%; display:grid; grid-template-columns:34px minmax(0,1fr) auto auto; gap:6px 16px; align-items:center; padding:clamp(5px,.95vh,11px) 8px clamp(5px,.95vh,11px) 4px; transition:background .15s; }
+.rowhead{ width:100%; display:grid; grid-template-columns:34px minmax(0,1fr) auto auto; gap:6px 16px; align-items:center; padding:clamp(9px,1.2vh,13px) 8px clamp(9px,1.2vh,13px) 4px; transition:background .15s; }
+.rowhead:focus-visible{ outline-offset:-2px; }
 .row.hot .rowhead, .rowhead:hover{ background:rgba(255,237,215,.09); }
-.no{ font-family:var(--mono); font-size:13px; width:28px; height:28px; border-radius:50%; border:1.5px solid var(--c); display:grid; place-items:center; }
+.no{ font-family:var(--mono); font-size:13px; font-variant-numeric:tabular-nums; width:28px; height:28px; border-radius:50%; border:1.5px solid var(--c); display:grid; place-items:center; }
 .what{ display:flex; flex-direction:column; min-width:0; }
 .nm{ font-weight:700; font-size:clamp(17px,1.35vw,21px); line-height:1.1; text-transform:uppercase; letter-spacing:-.005em; }
 .ds{ font-size:14px; opacity:.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.ty, .st{ font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
+.ty, .st{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
 .ty i{ width:9px; height:9px; background:var(--c); display:block; }
 .st{ min-width:74px; }
 .lamp{ width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #e9ffe2, #4fe06a 50%, #1f9c3c); box-shadow:0 0 9px 1px rgba(79,224,106,.6); display:block; flex:none; }
 .row.retired .lamp{ background:#4a4038; box-shadow:none; }
 .row.retired .nm, .row.retired .ds{ opacity:.6; }
 .row.dim{ opacity:.28; }
-.more > div, html:not(.js) .more{ padding:2px 8px 16px 56px; display:flex; flex-direction:column; gap:9px; font-size:15px; line-height:1.45; max-width:62ch; }
-.more .mo{ font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--orange); }
+.more > div, html:not(.js) .more{ padding:2px 8px 16px 56px; display:flex; flex-direction:column; gap:9px; font-size:15.5px; line-height:1.55; max-width:66ch; }
+.more .mo{ font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--orange); }
 .more .lk{ display:flex; flex-wrap:wrap; gap:6px 18px; font-weight:600; }
 .more .lk a{ text-decoration:none; border-bottom:1px dotted var(--cream); } .more .lk a:hover{ color:var(--orange); border-color:var(--orange); }
+.more .lk a::after{ content:""; display:inline-block; width:.82em; height:.6em; margin-left:.45em; background:currentColor; -webkit-mask:var(--arrow) center/contain no-repeat; mask:var(--arrow) center/contain no-repeat; transition:transform .2s cubic-bezier(.16,1,.3,1); }
+.more .lk a:hover::after{ transform:translateX(3px); }
 /* the detail grows open: a grid row from 0fr to 1fr animates to the content's own height */
 html.js .more{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .5s cubic-bezier(.45,0,.55,1); }
 html.js .more > div{ overflow:hidden; min-height:0; opacity:0; transform:translateY(-8px); transition:opacity .3s ease, transform .5s cubic-bezier(.22,1,.36,1); }
@@ -136,7 +148,7 @@ html.js .row:not(.open) .more a{ visibility:hidden; }      /* closed rows' links
 html.anim .view{ display:block; }
 html.anim #gl{ display:block; width:100%; height:100%; touch-action:pan-y; }
 html.anim .tags{ display:block; position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-.tag{ position:absolute; left:0; top:0; display:flex; align-items:center; gap:0; font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; opacity:0; transition:opacity .2s; padding-bottom:10px; }
+.tag{ position:absolute; left:0; top:0; display:flex; align-items:center; gap:0; font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; opacity:0; transition:opacity .2s; padding-bottom:10px; }
 .tag b{ font-weight:500; width:26px; height:26px; border-radius:50%; background:var(--dark); border:1.5px solid var(--c); display:grid; place-items:center; flex:none; }
 .tag span{ max-width:0; overflow:hidden; background:var(--dark); padding:0; border-radius:0 13px 13px 0; height:26px; line-height:26px; margin-left:-13px; transition:max-width .25s, padding .25s; }
 .tag.on{ z-index:2; } .tag.on b{ background:var(--c); color:var(--dark); position:relative; z-index:1; } .tag.on span{ max-width:260px; padding:0 12px 0 20px; }
@@ -147,30 +159,27 @@ html.anim:not(.narrow) .stage{ height:100vh; overflow:hidden; background:var(--d
 html.anim:not(.narrow) .view{ position:absolute; inset:0; }
 html.anim:not(.narrow) .hero{ position:absolute; z-index:2; left:0; right:0; top:0; max-width:none; padding-top:calc(var(--navh) + 2.5vh); pointer-events:none; text-shadow:0 2px 26px rgba(30,15,5,.5);
   display:grid; grid-template-columns:auto minmax(0,30em); justify-content:space-between; align-items:end; gap:10px 40px; }
-html.anim:not(.narrow) .h-tag{ grid-column:1 / -1; }
 html.anim:not(.narrow) .h-title{ font-size:clamp(64px,8.6vw,170px); }
 html.anim:not(.narrow) .h-para{ font-size:clamp(15px,1.2vw,18px); padding:.9em 1.1em 1em; margin-bottom:.4em; background:rgba(23,17,13,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); text-shadow:none; }
-html.anim:not(.narrow) .h-hint{ display:block; position:absolute; z-index:2; left:50%; bottom:26px; transform:translateX(-50%); font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; pointer-events:none; text-shadow:0 1px 10px rgba(0,0,0,.6); }
-html.anim:not(.narrow) .panel{ position:absolute; z-index:3; top:var(--navh); right:0; bottom:0; width:min(42vw,620px); padding:22px clamp(18px,2.4vw,36px) 26px; background:rgba(23,17,13,.93); border-left:1px solid rgba(255,237,215,.2); overflow-y:auto; overscroll-behavior:contain; gap:14px; }
+html.anim:not(.narrow) .h-hint{ display:block; position:absolute; z-index:2; left:50%; bottom:26px; transform:translateX(-50%); font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; pointer-events:none; text-shadow:0 1px 10px rgba(0,0,0,.6); }
+html.anim:not(.narrow) .panel{ position:absolute; z-index:3; top:var(--navh); right:0; bottom:0; width:min(42vw,620px); padding:22px clamp(18px,2.4vw,36px) 26px; background:rgba(23,17,13,.93); border-left:1px solid rgba(255,237,215,.2); overflow-y:auto; overscroll-behavior:contain; gap:14px; scrollbar-width:thin; scrollbar-color:rgba(255,237,215,.4) transparent; }
 
 /* narrow: the bench stays stuck under the nav while the list scrolls beneath it */
 html.narrow{ --navh:58px; }
 html.narrow .nav{ background:var(--dark); }
 html.anim.narrow .stage{ background:var(--dark); }
-html.anim.narrow .hero{ padding:calc(var(--navh) + 14px) var(--pad) 16px; gap:8px; background:repeating-linear-gradient(93deg, rgba(40,20,5,.10) 0 2px, transparent 2px 12px), linear-gradient(100deg,#6f4425,#87572f 42%,#693f22); }
+html.anim.narrow .hero{ padding:calc(var(--navh) + 14px) var(--pad) 16px; gap:8px; background:var(--grain), linear-gradient(100deg,#6f4425,#87572f 42%,#693f22); }
 html.anim.narrow .h-title{ font-size:clamp(40px,14.4vw,110px); line-height:.9; }
 html.anim.narrow .h-title br{ display:none; }
-html.anim.narrow .h-tag{ font-size:12.5px; }
-html.anim.narrow .h-para{ font-size:15px; line-height:1.38; }
+html.anim.narrow .h-para{ font-size:16px; line-height:1.45; }
 html.anim.narrow .view{ position:sticky; top:var(--navh); height:40svh; min-height:230px; z-index:5; background:var(--dark); border-bottom:1px solid rgba(255,237,215,.3); }
 html.anim.narrow .panel{ padding-top:20px; gap:14px; }
 html.anim.narrow .row{ scroll-margin-top:calc(var(--navh) + 40svh + 10px); }
-html.narrow .panel-head .mono{ display:none; }
 html.narrow .filters{ flex-wrap:nowrap; overflow-x:auto; margin-inline:calc(var(--pad) * -1); padding-inline:var(--pad); scrollbar-width:none; }
 html.narrow .filters::-webkit-scrollbar{ display:none; }
 html.narrow .filters button{ flex:none; padding:8px 12px; }
 html.narrow .rowhead{ padding-block:11px; }
-html.narrow .tag{ font-size:10.5px; } html.narrow .tag b{ width:22px; height:22px; } html.narrow .tag span{ height:22px; line-height:22px; margin-left:-11px; } html.narrow .tag::after{ left:10.5px; top:22px; }
+html.narrow .tag{ font-size:12px; } html.narrow .tag b{ width:22px; height:22px; } html.narrow .tag span{ height:22px; line-height:22px; margin-left:-11px; } html.narrow .tag::after{ left:10.5px; top:22px; }
 
 /* about, contact, footer (as in the bench prototype) */
 .about{ position:relative; padding:96px var(--pad);
@@ -178,18 +187,20 @@ html.narrow .tag{ font-size:10.5px; } html.narrow .tag b{ width:22px; height:22p
 .about h2, .contact h2{ font-weight:700; text-transform:uppercase; letter-spacing:-.02em; line-height:.95; font-size:clamp(34px,6vw,84px); }
 .about-grid{ display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr); gap:40px 60px; align-items:center; max-width:1200px; margin:0 auto; }
 .about-text{ display:flex; flex-direction:column; gap:18px; }
-.about-text .lead{ font-weight:600; font-size:clamp(22px,2.6vw,32px); line-height:1.2; max-width:24ch; }
-.about-text p{ max-width:52ch; font-weight:500; }
+.about-text h2{ margin-bottom:10px; }
+.about-text .lead{ font-weight:600; font-size:clamp(22px,2.6vw,32px); line-height:1.3; max-width:26ch; }
+.about-text p{ max-width:58ch; font-weight:500; line-height:1.6; }
 .photo{ background:var(--cream); padding:12px 12px 40px; transform:rotate(3deg); box-shadow:0 18px 30px rgba(0,0,0,.35); max-width:360px; justify-self:center; position:relative; }
 .photo::before{ content:""; position:absolute; top:-14px; left:50%; width:110px; height:28px; margin-left:-55px; background:rgba(232,89,12,.8); transform:rotate(-4deg); }
-.photo span{ position:absolute; left:0; right:0; bottom:11px; text-align:center; color:var(--dark); font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; }
 @media (max-width:820px){ .about-grid{ grid-template-columns:minmax(0,1fr); } }
-.contact{ padding:110px var(--pad); text-align:center; display:flex; flex-direction:column; align-items:center; gap:22px; background:repeating-linear-gradient(93deg, rgba(40,20,5,.10) 0 2px, transparent 2px 12px), linear-gradient(100deg,#6f4425,#87572f 42%,#693f22); }
+.contact{ padding:110px var(--pad); text-align:center; display:flex; flex-direction:column; align-items:center; gap:22px; background:var(--grain), linear-gradient(100deg,#6f4425,#87572f 42%,#693f22); }
 .contact h2{ font-size:clamp(48px,11vw,170px); }
-.contact p{ font-weight:500; font-size:19px; max-width:40ch; }
+.contact p{ font-weight:500; font-size:19px; line-height:1.5; max-width:40ch; }
+.contact p a:hover{ color:var(--dark); }
 .btns{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
 .btn{ text-decoration:none; font-weight:600; font-size:14px; letter-spacing:.06em; text-transform:uppercase; padding:13px 22px; border-radius:999px; border:1.5px solid var(--cream); transition:background .2s, color .2s, transform .2s; }
 .btn:hover{ background:var(--cream); color:var(--dark); transform:translateY(-2px); }
+.btn:active{ transform:translateY(0); }
 .btn.primary{ background:var(--orange); border-color:var(--orange); color:var(--dark); }   /* ink on orange: cream fails contrast */ .btn.primary:hover{ background:var(--cream); border-color:var(--cream); }
 footer{ background:var(--dark); padding:26px var(--pad) 34px; display:flex; flex-wrap:wrap; gap:12px 26px; align-items:center; justify-content:space-between; opacity:.9; }
 footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decoration:none; } footer a:hover{ color:var(--orange); }
@@ -232,6 +243,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
   </template>
 </div>
 
+<a class="skip" href="#work">Skip to the parts list</a>
 <header class="nav" id="nav">
   <a class="brand" href="#top" aria-label="Marcus Lab, top of page"><span class="mk" data-mark="#ffedd7,#e8590c"></span><span class="t">Marcus Lab</span></a>
   <nav class="nav-links" aria-label="Primary">
@@ -243,15 +255,14 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
 <main id="top">
 <section class="stage" id="stage">
   <div class="hero">
-    <div class="h-tag h-fade">APPS, SERVERS &amp; HARDWARE.</div>
     <h1 class="h-title" aria-label="Marcus Lab">Marcus <br>Lab</h1>
     <p class="h-para h-fade">I'm Marcus. I make Swift apps for iPhone and Mac, small servers that run in my homelab, and build logs for when the coffee machine needs a Zigbee relay. I use everything here myself.</p>
   </div>
-  <div class="h-hint h-fade" aria-hidden="true">◦ Scroll for the parts list, or pick something up</div>
+  <div class="h-hint h-fade" aria-hidden="true">Scroll for the parts list, or pick something up</div>
   <div class="view"><canvas id="gl" aria-hidden="true"></canvas><div class="tags" aria-hidden="true"></div></div>
 
   <div class="panel" id="work" data-lenis-prevent>
-    <div class="panel-head"><h2>Parts list</h2><span class="mono">8 items · everything on the bench</span></div>
+    <div class="panel-head"><h2>Parts list</h2><span id="count" aria-live="polite">8 items</span></div>
     <div class="filters" role="group" aria-label="Filter by type">
       <button type="button" data-f="" aria-pressed="true">All</button>
       <button type="button" data-f="software" data-type="software" aria-pressed="false"><i></i>Software</button>
@@ -265,7 +276,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
-        <div class="more"><p>A self-hosted recipe library, meal planner and shopping list. There's no AI inside; it has an API and an MCP server instead, so the assistant you already use can drive it. Paste a recipe link, ask for five dinners, get a list sorted by aisle.</p><p class="mo">FastAPI · MCP · SwiftUI · AGPL</p><p class="lk"><a href="https://marco308.github.io/meals/">Website →</a><a href="https://github.com/marco308/meals">GitHub →</a></p></div>
+        <div class="more"><p>A recipe library, meal planner and shopping list in one. There's no AI inside; it has an API and an MCP server instead, so the assistant you already use can drive it. Paste a recipe link, ask for five dinners, get a list sorted by aisle.</p><p class="mo">FastAPI · MCP · SwiftUI · AGPL</p><p class="lk"><a href="https://marco308.github.io/meals/">Website</a><a href="https://github.com/marco308/meals">GitHub</a></p></div>
       </li>
       <li class="row" data-id="podcasts" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
@@ -274,7 +285,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
-        <div class="more"><p>Spotify puts every podcast you follow into one feed. This splits them into playlists you define, like news for the commute or the next episode of a serial, and rebuilds them on Spotify every morning. Self-hosted, with an iOS app.</p><p class="mo">Spotify · FastAPI · SwiftUI</p><p class="lk"><a href="https://marco308.github.io/podcast-manager/">Website →</a><a href="https://github.com/marco308/podcast-manager">GitHub →</a></p></div>
+        <div class="more"><p>Spotify puts every podcast you follow into one feed. This splits them into playlists you define, like news for the commute or the next episode of a serial, and rebuilds them on Spotify every morning. Self-hosted, with an iOS app.</p><p class="mo">Spotify · FastAPI · SwiftUI</p><p class="lk"><a href="https://marco308.github.io/podcast-manager/">Website</a><a href="https://github.com/marco308/podcast-manager">GitHub</a></p></div>
       </li>
       <li class="row" data-id="zigbrew" data-type="build">
         <button class="rowhead" type="button" aria-expanded="false">
@@ -283,7 +294,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Build</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
-        <div class="more"><p>How my coffee machine joined the smart home. Part one: two Zigbee relays soldered across the power and grinder switches. Part two: a load cell in a 3D-printed dosing ring, so it grinds by weight instead of time.</p><p class="mo">Zigbee · ESP32-C6 · 3D printed · Home Assistant</p><p class="lk"><a href="/projects/sage-barista-zigbee/">Part one: relays →</a><a href="/projects/sage-barista-grind-by-weight/">Part two: grind by weight →</a></p></div>
+        <div class="more"><p>How my coffee machine joined the smart home. Part one: two Zigbee relays soldered across the power and grinder switches. Part two: a load cell in a 3D-printed dosing ring, so it grinds by weight instead of time.</p><p class="mo">Zigbee · ESP32-C6 · 3D printed · Home Assistant</p><p class="lk"><a href="/projects/sage-barista-zigbee/">Part one: relays</a><a href="/projects/sage-barista-grind-by-weight/">Part two: grind by weight</a></p></div>
       </li>
       <li class="row" data-id="lids" data-type="build">
         <button class="rowhead" type="button" aria-expanded="false">
@@ -292,7 +303,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Build</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
-        <div class="more"><p>Seven glass lids lived in a heap in the pan cupboard and clattered every time the door shut. Now six hang on the inside of the door. The generator does it for any door: enter your door, printer bed and lids, and it renders every STL in the browser.</p><p class="mo">PETG · OpenSCAD · WebAssembly</p><p class="lk"><a href="https://lids.marcuslab.uk/">Generator →</a><a href="https://www.printables.com/model/1893301-pan-lid-rack-for-the-inside-of-a-kitchen-cupboard">Printables →</a></p></div>
+        <div class="more"><p>Seven glass lids lived in a heap in the pan cupboard and clattered every time the door shut. Now six hang on the inside of the door. The generator does it for any door: enter your door, printer bed and lids, and it renders every STL in the browser.</p><p class="mo">PETG · OpenSCAD · WebAssembly</p><p class="lk"><a href="https://lids.marcuslab.uk/">Generator</a><a href="https://www.printables.com/model/1893301-pan-lid-rack-for-the-inside-of-a-kitchen-cupboard">Printables</a></p></div>
       </li>
       <li class="row" data-id="mdone" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
@@ -301,7 +312,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
-        <div class="more"><p>An iPhone and Mac app for Vikunja, the self-hosted to-do server. Smart lists, widgets, a focus timer and offline sync. Open source.</p><p class="mo">Swift · iOS · macOS · MIT</p><p class="lk"><a href="https://apps.apple.com/app/id6760613430">App Store →</a><a href="https://marco308.github.io/mdone/">Website →</a><a href="https://github.com/marco308/mdone">GitHub →</a></p></div>
+        <div class="more"><p>Vikunja is a self-hosted to-do server. This adds smart lists, widgets, a focus timer and offline sync. Open source.</p><p class="mo">Swift · iOS · macOS · MIT</p><p class="lk"><a href="https://apps.apple.com/app/id6760613430">App Store</a><a href="https://marco308.github.io/mdone/">Website</a><a href="https://github.com/marco308/mdone">GitHub</a></p></div>
       </li>
       <li class="row" data-id="chukkatimer" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
@@ -310,7 +321,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
-        <div class="more"><p>One tap starts a chukka with warning bells. Game mode adds teams, handicaps and the score, and spectators can follow along in a browser.</p><p class="mo">Swift · iPhone</p><p class="lk"><a href="https://apps.apple.com/app/id6740096681">App Store →</a><a href="https://marco308.github.io/chukkatimer-site/">Website →</a></p></div>
+        <div class="more"><p>One tap starts a chukka with warning bells. Game mode adds teams, handicaps and the score, and spectators can follow along in a browser.</p><p class="mo">Swift · iPhone</p><p class="lk"><a href="https://apps.apple.com/app/id6740096681">App Store</a><a href="https://marco308.github.io/chukkatimer-site/">Website</a></p></div>
       </li>
       <li class="row" data-id="pmaas" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
@@ -319,7 +330,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Live</span>
         </button>
-        <div class="more"><p>An API that generates legitimate-sounding business meeting names. Pop a “Quarterly Pint Review” in your calendar and nobody questions where you've gone. Faintly ridiculous.</p><p class="mo">Python · API · MIT</p><p class="lk"><a href="https://pmaas.marcuslab.uk/docs">API docs →</a><a href="https://github.com/marco308/PMaaS">GitHub →</a></p></div>
+        <div class="more"><p>An API that generates legitimate-sounding business meeting names. Pop a “Quarterly Pint Review” in your calendar and nobody questions where you've gone.</p><p class="mo">Python · API · MIT</p><p class="lk"><a href="https://pmaas.marcuslab.uk/docs">API docs</a><a href="https://github.com/marco308/PMaaS">GitHub</a></p></div>
       </li>
       <li class="row retired" data-id="haticktick" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
@@ -328,7 +339,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
           <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Retired</span>
         </button>
-        <div class="more"><p>A Home Assistant integration that pulls your TickTick projects and tasks into HA and fires events you can automate on. I've since moved to Vikunja, so it isn't actively maintained.</p><p class="mo">Home Assistant · Python</p><p class="lk"><a href="https://github.com/marco308/HA_ticktick">GitHub →</a></p></div>
+        <div class="more"><p>A Home Assistant integration that pulls your TickTick projects and tasks into HA and fires events you can automate on. I've since moved to Vikunja, so it isn't actively maintained.</p><p class="mo">Home Assistant · Python</p><p class="lk"><a href="https://github.com/marco308/HA_ticktick">GitHub</a></p></div>
       </li>
     </ol>
   </div>
@@ -337,20 +348,18 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
 <section class="about" id="about">
   <div class="about-grid">
     <div class="about-text">
-      <span class="mono">About</span>
-      <h2 data-split>The person behind it.</h2>
+      <h2 data-split>About</h2>
       <p class="lead">I build small software I want to use myself, and lately some hardware too.</p>
       <p>The apps are Swift, because I like software that feels at home on the iPhone and doesn't nag. The servers are Python, running on a homelab that's bigger than one house needs.</p>
       <p>When I'm not at a keyboard I'm usually on a polo pony, which is where ChukkaTimer came from.</p>
     </div>
-    <figure class="photo" style="margin:0"><img src="/avatar.jpg" width="400" height="300" loading="lazy" alt="Marcus in a cap by the sea"><span>FIG. 3 · THE OPERATOR</span></figure>
+    <figure class="photo" style="margin:0"><img src="/avatar.jpg" width="400" height="300" loading="lazy" alt="Marcus in a cap by the sea"></figure>
   </div>
 </section>
 
 <section class="contact" id="contact">
-  <span class="mono">Get in touch</span>
-  <h2 data-split>Say hello.</h2>
-  <p>Email hello@marcuslab.uk, or open an issue on GitHub if something's broken.</p>
+  <h2 data-split>Contact</h2>
+  <p>Email <a href="mailto:hello@marcuslab.uk">hello@marcuslab.uk</a>, or open an issue on GitHub if something's broken.</p>
   <div class="btns">
     <a class="btn primary" href="mailto:hello@marcuslab.uk">Email me</a>
     <a class="btn" href="https://github.com/marco308">GitHub</a>
@@ -429,6 +438,8 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     LAB.filter = b.dataset.f || null;
     document.querySelectorAll('.filters button').forEach(x => x.setAttribute('aria-pressed', x === b));
     rows.forEach(r => r.classList.toggle('dim', !!LAB.filter && r.dataset.type !== LAB.filter));
+    const n = rows.filter(r => !LAB.filter || r.dataset.type === LAB.filter).length;
+    document.getElementById('count').textContent = LAB.filter ? `${n} of ${rows.length}, ${b.textContent.trim()}` : `${rows.length} items`;
   }));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && LAB.selected) LAB.pick(null); });
 
@@ -510,8 +521,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       // phones: no pinning. The bench sits under the nav in its overview and the list scrolls beneath it
       S.shift = 0;
       out.fromTo(S, { cam: .5 }, { cam: 1, duration: 2.2, ease: 'power3.out' }, at(.5)).to(S, { over: 1, duration: .5 }, at(1.7))
-         .from(['.h-tag', '.h-title', '.h-para'], { y: 22, opacity: 0, stagger: .07, duration: .7 }, at(.95));
-      gsap.from('.bom .row', { opacity: 0, y: 18, stagger: .05, duration: .4, scrollTrigger: { trigger: '.bom', start: 'top 92%', once: true } });
+         .from(['.h-title', '.h-para'], { y: 22, stagger: .07, duration: .7 }, at(.95));
       return;
     }
 
@@ -528,22 +538,19 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       .to(S, { cam: 1, duration: 1, ease: 'power2.inOut' }, 0)
       .to(S, { shift: .185, duration: 1, ease: 'power2.inOut' }, 0)
       .to('.panel', { xPercent: 0, duration: .65, ease: 'power2.out' }, .35)
-      .from('.bom .row', { opacity: 0, x: 36, stagger: .045, duration: .3, ease: 'power2.out' }, .55)
+      .from('.bom .row', { x: 36, stagger: .045, duration: .3, ease: 'power2.out' }, .55)
       .to(S, { over: 1, duration: .3 }, .8)
       .to({}, { duration: 1.1 });          // hold here: this is where people look around
     ScrollTrigger.sort(); ScrollTrigger.refresh();
 
     out.from(S, { cam: -.3, duration: seen ? 1.6 : 2.6, ease: 'power3.out' }, at(.45))
-       .from(title, { yPercent: 18, opacity: 0, duration: .9 }, at(.95))
-       .from(['.h-tag', '.h-para', '.h-hint', '.nav'], { y: 26, stagger: .07, duration: .7 }, at(1.05));
+       .from(title, { yPercent: 18, duration: .9 }, at(.95))
+       .from(['.h-para', '.h-hint', '.nav'], { y: 26, stagger: .07, duration: .7 }, at(1.05));
 
+    // the two big headings are ruled in from the left, once. Everything else in those sections is simply there.
     document.querySelectorAll('[data-split]').forEach(h => {
-      const s = SplitText.create(h, { type: 'chars,words' });
-      gsap.from(s.chars, { yPercent: 60, opacity: 0, filter: 'blur(8px)', stagger: .025, duration: .6, scrollTrigger: { trigger: h, start: 'top 88%', once: true } });
+      gsap.fromTo(h, { clipPath: 'inset(-12% 100% -12% 0%)' }, { clipPath: 'inset(-12% 0% -12% 0%)', duration: 1.1, ease: 'expo.out', clearProps: 'clipPath', scrollTrigger: { trigger: h, start: 'top 85%', once: true } });
     });
-    gsap.from('.about-text > *:not(h2)', { opacity: 0, y: 22, stagger: .08, duration: .6, scrollTrigger: { trigger: '.about', start: 'top 65%', once: true } });
-    gsap.from('.photo', { opacity: 0, y: 40, rotation: -6, duration: .8, scrollTrigger: { trigger: '.about', start: 'top 60%', once: true } });
-    gsap.from('.btns .btn', { opacity: 0, y: 18, stagger: .07, duration: .45, scrollTrigger: { trigger: '.btns', start: 'top 92%', once: true } });
   });
   window.addEventListener('load', () => ScrollTrigger.refresh());
 })();

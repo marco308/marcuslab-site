@@ -82,7 +82,6 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
       <div class="beat beat-b">
         <div class="bl">Grinds by weight, not time.</div>
         <div class="br">
-          <span>It weighs the portafilter while the grinder fills it and stops the grinder at 18 g.</span>
           <dl>
             <div><dt>Load cell</dt><dd>1 kg</dd></div>
             <div><dt>Readings</dt><dd>84 a second</dd></div>
@@ -117,7 +116,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
   <div class="col">
     <span class="eyebrow">how it works</span>
     <h2>Stop at the target</h2>
-    <p>On the Barista Express you start a grind by pushing the portafilter into the cradle, and a second push stops it early. The relay from part one can already make that push. So the whole project comes down to this: <strong>weigh the grounds as they land, and send one more push at the right moment.</strong></p>
+    <p>On the Barista Express you start a grind by pushing the portafilter into the cradle, and a second push stops it early. The relay from part one can already make that push. <strong>Weigh the grounds as they land, and send one more push at the right moment.</strong></p>
     <p>I could have used a Bluetooth coffee scale and a Home Assistant automation. But then every reading has to go through a Bluetooth proxy, Home Assistant, Zigbee2MQTT and the relay. That takes a third to two thirds of a second, and never the same amount twice. At 1.6 g a second, that wobble alone is most of a gram. So I built my own scale. It decides when to stop by itself, 84 times a second, and talks <strong>straight to the relay over a Zigbee binding</strong>, a direct device-to-device link with no hub in the middle. Home Assistant only sets the target and writes down the result.</p>
 
     <div class="dia big" id="chain">
@@ -170,7 +169,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
     <span class="eyebrow">the shape of it</span>
     <h2>Where the scale goes</h2>
     <p>The hard part was <strong>where to put a scale on a machine that holds the portafilter by its ears</strong>, on two hooks, right under the grinder outlet with no room to spare. I started with two ideas. <strong>Direction A</strong> was a cup scale shaped like a portafilter that hangs in the cradle on its own; you'd tip the cup into the real portafilter afterwards. It got as far as a fit test and a parts order. Then I wondered whether it would be crazy to weigh straight into the portafilter instead. It wasn't, and that's <strong>Direction B</strong>, the one I built.</p>
-    <figure class="fig"><div class="ph render"><img src="/projects/sage-barista-grind-by-weight/img/cup-scale.png" alt="Render of Direction A: a portafilter-shaped cup scale with three lugs and a handle, its brown cup slid out of a window in the front" loading="lazy" width="1277" height="1064"></div><figcaption>Direction A. The cup sits on a 100 g load cell and slides out of the front to be tipped into the real portafilter. It got as far as a fit test and a parts order.</figcaption></figure>
+    <figure class="fig"><div class="ph render"><img src="/projects/sage-barista-grind-by-weight/img/cup-scale.png" alt="Render of Direction A: a portafilter-shaped cup scale with three lugs and a handle, its brown cup slid out of a window in the front" loading="lazy" width="1277" height="1064"></div><figcaption>Direction A. The cup sits on a 100 g load cell and slides out of the front to be tipped into the real portafilter.</figcaption></figure>
     <p>I already use a dosing ring, which clips onto the portafilter's ears and hangs on the cradle's hooks. B is that ring, <strong>cut in two, with a load cell as the only thing joining the halves.</strong> The top half hangs on the hooks and is never weighed. The bottom half grips the portafilter exactly as the ring does today. Everything below the cut, portafilter and coffee, hangs from the cell.</p>
   </div>
 
@@ -224,7 +223,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
   <div class="col">
     <span class="eyebrow">what's in it</span>
     <h2>Parts</h2>
-    <figure class="fig"><div class="ph render"><img src="/projects/sage-barista-grind-by-weight/img/ring-render.png" alt="Render of the weighing dosing ring: cream top ring with three lugs, tan sleeve below it, the box across the front, and the portafilter hanging underneath" loading="lazy" width="1899" height="1075"></div><figcaption>Cream is the top piece and isn't weighed. Tan is the sleeve, which grips the portafilter's ears. The box across the front holds the load cell, the boards and the battery.</figcaption></figure>
+    <figure class="fig"><div class="ph render"><img src="/projects/sage-barista-grind-by-weight/img/ring-render.png" alt="Render of the weighing dosing ring: cream top ring with three lugs, tan sleeve below it, the box across the front, and the portafilter hanging underneath" loading="lazy" width="1899" height="1075"></div><figcaption>The ring assembled, in the same colours as the exploded view at the top.</figcaption></figure>
     <table class="tbl stack">
       <tr><th>Item</th><th>Notes</th><th>Paid</th></tr>
       <tr><td>Seeed XIAO ESP32-C6</td><td>Zigbee radio, deep sleep, LiPo charger on board. Thumbnail-sized.</td><td class="num" data-l="Paid">£5.20</td></tr>
@@ -392,11 +391,8 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
     </div>
 
     <p>So that Sunday I ran the script by hand, with the scale on a USB wall plug and the 0.35 g lead:</p>
-    <div class="stats">
+    <div class="stats" style="grid-template-columns:1fr">
       <div class="stat"><div class="n"><span data-count="18.0">18.0</span><i>g</i></div><div class="l">on an 18.0 g target. Error 0.0, two presses, "stopped by weight". The first dose armed by Home Assistant.</div></div>
-      <div class="stat"><div class="n"><span data-count="0.89">0.89</span><i>s</i></div><div class="l">from the start press to the first grounds, both bench grinds.</div></div>
-      <div class="stat"><div class="n"><span data-count="1.62">1.62</span><i>g/s</i></div><div class="l">flow at my grind setting. The simulator now uses the measured numbers.</div></div>
-      <div class="stat"><div class="n"><span data-count="0.35">0.35</span><i>g</i></div><div class="l">lands after the stop press: Zigbee hop, relay, spin-down, chute. That is the lead.</div></div>
     </div>
 
     <div class="log">
