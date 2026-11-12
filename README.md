@@ -28,5 +28,6 @@ under **marcuslab.uk**.
   your own visits out, run `localStorage.setItem('umami.disabled', 1)` in the
   console on marcuslab.uk.
 - Colour: see `brand/tokens/contrast.md` for the measured contrast of every pairing.
-- To preview: serve the folder (e.g. `python3 -m http.server`) and open it
-  in a browser — the GSAP scripts and fonts are loaded from absolute paths.
+- To preview: `python3 tools/serve.py` and open http://localhost:8000. It is a plain static
+  server that tells the browser not to cache, so edits always show. Pages use absolute paths,
+  so they need a server and won't work opened as files.
