@@ -45,6 +45,7 @@
       <clipPath id="ldl"><rect x="0" y="0" width="32" height="64"/></clipPath>
       <clipPath id="ldr"><rect x="32" y="0" width="32" height="64"/></clipPath>
       <clipPath id="ldw"><rect class="l-wipe" x="10" y="48" width="44" height="0"/></clipPath>
+      <mask id="ldo" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><path class="l-out dr" d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#fff" stroke-width="2.9" stroke-linejoin="round"/><g class="l-corners" fill="#fff"></g></mask>
       <clipPath id="ldx"><rect class="l-cutwipe" x="32" y="3" width="32" height="64"/></clipPath>
       <clipPath id="ldc"><rect class="l-linewipe" x="29" y="3" width="6" height="0"/></clipPath>
       <clipPath id="ldt"><rect class="l-rulewipe" x="13" y="72" width="0" height="8"/></clipPath>
@@ -53,10 +54,10 @@
     <g class="l-guides" stroke="#ffedd7" stroke-opacity=".45" stroke-width=".3"><path class="dr" d="M32 16 H3"/><path class="dr" d="M32 16 H61"/><path class="dr" d="M32 48 H3"/><path class="dr" d="M32 48 H61"/><path class="dr" d="M12 32 V7"/><path class="dr" d="M12 32 V57"/><path class="dr" d="M52 32 V7"/><path class="dr" d="M52 32 V57"/></g>
     <g clip-path="url(#ldw)"><g clip-path="url(#ldl)"><path d="${M}" fill="#ffedd7"/></g><g clip-path="url(#ldr)"><g clip-path="url(#ldx)"><path d="${M}" fill="#ffedd7"/></g></g></g>
     <g clip-path="url(#ldr)"><g clip-path="url(#ldm)" class="ld-hatch" stroke="#ffedd7" stroke-width="1.9"></g></g>
-    <path class="l-out dr" d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#ffedd7" stroke-width="2.6" stroke-linejoin="miter"/>
+    <path d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#ffedd7" stroke-width="2.6" stroke-linejoin="miter" mask="url(#ldo)"/>
     <circle class="l-pen" r="1.1" fill="#e8590c"/>
-    <g clip-path="url(#ldc)"><path d="M32 4 V60" stroke="#e8590c" stroke-width="2" stroke-dasharray="14 2.5 2 2.5"/></g>
-    <g class="l-arrows" opacity="0" stroke="#e8590c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="dr" d="M32 4 H42"/><path class="dr" d="M39.4 1.7 L42.5 4 L39.4 6.3"/><path class="dr" d="M32 60 H42"/><path class="dr" d="M39.4 57.7 L42.5 60 L39.4 62.3"/></g>
+    <g clip-path="url(#ldc)"><path d="M32 3.25 V60.75" stroke="#e8590c" stroke-width="2" stroke-dasharray="14.5 2.5 2 2.5"/></g>
+    <g class="l-arrows" opacity="0" stroke="#e8590c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="dr" d="M32 4 H42" stroke-linecap="butt"/><path class="dr" d="M39.4 1.7 L42.5 4 L39.4 6.3"/><path class="dr" d="M32 60 H42" stroke-linecap="butt"/><path class="dr" d="M39.4 57.7 L42.5 60 L39.4 62.3"/></g>
     <text class="l-cap" x="32.9" y="69.4" text-anchor="middle" font-family="Outfit, system-ui, sans-serif" font-weight="700" font-size="4.3" letter-spacing="1.7" fill="#ffedd7" fill-opacity="0" stroke="#ffedd7" stroke-width=".22" stroke-dasharray="26" stroke-dashoffset="26">MARCUS LAB</text>
     <g class="l-foot">
       <g clip-path="url(#ldt)"><path d="M14 77 H50" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/><path d="M14 77 v-2.6 M17 77 v-1.3 M20 77 v-1.3 M23 77 v-2.6 M26 77 v-1.3 M29 77 v-1.3 M32 77 v-2.6 M35 77 v-1.3 M38 77 v-1.3 M41 77 v-2.6 M44 77 v-1.3 M47 77 v-1.3 M50 77 v-2.6" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/></g>
@@ -83,7 +84,17 @@
     document.querySelectorAll('#loader .dr').forEach(el => { const n = el.getTotalLength(); el.style.strokeDasharray = n; el.style.strokeDashoffset = n; el._len = n; });
     const outlines = [...document.querySelectorAll('.l-out')], pens = [...document.querySelectorAll('.l-pen')];
     const pen = { t: 0 };
-    const movePen = () => outlines.forEach((o, i) => { const pt = o.getPointAtLength(o._len * pen.t); pens[i].setAttribute('cx', pt.x); pens[i].setAttribute('cy', pt.y); });
+    // the outline is revealed by a round-cornered stroke that follows the pen. A mitred corner's point would otherwise appear whole
+    // in one frame, so each point grows out from its joint as the pen turns the corner (a circle in the mask, MP is the M's corners)
+    let run = 16; const corners = MP.map((v, i) => {
+      const a = i ? MP[i - 1] : [12, 32], b = MP[i + 1] || [12, 32], ang = Math.abs(Math.atan2(a[1] - v[1], a[0] - v[0]) - Math.atan2(b[1] - v[1], b[0] - v[0]));
+      const c = { at: run, m: 1.3 / Math.sin(Math.min(ang, 2 * Math.PI - ang) / 2) + .1 }; run += Math.hypot(b[0] - v[0], b[1] - v[1]); return c;
+    });
+    document.querySelectorAll('.l-corners').forEach(g => MP.forEach(([x, y]) => g.insertAdjacentHTML('beforeend', `<circle cx="${x}" cy="${y}" r="0"/>`)));
+    const movePen = () => outlines.forEach((o, i) => {
+      const at = o._len * pen.t, pt = o.getPointAtLength(at); pens[i].setAttribute('cx', pt.x); pens[i].setAttribute('cy', pt.y);
+      [...document.querySelectorAll('.l-corners')[i].children].forEach((c, n) => c.setAttribute('r', corners[n].m * Math.min(1, Math.max(0, (at - corners[n].at) / (2.5 * corners[n].m)))));
+    });
     movePen(); gsap.set(pens, { opacity: 0 });
     // the cut: as the centre line comes down, the solid right half is taken away above its tip and the hatching is ruled in behind it
     const cut = { y: 3 };
@@ -116,11 +127,9 @@
       if (opts.before) opts.before(v);
       gsap.timeline({ onComplete: () => { document.getElementById('loader').style.display = 'none'; try { sessionStorage.setItem('ml-seen', '1'); } catch (e) {} } })
         .to('.l-foot', { opacity: 0, duration: .3, ease: 'sine.inOut' }, 0)
-        .to('.l-seam', { scaleY: 1, duration: .45, ease: 'power2.inOut' }, 0)
-        .to('.lh.l', { xPercent: -101, duration: 1.0, ease: 'expo.inOut' }, .3)
-        .to('.lh.r', { xPercent: 101, duration: 1.0, ease: 'expo.inOut' }, .3)
-        .to('.l-seam', { opacity: 0, duration: .4, ease: 'sine.out' }, .8)
-        .add(() => { if (ZB.lenis) ZB.lenis.start(); done(v); }, .55);
+        .to('.lh.l', { xPercent: -101, duration: 1.0, ease: 'expo.inOut' }, .1)
+        .to('.lh.r', { xPercent: 101, duration: 1.0, ease: 'expo.inOut' }, .1)
+        .add(() => { if (ZB.lenis) ZB.lenis.start(); done(v); }, .35);
     }));
   });
 

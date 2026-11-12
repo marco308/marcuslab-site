@@ -105,11 +105,11 @@ def chain(y0, y1, line, width=None):
 def mark(fg, line, uid="m", arrows=False):
     """The Section A–A mark: solid left half, hatched right half, an outline, and the chain centre line.
     When the line is the same colour as the mark (one-colour files) the halves stop short of it, so the cut still shows."""
-    y0, y1 = (4, 60) if arrows else (L["line-top"], L["line-bottom"])
+    y0, y1 = (4 - .75, 60 + .75) if arrows else (L["line-top"], L["line-bottom"])   # with arrows: out to the outer edge of their shafts, for a square corner
     gap, lw = (L["cut-gap"], L["mono-line-width"]) if line == fg else (0, None)
     extra = ""
     if arrows:
-        a = lambda y: f'<path d="M{CX} {y} H42 M39.4 {y - 2.3} L42.5 {y} L39.4 {y + 2.3}"/>'
+        a = lambda y: f'<path d="M{CX} {y} H42" stroke-linecap="butt"/><path d="M39.4 {y - 2.3} L42.5 {y} L39.4 {y + 2.3}"/>'
         extra = f'<g fill="none" stroke="{line}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">{a(4)}{a(60)}</g>'
     edge = f'<polygon points="{OUT}" fill="none" stroke="{fg}" stroke-width="{L["edge-width"]}" stroke-linejoin="miter"/>'
     both = f'<clipPath id="{uid}b"><rect x="0" y="0" width="{CX - gap}" height="64"/><rect x="{CX + gap}" y="0" width="{64 - CX}" height="64"/></clipPath>' if gap else ""
