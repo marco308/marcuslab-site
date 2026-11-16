@@ -259,7 +259,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
   <div class="view"><canvas id="gl" aria-hidden="true"></canvas><div class="tags" aria-hidden="true"></div></div>
 
   <div class="panel" id="work" data-lenis-prevent>
-    <div class="panel-head"><h2>Parts list</h2><span id="count" aria-live="polite">8 items</span></div>
+    <div class="panel-head"><h2>Parts list</h2><span id="count" aria-live="polite">9 items</span></div>
     <div class="filters" role="group" aria-label="Filter by type">
       <button type="button" data-f="" aria-pressed="true">All</button>
       <button type="button" data-f="software" data-type="software" aria-pressed="false"><i></i>Software</button>
@@ -329,9 +329,18 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
         </button>
         <div class="more"><p>An API that generates legitimate-sounding business meeting names. Pop a “Quarterly Pint Review” in your calendar and nobody questions where you've gone.</p><p class="mo">Python · API · MIT</p><p class="lk"><a href="https://pmaas.marcuslab.uk/docs">API docs</a><a href="https://github.com/marco308/PMaaS">GitHub</a></p></div>
       </li>
-      <li class="row retired" data-id="haticktick" data-type="software">
+      <li class="row" data-id="labels" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
           <span class="no">08</span>
+          <span class="what"><span class="nm">Label printer</span><span class="ds">A label maker my AI agent can print on</span></span>
+          <span class="ty"><i></i>Software</span>
+          <span class="st"><i class="lamp"></i>Live</span>
+        </button>
+        <div class="more"><p>A cheap Bluetooth label maker now lives on my home server. Claude can print on it, and so can my meals app. Labelling went from a job I always skipped to one sentence.</p><p class="mo">Bluetooth LE · Python · MCP · Docker</p><p class="lk"><a href="/projects/label-printer/">Write-up</a></p></div>
+      </li>
+      <li class="row retired" data-id="haticktick" data-type="software">
+        <button class="rowhead" type="button" aria-expanded="false">
+          <span class="no">09</span>
           <span class="what"><span class="nm">HA TickTick</span><span class="ds">TickTick tasks in Home Assistant</span></span>
           <span class="ty"><i></i>Software</span>
           <span class="st"><i class="lamp"></i>Retired</span>
