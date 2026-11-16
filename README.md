@@ -2,7 +2,7 @@
 
 Personal portfolio for Marcus Williams — showcases and links out to public
 projects (YAMP, zigbrew, the pan lid rack, Podcast Manager, mDone,
-ChukkaTimer, HA TickTick integration, PMaaS).
+ChukkaTimer, Label Printer MCP, HA TickTick integration, PMaaS).
 
 Static single-page site (`index.html`, no build step). Intended to be hosted
 under **marcuslab.uk**.

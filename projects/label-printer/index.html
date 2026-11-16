@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Labelled: I gave my AI agent a label printer · marcuslab</title>
+<link rel="canonical" href="https://marcuslab.uk/projects/label-printer/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://marcuslab.uk/projects/label-printer/">
+<meta property="og:site_name" content="marcuslab">
+<meta property="og:title" content="Labelled: I gave my AI agent a label printer">
+<meta property="og:description" content="A cheap Bluetooth label maker with a tiny keyboard now lives on my home server. Claude prints on it, and so does my meals app. Labelling went from a job I skipped to one sentence.">
+<meta property="og:image" content="https://marcuslab.uk/projects/label-printer/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="A cheap Bluetooth label maker now lives on my home server. Claude prints on it, and so does my meals app.">
+<meta name="theme-color" content="#17110d">
+<link rel="icon" href="/brand/logo/svg/labels-icon-micro-olive.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
+<script>
+/* "anim" turns on everything that is drawn or moved in. Without it (no JS, or reduced motion) this is a plain article. */
+(function(){ var d = document.documentElement; d.classList.add('js'); try{ if (sessionStorage.getItem('ml-seen')) d.classList.add('seen'); }catch(e){} if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim'); })();
+</script>
+<link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
+<link rel="stylesheet" href="/assets/zigbrew/zigbrew.css">
+<style>
+/* label printer page: what it adds to the build-log kit */
+.kind.sw i{ background:#62a3ea; }
+.hero h1{ font-size:clamp(46px,8vw,128px); overflow-wrap:normal; }
+@media (max-width:899px){ .hero h1{ font-size:clamp(40px,13vw,96px); } }
+
+/* the conversation, as a transcript */
+/* the conversation, as a mocked-up chat window (a light app window sitting on the dark page) */
+.chatwin{ margin-top:30px !important; background:#faf9f5; color:#29261b; border:1px solid #e3dfd3; box-shadow:0 18px 40px rgba(0,0,0,.4); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+.cw-bar{ display:flex; align-items:center; gap:7px; padding:10px 14px; border-bottom:1px solid #e8e5dc; background:#f3f1ea; }
+.cw-bar i{ width:11px; height:11px; border-radius:50%; background:#d9d5ca; }
+.cw-bar span{ flex:1; text-align:center; font-size:13px; font-weight:500; color:#6b675c; margin-right:51px; }
+.cw-body{ padding:22px 22px 8px; display:flex; flex-direction:column; gap:18px; }
+.msg p{ margin:0; color:inherit !important; }
+.msg.me{ align-self:flex-end; max-width:82%; background:#efece3; border-radius:14px; padding:10px 14px; font-size:15.5px; line-height:1.45; }
+.msg.ai{ align-self:flex-start; max-width:94%; font-family:Georgia,"Times New Roman",serif; font-size:16.5px; line-height:1.55; font-weight:400; color:#29261b; }
+.msg .who{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+.msg .lbl{ max-width:230px; margin-top:12px; border:1px solid #e3dfd3; }
+.cw-input{ margin:10px 16px 16px; border:1px solid #dcd8cc; border-radius:14px; padding:13px 16px; font-size:14.5px; color:#8e8a7e; background:#fff; }
+.chatwin + figcaption, .chatwrap figcaption{ margin-top:12px; }
+
+/* a label, dot for dot */
+.lbl{ background:#fbf8f2; padding:4% 3%; }
+.lbl img{ width:100%; image-rendering:pixelated; image-rendering:crisp-edges; }
+.liner{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:14px; background:var(--dark-3); border:1px solid var(--rule); }
+.liner.l2{ grid-template-columns:repeat(2,1fr); max-width:620px; }
+
+/* QR codes at real size */
+
+
+.stats .stat .u{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); margin-top:6px; }
+
+@media (max-width:899px){
+  .liner{ grid-template-columns:repeat(2,1fr); padding:10px; gap:8px; }
+  .liner.l2{ grid-template-columns:1fr; }
+  .cw-body{ padding:16px 14px 6px; } .msg.me{ max-width:90%; } .msg.ai{ max-width:100%; }
+  .chain{ flex-direction:column; } .chain .link{ flex-basis:34px; }
+  .chain .link i{ left:50%; right:auto; top:0; bottom:0; width:1.5px; height:auto; transform-origin:50% 0; }
+  .chain .link i::after{ right:-4px; top:auto; bottom:-1px; border-left:4.5px solid transparent; border-right:4.5px solid transparent; border-top:7px solid var(--cream); border-bottom:0; }
+  .chain .link em{ bottom:auto; top:50%; transform:translateY(-50%); left:calc(50% + 12px); text-align:left; }
+}
+</style>
+<script>addEventListener('load', function(){ var s = document.createElement('script'); s.src = 'https://stats.marcuslab.uk/m.js'; s.dataset.websiteId = '91f11161-cf9b-4e81-a77b-114e94374a5d'; s.dataset.domains = 'marcuslab.uk'; document.head.appendChild(s); });</script>
+<script defer src="/links.js"></script>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true"><div class="lh l"><div class="lc"></div></div><div class="lh r"><div class="lc"></div></div></div>
+
+<header class="nav">
+  <a class="brand" href="/" aria-label="Marcus Lab, home"><span class="mk" data-mark="#ffedd7,#e8590c"></span><span class="t">Marcus Lab</span></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="/#work">Work</a>
+    <a href="/projects/sage-barista-zigbee/">zigbrew</a>
+    <a class="opt" href="https://github.com/marco308">GitHub</a><a class="opt" href="https://www.printables.com/@MarcoPolo_2354790">Printables</a>
+  </nav>
+  <div class="progress" aria-hidden="true"></div>
+</header>
+
+<main>
+
+<div class="hero">
+  <div class="hero-in">
+    <div>
+      <div class="crumb mono"><img class="zmk" src="/brand/logo/svg/labels-mark-cream.svg" width="44" height="44" alt="label printer"><a href="/#work">projects</a><span>/</span><span>label printer</span><span class="kind sw"><i></i>Software</span></div>
+      <h1>Labelled<span class="vh">:</span> <small>I gave my AI agent a label printer</small></h1>
+      <p class="dek">A cheap Bluetooth label maker, made to be typed on with its own little keyboard or a phone app, now lives on my home server. Claude can print on it, and so can <a href="https://marco308.github.io/meals/">my meals app</a>. Labelling went from a job I always skipped to one sentence.</p>
+      <div class="meta">
+        <span class="date">November 2026 · 4 min read</span>
+      </div>
+    </div>
+    <figure class="print"><div class="ph"><img src="/projects/label-printer/img/og.jpg" alt="Black 3D-printed pan lid clips on a green desk mat, each with a white label such as 'L6 cradle, bar 2 · 180 mm'" width="1200" height="630"></div><span class="cap">Twelve clips, labelled</span></figure>
+  </div>
+</div>
+
+<!-- ============ WHY ============ -->
+<section class="sec">
+  <div class="col">
+    <span class="eyebrow">why</span>
+    <p class="lead">Labelling things was never hard. It was just fiddly enough that I never did it.</p>
+    <p>I'd 3D-printed twelve clips to hang six pan lids inside a cupboard door, a cradle and a hook for each lid, spread over four bars. Claude had worked out the layout with me, so it knew which clip went where. They came off the printer as twelve near-identical black lumps.</p>
+
+    <figure class="chatwrap">
+      <div class="chatwin" role="group" aria-label="The conversation that printed the labels">
+        <div class="cw-bar" aria-hidden="true"><i></i><i></i><i></i><span>Pan lid clips</span></div>
+        <div class="cw-body">
+          <div class="msg me"><span class="who">Me:</span><p>You didn't put any labels on these. How am I meant to know which hook is meant for which pan?</p></div>
+          <div class="msg ai"><span class="who">Claude:</span><p>You're right, I should have marked them… Sort them once and I can print a small tag for each on the label printer, like "L6 cradle · bar 2". I'll show you a preview first.</p></div>
+          <div class="msg me"><span class="who">Me:</span><p>ok lets print some labels</p></div>
+          <div class="msg ai"><span class="who">Claude:</span><p>Here's the preview for one of the 12. The printer is connected and has 40 mm labels loaded, 161 left.</p><div class="lbl"><img src="/projects/label-printer/img/lid-09.png" alt="Label preview: L6 cradle, bar 2 · 180 mm" width="320" height="96"></div></div>
+          <div class="msg me"><span class="who">Me:</span><p>yes print all 12</p></div>
+        </div>
+        <div class="cw-input" aria-hidden="true">Reply to Claude…</div>
+      </div>
+      <figcaption>The whole job, three messages from me. Claude's replies are trimmed.</figcaption>
+    </figure>
+  </div>
+
+  <div class="wide mid">
+    <div class="liner" role="img" aria-label="The twelve labels as sent to the printer: L1 to L7, cradle and hook, each with its bar and distance along the bar">
+      <div class="lbl"><img src="/projects/label-printer/img/lid-01.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-02.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-03.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-04.png" alt="" width="320" height="96"></div>
+      <div class="lbl"><img src="/projects/label-printer/img/lid-05.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-06.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-07.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-08.png" alt="" width="320" height="96"></div>
+      <div class="lbl"><img src="/projects/label-printer/img/lid-09.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-10.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-11.png" alt="" width="320" height="96"></div><div class="lbl"><img src="/projects/label-printer/img/lid-12.png" alt="" width="320" height="96"></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>I only complained that the clips weren't marked. It was Claude that brought up the printer. Nobody types twelve labels with measurements on a thumb-sized keyboard. I'd have used a marker pen, badly, or nothing at all.</p>
+    <div class="note"><span class="k">The actual point</span><p><strong>The agent already knows what the label should say.</strong> It has the layout, or the recipe, or the date, so writing the label costs it nothing. It just needed a printer.</p></div>
+  </div>
+</section>
+
+<!-- ============ FREEZER ============ -->
+<section class="sec">
+  <div class="col">
+    <span class="eyebrow">the kitchen</span>
+    <h2>Freezer labels</h2>
+    <p>The first real user wasn't an agent. <a href="https://marco308.github.io/meals/">YAMP</a>, my meals app, keeps a list of what's in the freezer, and every batch now has a print button. Out comes the dish, the date it went in, and a QR code that opens the recipe.</p>
+    <div class="liner l2">
+      <div class="lbl"><img src="/projects/label-printer/img/freezer-chilli.png" alt="Freezer label: QR code, 'Chilli con carne', 'Frozen 12 Oct 2026'" width="320" height="96"></div>
+      <div class="lbl"><img src="/projects/label-printer/img/freezer-curry.png" alt="Freezer label without a QR code: 'Thai green curry', 'Frozen 19 Oct 2026'" width="320" height="96"></div>
+    </div>
+    <p>The QR code links to a short address written in capitals, because QR codes pack capitals more tightly. Each square then gets three dots instead of two, which a phone finds much easier to read off a 12 mm label.</p>
+  </div>
+</section>
+
+<!-- ============ HOW ============ -->
+<section class="sec">
+  <div class="col">
+    <span class="eyebrow">how it works</span>
+    <h2>How it fits together</h2>
+    <p>Bluetooth only reaches about one room, so the home server owns the printer and everything else talks to it. Clients send it words, like "freezer label, chilli, frozen today", and the service draws the label itself. So a label looks the same whoever asked for it.</p>
+  </div>
+
+  <div class="wide dia">
+    <div class="cq"><div class="chain" data-chain role="img" aria-label="Claude or the meals app sends a request through Cloudflare, Traefik and nginx to the label service, which prints over Bluetooth">
+      <div class="node"><b>Claude · YAMP</b><span>own token each</span></div>
+      <div class="link"><i></i><em>HTTPS</em><u></u></div>
+      <div class="node"><b>Cloudflare</b><span>public door</span></div>
+      <div class="link"><i></i><u></u></div>
+      <div class="node"><b>Traefik + nginx</b><span>Swarm</span></div>
+      <div class="link"><i></i><u></u></div>
+      <div class="node hot"><b>Label service</b><span>REST + MCP</span><span>draws the dots</span></div>
+      <div class="link or"><i></i><em>BLE</em><u></u></div>
+      <div class="node"><b>SUPVAN E11</b><span>96-dot head</span></div>
+    </div></div>
+    <p class="cap-note">Claude talks to it over MCP. It has three tools (check the printer, preview, print) and it always shows me the preview and waits for a yes.</p>
+  </div>
+
+  <div class="col">
+    <p>The protocol was someone else's hard work. <a href="https://github.com/heeen/supvan-cups">heeen/supvan-cups</a> reverse-engineered it, and <a href="https://github.com/efcroasdell/supvan-cups">efcroasdell's fork</a> and <a href="https://github.com/Curetix/label-printer">Curetix/label-printer</a> worked out the E11. I ported the parts I needed to Python. This is what one 40 × 12 mm label turns into on the way.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">320<i>× 96</i></div><div class="l">dots, black or white, drawn by the service</div></div>
+      <div class="stat"><div class="n" data-count="3840">3840</div><div class="l">bytes once packed, 12 per column</div></div>
+      <div class="stat"><div class="n" data-count="609">609</div><div class="l">bytes after LZMA, with the 8 KB dictionary the firmware expects</div></div>
+      <div class="stat"><div class="n">8<i>× 128 B</i></div><div class="l">Bluetooth writes, 10 ms apart</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OBSTACLES ============ -->
+<section class="sec">
+  <div class="col">
+    <span class="eyebrow">the hard bits</span>
+    <h2>What fought back</h2>
+    <ol class="steps">
+      <li><span class="no">01</span><b>macOS killed it on sight.</b><p>Programs Claude Code starts can't use Bluetooth, so the first version needed a tiny bridge app to own the connection.</p></li>
+      <li><span class="no">02</span><b>Docker Swarm can't reach Bluetooth.</b><p>So the service is a plain Compose container, with a small nginx inside Swarm as its front door.</p></li>
+      <li><span class="no">03</span><b>The printer falls asleep.</b><p>After 15 to 20 minutes, and nothing over Bluetooth wakes it. You get "is it switched on?" instead of a connection error.</p></li>
+      <li><span class="no">04</span><b>Bots found the front door.</b><p>Every app has its own token, there are rate limits, and bans use the real address from Cloudflare's header.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ NEXT ============ -->
+<section class="sec">
+  <div class="col">
+    <span class="eyebrow">what's next</span>
+    <p class="lead">The printer should work in any room.</p>
+    <p>Today it has to be within reach of the server's own radio. The service already knows how to use ESPHome Bluetooth proxies, small boards that pass Bluetooth on to the network, so another room should be one plug and one line of config.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span class="mono">© 2026 Marcus · marcuslab.uk · do not scale</span>
+  <div class="fl mono">
+    <a href="/#work">work</a><a href="/projects/sage-barista-zigbee/">zigbrew</a><a href="https://github.com/marco308">github</a><a href="https://www.printables.com/@MarcoPolo_2354790">printables</a><a href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
+  </div>
+</footer>
+
+<script src="/vendor/gsap/gsap.min.js"></script>
+<script src="/vendor/gsap/ScrollTrigger.min.js"></script>
+<script src="/vendor/gsap/SplitText.min.js"></script>
+<script src="/vendor/lenis/lenis.min.js"></script>
+<script src="/assets/zigbrew/zigbrew.js"></script>
+<script>
+(function () {
+  const ZB = window.ZB; if (!ZB || !ZB.anim) return;
+  // labels come off the roll one after another
+  document.querySelectorAll('.liner').forEach(l => ZB.wipe(l.children, { dir: 'left', x: -20, y: 0, trigger: l, stagger: .07, duration: .55 }));
+  ZB.wipe('.msg', { dir: 'up', y: 14, trigger: '.chatwin', stagger: .35, duration: .6, start: 'top 80%' });
+  document.querySelector('.chain')._after = () => { document.querySelectorAll('.chain .node').forEach((n, i) => gsap.delayedCall(.2 * i, () => n.classList.add('lit'))); ZB.pulse(document.querySelector('.chain'), .25); };
+
+  gsap.set(['.crumb', '.dek', '.meta'], { y: 30, clipPath: 'inset(0 0 100% 0)' }); gsap.set('.hero h1', { visibility: 'hidden' }); gsap.set('.print', { yPercent: 130, rotation: -7 });
+  ZB.wire();
+  ZB.start({ caption: 'LABEL PRINTER · SHEET 1 OF 1' }).then(() => {
+    const h = SplitText.create('.hero h1', { type: 'words,chars', mask: 'chars' });   // words too, so a word never breaks across lines
+    gsap.set('.hero h1', { visibility: 'visible' });
+    gsap.timeline()
+      .to('.crumb', { y: 0, clipPath: 'inset(0 0 0% 0)', duration: .6 }, 0)
+      .from(h.chars, { yPercent: 105, duration: .8, stagger: .012, ease: 'power3.out' }, .05)
+      .to(['.dek', '.meta'], { y: 0, clipPath: 'inset(0 0 0% 0)', duration: .7, stagger: .08, clearProps: 'clipPath,transform' }, .35)
+      .to('.print', { yPercent: 0, rotation: 2.2, duration: 1.1, ease: 'power3.out', clearProps: 'transform' }, .2)
+      .add(() => (ZB.held || []).forEach(f => f()), .55);
+  });
+})();
+</script>
+</body>
+</html>
