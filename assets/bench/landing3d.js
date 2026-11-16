@@ -100,7 +100,7 @@ function decal(w, d, y, texture, extra = {}) {   // a picture laid flat, facing 
   m.rotation.x = -Math.PI / 2; m.position.y = y; m.receiveShadow = true; return m;
 }
 
-/* ---------- the eight things ---------- */
+/* ---------- the nine things ---------- */
 const OBJECTS = [];
 function add(id, x, z, rotY, build) {
   const g = new THREE.Group(); g.position.set(x, 1.4, z); g.rotation.y = rotY;
@@ -249,6 +249,85 @@ add('haticktick', 352, 122, rad(-8), g => {
   const e = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(70, 40, 70)), new THREE.LineDashedMaterial({ color: 0xffedd7, dashSize: 6, gapSize: 5, transparent: true, opacity: .5 }));
   e.computeLineDistances(); e.position.y = 21; g.add(e);
   g.add(at(new THREE.Mesh(new THREE.BoxGeometry(70, 40, 70), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })), 0, 21, 0));
+});
+
+// Label printer: the E11 lying on its back, keyboard up, with a strip of labels coming out of its side slot.
+// Sizes are measured off photos (about 80 x 152 x 34 mm); the two labels on the tape are the real bitmaps it printed.
+add('labels', 150, 196, rad(-6), g => {
+  const W = 80, L = 152, H = 34, R = 10, B = 3;
+  // drawn on an 80 x 152 grid, then stretched to the size measured off a cutting mat: about 85 x 160 mm
+  const WR = 85, LR = 160, dev = new THREE.Group(); dev.scale.set(WR / W, 1, LR / L); g.add(dev);
+  const shell = std({ color: 0x1c1c1e, roughness: .55 });
+  const body = sh(new THREE.Mesh(new THREE.ExtrudeGeometry(roundedRect(W - 2 * B, L - 2 * B, R - B), { depth: H - 2 * B, bevelEnabled: true, bevelSize: B, bevelThickness: B, bevelSegments: 6, curveSegments: 20 }), shell));
+  body.rotation.x = -Math.PI / 2; body.position.y = B; dev.add(body);
+
+  // the face: screen window, the LCD showing the label it's about to print, and the maker's name
+  const PXF = 8, face = tex(W * PXF, L * PXF, (c, w, h) => {
+    const X = x => (x + W / 2) * PXF, Z = z => (z + L / 2) * PXF;
+    c.clearRect(0, 0, w, h);
+    c.fillStyle = '#0d0d0e'; c.beginPath(); c.roundRect(X(-31), Z(-69), 62 * PXF, 39 * PXF, 3 * PXF); c.fill();
+    const lcd = c.createLinearGradient(0, Z(-64), 0, Z(-36)); lcd.addColorStop(0, '#c4c8b8'); lcd.addColorStop(1, '#aeb3a2');
+    c.fillStyle = lcd; c.fillRect(X(-27), Z(-64), 54 * PXF, 28 * PXF);
+    c.fillStyle = '#26281f'; c.font = `500 ${2.6 * PXF}px ${MONO}`; c.fillText('12mm', X(-25), Z(-60)); c.fillRect(X(17.5), Z(-62.4), 6 * PXF, 2.6 * PXF);
+    c.fillRect(X(-25), Z(-58.6), 50 * PXF, .3 * PXF);
+    c.font = `500 ${5.2 * PXF}px ${SANS}`; c.fillText('L6 cradle', X(-24), Z(-48.5)); c.font = `500 ${4 * PXF}px ${SANS}`; c.fillText('bar 2 · 180 mm', X(-24), Z(-41.5));
+    c.fillStyle = '#c9ccd0'; c.textAlign = 'center'; c.font = `600 ${3.3 * PXF}px ${SANS}`; c.fillText('K A T A S Y M B O L', X(0), Z(-24));
+  });
+  const faceM = new THREE.Mesh(new THREE.PlaneGeometry(W, L), new THREE.MeshStandardMaterial({ map: face, transparent: true, roughness: .3 }));
+  faceM.rotation.x = -Math.PI / 2; faceM.position.y = H + .03; faceM.receiveShadow = true; dev.add(faceM);
+  const lens = new THREE.Mesh(new THREE.PlaneGeometry(62, 39), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: .06, roughness: 0, clearcoat: 1, envMapIntensity: 2.5, depthWrite: false }));
+  lens.rotation.x = -Math.PI / 2; lens.position.set(0, H + .08, -49.5); dev.add(lens);
+
+  // the keys: low caps, legends drawn on one sheet that sits on their tops
+  const keys = [];             // [x, z, w, d, legend, kind]
+  ['⏻', 'AAA', '▢', '▭', '⎙'].forEach((k, i) => keys.push([-26 + i * 13, -15, 9.5, 5.6, k, i === 0 || i === 4 ? 'blue' : '']));
+  keys.push([-25, -2, 12, 6.6, 'Esc'], [-25, 10, 12, 6.6, 'Set'], [25, -2, 12, 6.6, '⟵ Back'], [25, 10, 12, 6.6, 'Enter']);
+  ['1234567890', 'QWERTYUIOP', 'ASDFGHJKL⚠', 'ZXCVBNM'].forEach((row, r) => [...row].forEach((k, i) => keys.push([-31.05 + i * 6.9, 25 + r * 9, 5.9, 7.2, k])));
+  keys.push([18.98, 52, 9.35, 7.2, '⧉'], [29.33, 52, 9.35, 7.2, '▥']);          // copies and barcode: two wide keys end the last letter row
+  keys.push([-26.2, 61, 11.2, 7.2, 'Fn', 'or'], [-4.1, 61, 30, 7.2, '⌴'], [17.6, 61, 9, 7.2, 'A/a'], [27, 61, 7.6, 7.2, 'Lng']);
+  const capMat = std({ color: 0x232325, roughness: .6 }), capBlue = std({ color: 0x8fc0de, roughness: .5 });
+  keys.forEach(([x, z, w, d, , kind]) => { const k = sh(new THREE.Mesh(new THREE.BoxGeometry(w, 1.4, d), kind === 'blue' ? capBlue : capMat)); k.position.set(x, H + .7, z); dev.add(k); });
+  const pad = sh(new THREE.Mesh(new THREE.CylinderGeometry(9.6, 9.6, 1.6, 48), capMat)); pad.position.set(0, H + .8, 4); dev.add(pad);
+  const KX = W * 10, legends = tex(KX, L * 10, (c) => {
+    const X = x => (x + W / 2) * 10, Z = z => (z + L / 2) * 10;
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    keys.forEach(([x, z, w, d, k, kind]) => {
+      c.fillStyle = kind === 'blue' ? '#8fc0de' : '#262628'; c.beginPath(); c.roundRect(X(x - w / 2), Z(z - d / 2), w * 10, d * 10, 9); c.fill();
+      c.fillStyle = kind === 'blue' ? '#17202a' : kind === 'or' ? '#e8a23c' : '#ece9e2';
+      c.font = `500 ${k.length > 2 ? 22 : 34}px ${k.length > 2 ? SANS : MONO}`; c.fillText(k, X(x), Z(z) + 2);
+    });
+    c.fillStyle = '#262628'; c.beginPath(); c.arc(X(0), Z(4), 96, 0, 7); c.fill(); c.fillStyle = '#ece9e2';
+    [[0, -6.2, 0], [6.2, 0, 1], [0, 6.2, 2], [-6.2, 0, 3]].forEach(([dx, dz, n]) => { c.save(); c.translate(X(dx), Z(4 + dz)); c.rotate(n * Math.PI / 2); c.beginPath(); c.moveTo(0, -9); c.lineTo(8, 6); c.lineTo(-8, 6); c.fill(); c.restore(); });
+  });
+  const legM = new THREE.Mesh(new THREE.PlaneGeometry(W, L), new THREE.MeshStandardMaterial({ map: legends, transparent: true, roughness: .55 }));
+  legM.rotation.x = -Math.PI / 2; legM.position.y = H + 1.62; dev.add(legM);
+
+  // the slot on the right-hand side, and the tape: out of the slot, down to the mat and along it
+  const SZ = -2, SY = H * .55;        // the slot is level with Backspace
+  g.add(at(new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.4, 15), std({ color: 0x050505, roughness: .9 })), WR / 2 + .1, SY, SZ));
+  const path = new THREE.CatmullRomCurve3([[WR / 2 - 4, SY, SZ], [WR / 2 + 7, SY + .3, SZ + 1], [WR / 2 + 15, SY - 5, SZ + 9], [WR / 2 + 19, 5, SZ + 24], [WR / 2 + 22, .6, SZ + 40], [WR / 2 + 34, .5, SZ + 52], [WR / 2 + 56, .5, SZ + 56], [WR / 2 + 110, .5, SZ + 57]].map(p => new THREE.Vector3(...p)), false, 'centripetal');
+  const n = 200, pts = path.getSpacedPoints(n), len = path.getLength(), TW = 12, up = new THREE.Vector3(0, 1, 0), side = new THREE.Vector3();
+  const pos = [], uv = [], idx = [];
+  pts.forEach((p, i) => {             // the strip stays flat: its width is always level, square to the way it's running
+    const t = path.getTangentAt(i / n); side.crossVectors(t, up).setY(0).normalize().multiplyScalar(TW / 2);
+    pos.push(p.x - side.x, p.y, p.z - side.z, p.x + side.x, p.y, p.z + side.z); uv.push(i / n, 1, i / n, 0);
+    if (i) { const a = (i - 1) * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+  });
+  const tapeGeo = new THREE.BufferGeometry(); tapeGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); tapeGeo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); tapeGeo.setIndex(idx); tapeGeo.computeVertexNormals();
+  // the strip at 8 dots per mm, like the printer: liner, then die-cut labels with a 3 mm gap, the printed ones first
+  const D = 8, cw = Math.round(len * D), strip = document.createElement('canvas'); strip.width = cw; strip.height = TW * D;
+  const sc = strip.getContext('2d'), stripTex = new THREE.CanvasTexture(strip); stripTex.colorSpace = THREE.SRGBColorSpace; stripTex.anisotropy = 8;
+  const labelAt = [len - 40 - 4, len - 83 - 4];           // the free end first: the last two labels printed
+  const paint = imgs => {
+    sc.fillStyle = '#e9e6de'; sc.fillRect(0, 0, cw, TW * D);
+    for (let s = len - 4 - 40; s > -40; s -= 43) { sc.fillStyle = '#fbfaf6'; sc.beginPath(); sc.roundRect(s * D, 0, 40 * D, TW * D, 1.6 * D); sc.fill(); }
+    imgs.forEach((im, i) => { if (im) { sc.save(); sc.globalCompositeOperation = 'multiply'; sc.drawImage(im, labelAt[i] * D, 0, 40 * D, TW * D); sc.restore(); } });
+    stripTex.needsUpdate = true;
+  };
+  paint([]);
+  Promise.all(['label-l6-cradle', 'label-next'].map(f => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = `/assets/bench/${f}.png`; }))).then(paint);
+  const tape = new THREE.Mesh(tapeGeo, new THREE.MeshStandardMaterial({ map: stripTex, roughness: .45, side: THREE.DoubleSide }));
+  tape.castShadow = true; tape.receiveShadow = true; g.add(tape);
 });
 
 // zigbrew: the real dosing ring and portafilter, part by part
