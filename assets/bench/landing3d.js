@@ -255,9 +255,11 @@ add('haticktick', 352, 122, rad(-8), g => {
 // Sizes are measured off photos (about 80 x 152 x 34 mm); the two labels on the tape are the real bitmaps it printed.
 add('labels', 150, 196, rad(-6), g => {
   const W = 80, L = 152, H = 34, R = 10, B = 3;
+  // drawn on an 80 x 152 grid, then stretched to the size measured off a cutting mat: about 85 x 160 mm
+  const WR = 85, LR = 160, dev = new THREE.Group(); dev.scale.set(WR / W, 1, LR / L); g.add(dev);
   const shell = std({ color: 0x1c1c1e, roughness: .55 });
   const body = sh(new THREE.Mesh(new THREE.ExtrudeGeometry(roundedRect(W - 2 * B, L - 2 * B, R - B), { depth: H - 2 * B, bevelEnabled: true, bevelSize: B, bevelThickness: B, bevelSegments: 6, curveSegments: 20 }), shell));
-  body.rotation.x = -Math.PI / 2; body.position.y = B; g.add(body);
+  body.rotation.x = -Math.PI / 2; body.position.y = B; dev.add(body);
 
   // the face: screen window, the LCD showing the label it's about to print, and the maker's name
   const PXF = 8, face = tex(W * PXF, L * PXF, (c, w, h) => {
@@ -272,19 +274,20 @@ add('labels', 150, 196, rad(-6), g => {
     c.fillStyle = '#c9ccd0'; c.textAlign = 'center'; c.font = `600 ${3.3 * PXF}px ${SANS}`; c.fillText('K A T A S Y M B O L', X(0), Z(-24));
   });
   const faceM = new THREE.Mesh(new THREE.PlaneGeometry(W, L), new THREE.MeshStandardMaterial({ map: face, transparent: true, roughness: .3 }));
-  faceM.rotation.x = -Math.PI / 2; faceM.position.y = H + .03; faceM.receiveShadow = true; g.add(faceM);
+  faceM.rotation.x = -Math.PI / 2; faceM.position.y = H + .03; faceM.receiveShadow = true; dev.add(faceM);
   const lens = new THREE.Mesh(new THREE.PlaneGeometry(62, 39), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: .06, roughness: 0, clearcoat: 1, envMapIntensity: 2.5, depthWrite: false }));
-  lens.rotation.x = -Math.PI / 2; lens.position.set(0, H + .08, -49.5); g.add(lens);
+  lens.rotation.x = -Math.PI / 2; lens.position.set(0, H + .08, -49.5); dev.add(lens);
 
   // the keys: low caps, legends drawn on one sheet that sits on their tops
   const keys = [];             // [x, z, w, d, legend, kind]
   ['⏻', 'AAA', '▢', '▭', '⎙'].forEach((k, i) => keys.push([-26 + i * 13, -15, 9.5, 5.6, k, i === 0 || i === 4 ? 'blue' : '']));
   keys.push([-25, -2, 12, 6.6, 'Esc'], [-25, 10, 12, 6.6, 'Set'], [25, -2, 12, 6.6, '⟵ Back'], [25, 10, 12, 6.6, 'Enter']);
-  ['1234567890', 'QWERTYUIOP', 'ASDFGHJKL⚠', 'ZXCVBNM⧉⧉▥'].forEach((row, r) => [...row].forEach((k, i) => keys.push([-31.05 + i * 6.9, 25 + r * 9, 5.9, 7.2, k])));
+  ['1234567890', 'QWERTYUIOP', 'ASDFGHJKL⚠', 'ZXCVBNM'].forEach((row, r) => [...row].forEach((k, i) => keys.push([-31.05 + i * 6.9, 25 + r * 9, 5.9, 7.2, k])));
+  keys.push([18.98, 52, 9.35, 7.2, '⧉'], [29.33, 52, 9.35, 7.2, '▥']);          // copies and barcode: two wide keys end the last letter row
   keys.push([-26.2, 61, 11.2, 7.2, 'Fn', 'or'], [-4.1, 61, 30, 7.2, '⌴'], [17.6, 61, 9, 7.2, 'A/a'], [27, 61, 7.6, 7.2, 'Lng']);
   const capMat = std({ color: 0x232325, roughness: .6 }), capBlue = std({ color: 0x8fc0de, roughness: .5 });
-  keys.forEach(([x, z, w, d, , kind]) => { const k = sh(new THREE.Mesh(new THREE.BoxGeometry(w, 1.4, d), kind === 'blue' ? capBlue : capMat)); k.position.set(x, H + .7, z); g.add(k); });
-  const pad = sh(new THREE.Mesh(new THREE.CylinderGeometry(9.6, 9.6, 1.6, 48), capMat)); pad.position.set(0, H + .8, 4); g.add(pad);
+  keys.forEach(([x, z, w, d, , kind]) => { const k = sh(new THREE.Mesh(new THREE.BoxGeometry(w, 1.4, d), kind === 'blue' ? capBlue : capMat)); k.position.set(x, H + .7, z); dev.add(k); });
+  const pad = sh(new THREE.Mesh(new THREE.CylinderGeometry(9.6, 9.6, 1.6, 48), capMat)); pad.position.set(0, H + .8, 4); dev.add(pad);
   const KX = W * 10, legends = tex(KX, L * 10, (c) => {
     const X = x => (x + W / 2) * 10, Z = z => (z + L / 2) * 10;
     c.textAlign = 'center'; c.textBaseline = 'middle';
@@ -297,12 +300,12 @@ add('labels', 150, 196, rad(-6), g => {
     [[0, -6.2, 0], [6.2, 0, 1], [0, 6.2, 2], [-6.2, 0, 3]].forEach(([dx, dz, n]) => { c.save(); c.translate(X(dx), Z(4 + dz)); c.rotate(n * Math.PI / 2); c.beginPath(); c.moveTo(0, -9); c.lineTo(8, 6); c.lineTo(-8, 6); c.fill(); c.restore(); });
   });
   const legM = new THREE.Mesh(new THREE.PlaneGeometry(W, L), new THREE.MeshStandardMaterial({ map: legends, transparent: true, roughness: .55 }));
-  legM.rotation.x = -Math.PI / 2; legM.position.y = H + 1.62; g.add(legM);
+  legM.rotation.x = -Math.PI / 2; legM.position.y = H + 1.62; dev.add(legM);
 
   // the slot on the right-hand side, and the tape: out of the slot, down to the mat and along it
-  const SZ = 0, SY = H * .55;
-  g.add(at(new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.4, 15), std({ color: 0x050505, roughness: .9 })), W / 2 + .1, SY, SZ));
-  const path = new THREE.CatmullRomCurve3([[W / 2 - 4, SY, SZ], [W / 2 + 7, SY + .3, SZ + 1], [W / 2 + 15, SY - 5, SZ + 9], [W / 2 + 19, 5, SZ + 24], [W / 2 + 22, .6, SZ + 40], [W / 2 + 34, .5, SZ + 52], [W / 2 + 56, .5, SZ + 56], [W / 2 + 110, .5, SZ + 57]].map(p => new THREE.Vector3(...p)), false, 'centripetal');
+  const SZ = -2, SY = H * .55;        // the slot is level with Backspace
+  g.add(at(new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.4, 15), std({ color: 0x050505, roughness: .9 })), WR / 2 + .1, SY, SZ));
+  const path = new THREE.CatmullRomCurve3([[WR / 2 - 4, SY, SZ], [WR / 2 + 7, SY + .3, SZ + 1], [WR / 2 + 15, SY - 5, SZ + 9], [WR / 2 + 19, 5, SZ + 24], [WR / 2 + 22, .6, SZ + 40], [WR / 2 + 34, .5, SZ + 52], [WR / 2 + 56, .5, SZ + 56], [WR / 2 + 110, .5, SZ + 57]].map(p => new THREE.Vector3(...p)), false, 'centripetal');
   const n = 200, pts = path.getSpacedPoints(n), len = path.getLength(), TW = 12, up = new THREE.Vector3(0, 1, 0), side = new THREE.Vector3();
   const pos = [], uv = [], idx = [];
   pts.forEach((p, i) => {             // the strip stays flat: its width is always level, square to the way it's running
