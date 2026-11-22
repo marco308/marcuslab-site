@@ -261,11 +261,12 @@ def local_fonts():
     return f'<style>{face("Outfit", "100 900", "outfit-latin.woff2")}{face("DM Mono", 500, "dm-mono-500-latin.woff2")}</style>'
 
 def build_youtube():
-    """Channel art. YouTube crops the picture to a circle, and shows only the middle 1546×423 of the banner on a phone
+    """Channel art and the player watermark. YouTube crops the picture to a circle, and shows only the middle 1546×423 of the banner on a phone
     (2560×423 on a desktop, the whole 2560×1440 on a TV), so everything that matters sits inside that strip.
     Sizes are in banner pixels: a phone shows them at about a quarter, so the caption is 44 px to land at 11."""
     PNG.mkdir(parents=True, exist_ok=True)
     rsvg("icon-square-olive.svg", "youtube-avatar-800.png", 800)
+    rsvg("icon-micro-olive.svg", "youtube-watermark-150.png", 150)   # shown at about 40 px in the player corner, so the micro tile
     name = (SVG / "lockup-nameplate-cream.svg").read_text()
     # the mat grid at twice its usual pitch, placed so two heavy lines frame the lockup and one runs down the middle
     rule = lambda deg, a, pitch, x, y: f"linear-gradient({deg}deg, rgba(255,237,215,{a}) 2px, transparent 2px) {x}px {y}px / {pitch}px {pitch}px"
