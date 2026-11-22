@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drawer lights carrier board · marcuslab</title>
+<link rel="canonical" href="https://marcuslab.uk/projects/drawer-lights/board/">
+<meta property="og:type" content="product">
+<meta property="og:url" content="https://marcuslab.uk/projects/drawer-lights/board/">
+<meta property="og:site_name" content="marcuslab">
+<meta property="og:title" content="Drawer lights carrier board, £15">
+<meta property="og:description" content="Bare ESP32-C6 carrier board with inputs for 12 door contacts and a 5 V data output for an addressable strip. Comes with the level shifter chip.">
+<meta property="og:image" content="https://marcuslab.uk/projects/drawer-lights/board/img/board.jpg">
+<meta name="description" content="Bare ESP32-C6 carrier board with inputs for 12 door contacts and a 5 V data output for an addressable strip. Comes with the level shifter chip. £15 plus postage.">
+<meta name="theme-color" content="#17110d">
+<link rel="icon" href="/brand/logo/svg/drawers-icon-micro-olive.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
+<link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
+<link rel="stylesheet" href="/assets/zigbrew/zigbrew.css">
+<style>
+/* a plain product page: no loader, no tilted print, everything visible at once */
+.nav .brand img{ width:38px; height:auto; display:block; }
+.prod{ max-width:1100px; margin:0 auto; padding:calc(var(--navh) + 40px) var(--pad) 48px; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:44px; align-items:start; }
+.prod .crumb{ margin-bottom:14px; }
+.prod h1{ font-weight:700; text-transform:uppercase; letter-spacing:-.02em; line-height:.95; font-size:clamp(34px,4.4vw,56px); margin:0; }
+.prod .sum{ font-size:18px; line-height:1.5; margin:16px 0 0; max-width:30em; }
+.buy{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-top:24px; padding:18px 0; border-top:1.5px solid var(--cream); border-bottom:1px dotted var(--dot); }
+.price{ font-weight:700; font-size:40px; letter-spacing:-.02em; line-height:1; }
+.price small{ display:block; font-family:var(--mono); font-weight:500; font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin-top:6px; }
+.btn{ display:inline-flex; align-items:center; min-height:44px; padding:0 22px; border-radius:999px; font-weight:600; font-size:14px; letter-spacing:.06em; text-transform:uppercase; text-decoration:none; background:var(--orange); color:var(--dark); }
+.btn:focus-visible{ outline:2px solid var(--cream); outline-offset:3px; }
+.facts{ list-style:none; padding:0; margin:18px 0 0; display:grid; gap:8px; font-size:16px; line-height:1.4; }
+.facts li{ display:grid; grid-template-columns:9.5em 1fr; gap:12px; }
+.facts b{ font-family:var(--mono); font-weight:500; font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding-top:3px; }
+.shot{ margin:0; }
+.shot img{ display:block; width:100%; height:auto; border:1px solid rgba(255,237,215,.25); }
+.inbag{ display:grid; grid-template-columns:1fr 1fr; gap:0 28px; border-top:1.5px solid var(--cream); margin-top:22px !important; }
+.inbag div{ padding:14px 0 15px; border-bottom:1px dotted var(--dot); }
+.inbag b{ display:block; font-family:var(--mono); font-weight:500; font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+.inbag .yes b::before{ content:"✓ "; color:var(--orange); } .inbag .no b::before{ content:"✕ "; }
+.wiring img{ display:block; width:100%; height:auto; }
+@media (max-width:899px){ .prod{ grid-template-columns:1fr; gap:28px; padding-top:calc(var(--navh) + 24px); } .inbag{ grid-template-columns:1fr; } .facts li{ grid-template-columns:8em 1fr; } }
+</style>
+<script>addEventListener('load', function(){ var s = document.createElement('script'); s.src = 'https://stats.marcuslab.uk/m.js'; s.dataset.websiteId = '91f11161-cf9b-4e81-a77b-114e94374a5d'; s.dataset.domains = 'marcuslab.uk'; document.head.appendChild(s); });</script>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/" aria-label="Marcus Lab, home"><img src="/brand/logo/svg/mark-cream.svg" alt="" width="38" height="38"><span class="t">Marcus Lab</span></a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="/#work">Work</a>
+    <a href="/projects/drawer-lights/">The build</a>
+    <a class="opt" href="https://github.com/marco308">GitHub</a>
+  </nav>
+</header>
+
+<main>
+
+<div class="prod">
+  <figure class="shot"><img src="/projects/drawer-lights/board/img/board.jpg" alt="The bare green carrier board, silkscreen up, next to the SN74AHCT125N level shifter chip that comes with it" width="1400" height="867"></figure>
+  <div>
+    <div class="crumb mono"><img class="zmk" src="/brand/logo/svg/drawers-mark-cream.svg" width="44" height="44" alt="Drawer Illumination Subsystem"><a href="/projects/drawer-lights/">drawer illumination subsystem</a><span>/</span><span>carrier board</span></div>
+    <h1>Drawer lights carrier board</h1>
+    <p class="sum">A bare circuit board for an ESP32-C6-DevKitC-1: 12 door-contact inputs and a 5 V data output for a 24 V addressable LED strip. The same board that runs my drawers.</p>
+    <div class="buy">
+      <div class="price">£15<small>plus postage · in stock</small></div>
+      <a class="btn" href="mailto:hello@marcuslab.uk?subject=Drawer%20lights%20carrier%20board">Email to order</a>
+    </div>
+    <ul class="facts">
+      <li><b>You get</b><span>1 bare board and 1 SN74AHCT125N level shifter chip, not soldered</span></li>
+      <li><b>Size</b><span>90 × 66 mm, 2 layers, lead-free HASL, four M3 holes</span></li>
+      <li><b>Inputs</b><span>12 door contacts on three 6-way terminals (GPIO0–3, 6, 7, 10, 11, 18–21)</span></li>
+      <li><b>Output</b><span>Strip data from GPIO22, shifted to 5 V, plus fused +24 V and 0 V</span></li>
+      <li><b>Power</b><span>24 V in; a Traco TSR 1-2450 makes 5 V for the C6</span></li>
+      <li><b>Postage</b><span>About £2–3 in the UK. Elsewhere, ask</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ INCLUDED ============ -->
+<section class="sec">
+  <div class="col">
+    <h2>What's included</h2>
+    <div class="inbag">
+      <div class="yes"><b>Bare board</b><p>Rev A, 90 × 66 mm, all through-hole.</p></div>
+      <div class="yes"><b>SN74AHCT125N</b><p>The level shifter for the strip's data line, loose.</p></div>
+      <div class="no"><b>No other parts</b><p>Everything in the list below is bought and soldered by you.</p></div>
+      <div class="no"><b>No firmware or assembly</b><p>You solder it up and flash the C6 yourself.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TO FINISH IT ============ -->
+<section class="sec">
+  <div class="col">
+    <h2>Parts you'll need</h2>
+    <table class="tbl stack">
+      <tr><th>Ref</th><th>Part</th></tr>
+      <tr><td>—</td><td>ESP32-C6-DevKitC-1 (the genuine Espressif board)</td></tr>
+      <tr><td>XS1, XS2</td><td>2 × 1×16 female header, 2.54 mm</td></tr>
+      <tr><td>U3</td><td>Traco TSR 1-2450</td></tr>
+      <tr><td>J1–J3</td><td>3 × 6-pin 5.08 mm plug-in terminal, straight</td></tr>
+      <tr><td>J4, J6</td><td>2 × 3-pin 5.08 mm plug-in terminal, straight</td></tr>
+      <tr><td>C1</td><td>100 µF 50 V electrolytic</td></tr>
+      <tr><td>R1</td><td>330 Ω</td></tr>
+      <tr><td>C2</td><td>100 nF ceramic</td></tr>
+      <tr><td>F1</td><td>Inline 5 × 20 mm fuse holder, 2 A fuse</td></tr>
+      <tr><td>RN1, RN2, C11–C22</td><td>Optional input pull-ups and filtering. Leave empty unless contacts read falsely</td></tr>
+      <tr><td>—</td><td>24 V supply, normally closed door contacts and a 24 V addressable strip (mine: Mean Well GST60A24, MC-38 contacts, WS2814 RGBW COB)</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ WIRING ============ -->
+<section class="sec">
+  <div class="col">
+    <h2>Wiring</h2>
+  </div>
+  <figure class="wide wiring"><img src="/projects/drawer-lights/board/img/wiring.png" alt="Wiring diagram: 24 V supply, the Traco regulator, three columns of four door contacts into J1 to J3 and the C6's GPIOs, GPIO22 through the 74AHCT125 and 330 ohm resistor to J4 and the strip, everything returning to 0 V" loading="lazy" width="1600" height="1200"></figure>
+  <div class="col">
+    <p class="small">The full build, with the woodwork, the firmware's behaviour and the Home Assistant side, is in the <a href="/projects/drawer-lights/">write-up</a>.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span class="mono">© 2026 Marcus · marcuslab.uk · do not scale</span>
+  <div class="fl mono">
+    <a href="/#work">work</a><a href="/projects/drawer-lights/">the build</a><a href="https://github.com/marco308">github</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "/Users/marcuswilliams/Documents/GitHub/marcuslab-site/.claude/worktrees/drawer-lights-post/projects/drawer-lights/board/index.html"
+        ],
+        "createdAt": "2026-11-22T18:50:54.010Z",
+        "reason": "Claude: the page adds no glow; the only shadow is the shared .print neutral black drop shadow (rgba(0,0,0,.35)) from zigbrew.css"
+      }
+    ]
+  }
+}
