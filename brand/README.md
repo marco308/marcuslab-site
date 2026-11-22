@@ -150,11 +150,13 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The bui
 
 ## Motion
 
+**Reading pages are still (22 November 2026).** Build logs, listings and anything else people come to read open straight away: no loader, the browser's own scrolling (no smooth-scroll library), and nothing revealed or drawn in on scroll. Readers on Reddit called the loader a "bootup screen" and the smooth scroll broken. Motion on those pages is only for things that show something: an interactive demo, a video or loop of the thing working. The one exception is zigbrew part two, which keeps its scroll-driven 3D dosing ring, smooth scroll and all, because Marcus likes it. The rules below are for the homepage, where the bench and its 3D objects are the point, and for that page.
+
 - **Everything is drawn or moved in.** Stroke lines by their length, wipe fills, write text as outlines and then ink it. No fading up from nothing as the main effect, no popping, no bounce or overshoot.
 - **Overlap.** The next thing starts before the last one finishes, so something is always moving.
 - **Eases, by job:** `flow` (sine in-out) for lines and wipes, `draw` (power1 in-out) for one long stroke, `move` (power3 out) for things arriving, `part` (expo in-out) for big set pieces.
-- **Durations:** 200 ms for feedback, 450 ms for small moves, 900 ms for a stroke or wipe, 1.6 s for a camera move. The landing loader runs about 4.5 s; inner pages half that.
-- **Scroll:** scrub at about 0.8. Pin only on wide screens and only for the main story of a page.
+- **Durations:** 200 ms for feedback, 450 ms for small moves, 900 ms for a stroke or wipe, 1.6 s for a camera move. The landing loader runs about 4.5 s. Reading pages have none.
+- **Scroll:** on the homepage, scrub at about 0.8 and pin only on wide screens. Reading pages never take over scrolling.
 - **Reduced motion or no JavaScript:** every word, image and link is visible and readable as a plain page.
 - **It must be real.** Cross-fading still renders is not animation.
 
@@ -197,6 +199,7 @@ These were tried and turned down while this language was being worked out.
 - Sideways-scrolling project carousels.
 - Still images cross-fading in place of animation.
 - Elements that pop or fade in on a loader.
+- On reading pages: a loader, a smooth-scroll library, and text or photos revealed on scroll (removed 22 November 2026).
 - Poor stand-in renders: a pint of beer, earbuds.
 - A plain, non-3D fallback as the phone experience.
 - Status lamps (a green dot and `LIVE` on every row) and tech-stack tag lines (`SWIFT · IOS · MIT`) in the parts list: they added nothing.

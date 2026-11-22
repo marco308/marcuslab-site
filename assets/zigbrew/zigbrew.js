@@ -23,6 +23,9 @@
   });
 
   const plain = () => { root.classList.remove('anim'); ZB.anim = false; };
+  // posts are plain articles now (22 Nov 2026): no loader, the browser's own scrolling, nothing revealed on scroll.
+  // Demos that call these still work; they just don't animate.
+  ZB.pulse = () => {}; ZB.wire = () => {};
   if (!root.classList.contains('anim')) { ZB.start = () => Promise.resolve(false); return; }
   if (!window.gsap || !window.ScrollTrigger || !window.SplitText) { plain(); ZB.start = () => Promise.resolve(false); return; }
   ZB.anim = true;

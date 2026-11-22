@@ -20,7 +20,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
 <script>
 /* "anim" turns on everything that is drawn or moved in. Without it (no JS, or reduced motion) this is a plain article. */
-(function(){ var d = document.documentElement; d.classList.add('js'); try{ if (sessionStorage.getItem('ml-seen')) d.classList.add('seen'); }catch(e){} if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim'); })();
+(function(){ var d = document.documentElement; d.classList.add('js'); try{ if (sessionStorage.getItem('ml-seen')) d.classList.add('seen'); }catch(e){} })();
 </script>
 <link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
 <link rel="stylesheet" href="/assets/zigbrew/zigbrew.css">
@@ -71,8 +71,6 @@
 <script defer src="/links.js"></script>
 </head>
 <body>
-
-<div id="loader" aria-hidden="true"><div class="lh l"><div class="lc"></div></div><div class="lh r"><div class="lc"></div></div></div>
 
 <header class="nav">
   <a class="brand" href="/" aria-label="Marcus Lab, home"><span class="mk" data-mark="#ffedd7,#e8590c"></span><span class="t">Marcus Lab</span></a>
@@ -223,7 +221,6 @@
 <script src="/vendor/gsap/gsap.min.js"></script>
 <script src="/vendor/gsap/ScrollTrigger.min.js"></script>
 <script src="/vendor/gsap/SplitText.min.js"></script>
-<script src="/vendor/lenis/lenis.min.js"></script>
 <script src="/assets/zigbrew/zigbrew.js"></script>
 <script>
 (function () {
