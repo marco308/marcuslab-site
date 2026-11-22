@@ -4,6 +4,7 @@
     python3 brand/tools/build.py            # tokens.css, contrast.md, every logo SVG
     python3 brand/tools/build.py --png      # also the PNG exports (needs rsvg-convert and Google Chrome or Brave)
     python3 brand/tools/build.py --youtube  # only the YouTube channel picture and banner (same needs)
+    python3 brand/tools/build.py --bmc      # only the Buy Me a Coffee cover (same needs)
 
 Nothing here is edited by hand afterwards: change the tokens, run this again.
 """
@@ -278,6 +279,16 @@ def build_youtube():
       <div>{name}<p>MARCUSLAB.UK</p></div>''', "youtube-banner-2560x1440.png", 2560, 1440, transparent=False)
 
 
+def build_bmc_cover():
+    """Buy Me a Coffee cover: the mat on its own. The page's cards sit over the lower half and its header already
+    carries the icon and name, so anything placed here would be cut off or said twice. 3200×800 is twice the 1600×400
+    it asks for; the grid is at the banner's pitch so the two read as the same mat."""
+    rule = lambda deg, a, pitch, x, y: f"linear-gradient({deg}deg, rgba(255,237,215,{a}) 2px, transparent 2px) {x}px {y}px / {pitch}px {pitch}px"
+    mat = ", ".join((rule(180, .2, 200, 0, 0), rule(90, .2, 200, 0, 0), rule(180, .08, 40, 0, 0), rule(90, .08, 40, 0, 0), OLIVE))
+    chrome_shot(f'<!doctype html><meta charset="utf-8"><style>html,body{{margin:0}}body{{width:3200px;height:800px;background:{mat}}}</style>',
+                "bmc-cover-3200x800.png", 3200, 800, transparent=False)
+
+
 def build_site_icons():
     """The copies the site serves from its root."""
     import struct
@@ -295,10 +306,13 @@ def build_site_icons():
 if __name__ == "__main__":
     build_css(); build_contrast(); build_logos(); build_project_marks()
     print(f"tokens.css, contrast.md and {len(list(SVG.glob('*.svg')))} SVGs written")
-    if "--png" in sys.argv or "--youtube" in sys.argv:
+    if any(f in sys.argv for f in ("--png", "--youtube", "--bmc")):
         if not shutil.which("rsvg-convert") or not Path(CHROME).exists():
             sys.exit("PNG export needs rsvg-convert and Google Chrome or Brave")
     if "--png" in sys.argv:
-        build_pngs(); build_youtube(); build_site_icons(); print(f"{len(list(PNG.glob('*.png')))} PNGs and the site's root icons written")
-    elif "--youtube" in sys.argv:
-        build_youtube(); print("YouTube picture and banner written")
+        build_pngs(); build_youtube(); build_bmc_cover(); build_site_icons(); print(f"{len(list(PNG.glob('*.png')))} PNGs and the site's root icons written")
+    else:
+        if "--youtube" in sys.argv:
+            build_youtube(); print("YouTube picture and banner written")
+        if "--bmc" in sys.argv:
+            build_bmc_cover(); print("Buy Me a Coffee cover written")
