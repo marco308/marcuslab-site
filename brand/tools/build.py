@@ -2,17 +2,19 @@
 """Builds the Marcus Lab brand files from tokens/marcuslab.tokens.json.
 
     python3 brand/tools/build.py            # tokens.css, contrast.md, every logo SVG
-    python3 brand/tools/build.py --png      # also the PNG exports (needs rsvg-convert and Google Chrome)
+    python3 brand/tools/build.py --png      # also the PNG exports (needs rsvg-convert and Google Chrome or Brave)
+    python3 brand/tools/build.py --youtube  # only the YouTube channel picture and banner (same needs)
 
 Nothing here is edited by hand afterwards: change the tokens, run this again.
 """
-import json, math, re, shutil, subprocess, sys, tempfile
+import base64, json, math, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 
 BRAND = Path(__file__).resolve().parent.parent
 T = json.loads((BRAND / "tokens" / "marcuslab.tokens.json").read_text())
 SVG, PNG = BRAND / "logo" / "svg", BRAND / "logo" / "png"
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+BROWSERS = ("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser")
+CHROME = next((b for b in BROWSERS if Path(b).exists()), BROWSERS[0])
 
 
 # ---------------------------------------------------------------- tokens → CSS
@@ -214,7 +216,7 @@ def rsvg(src, out, px):
 def chrome_shot(html, out, w, h, scale=1, transparent=True):
     with tempfile.TemporaryDirectory() as tmp:
         page = Path(tmp) / "page.html"; page.write_text(html)
-        cmd = [CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--force-device-scale-factor={scale}", f"--window-size={w},{h}",
+        cmd = [CHROME, "--headless=new", f"--user-data-dir={tmp}/profile", "--disable-gpu", "--hide-scrollbars", f"--force-device-scale-factor={scale}", f"--window-size={w},{h}",
                "--virtual-time-budget=6000", f"--screenshot={PNG / out}", page.as_uri()]
         if transparent:
             cmd.insert(1, "--default-background-color=00000000")
@@ -252,6 +254,29 @@ def build_pngs():
       <div>{sig}<p>APPS, SERVERS &amp; HARDWARE · MARCUSLAB.UK</p></div>''', "og-image-1200x630.png", 1200, 630, transparent=False)
 
 
+def local_fonts():
+    """Outfit and DM Mono from the site's own font files, inlined, so a render needs no network."""
+    face = lambda family, weight, file: (f'@font-face{{font-family:"{family}";font-weight:{weight};src:url(data:font/woff2;base64,'
+                                         f'{base64.b64encode((BRAND.parent / "vendor" / "fonts" / file).read_bytes()).decode()}) format("woff2")}}')
+    return f'<style>{face("Outfit", "100 900", "outfit-latin.woff2")}{face("DM Mono", 500, "dm-mono-500-latin.woff2")}</style>'
+
+def build_youtube():
+    """Channel art. YouTube crops the picture to a circle, and shows only the middle 1546×423 of the banner on a phone
+    (2560×423 on a desktop, the whole 2560×1440 on a TV), so everything that matters sits inside that strip.
+    Sizes are in banner pixels: a phone shows them at about a quarter, so the caption is 44 px to land at 11."""
+    PNG.mkdir(parents=True, exist_ok=True)
+    rsvg("icon-square-olive.svg", "youtube-avatar-800.png", 800)
+    name = (SVG / "lockup-nameplate-cream.svg").read_text()
+    # the mat grid at twice its usual pitch, placed so two heavy lines frame the lockup and one runs down the middle
+    rule = lambda deg, a, pitch, x, y: f"linear-gradient({deg}deg, rgba(255,237,215,{a}) 2px, transparent 2px) {x}px {y}px / {pitch}px {pitch}px"
+    mat = ", ".join((rule(180, .2, 200, 0, 584), rule(90, .2, 200, 79, 0), rule(180, .08, 40, 0, 24), rule(90, .08, 40, -1, 0), OLIVE))
+    chrome_shot(f'''<!doctype html><meta charset="utf-8">{local_fonts()}<style>html,body{{margin:0}}
+      body{{width:2560px;height:1440px;background:{mat};display:grid;place-items:center;font-family:"DM Mono",monospace;color:{CREAM}}}
+      div{{display:flex;flex-direction:column;align-items:center;gap:28px}} svg{{display:block;width:1120px;height:280px}}
+      p{{margin:0;font-size:44px;line-height:1;letter-spacing:.08em;font-weight:500;white-space:nowrap}}</style>
+      <div>{name}<p>MARCUSLAB.UK</p></div>''', "youtube-banner-2560x1440.png", 2560, 1440, transparent=False)
+
+
 def build_site_icons():
     """The copies the site serves from its root."""
     import struct
@@ -269,7 +294,10 @@ def build_site_icons():
 if __name__ == "__main__":
     build_css(); build_contrast(); build_logos(); build_project_marks()
     print(f"tokens.css, contrast.md and {len(list(SVG.glob('*.svg')))} SVGs written")
-    if "--png" in sys.argv:
+    if "--png" in sys.argv or "--youtube" in sys.argv:
         if not shutil.which("rsvg-convert") or not Path(CHROME).exists():
-            sys.exit("PNG export needs rsvg-convert and Google Chrome")
-        build_pngs(); build_site_icons(); print(f"{len(list(PNG.glob('*.png')))} PNGs and the site's root icons written")
+            sys.exit("PNG export needs rsvg-convert and Google Chrome or Brave")
+    if "--png" in sys.argv:
+        build_pngs(); build_youtube(); build_site_icons(); print(f"{len(list(PNG.glob('*.png')))} PNGs and the site's root icons written")
+    elif "--youtube" in sys.argv:
+        build_youtube(); print("YouTube picture and banner written")
