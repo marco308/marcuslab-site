@@ -20,10 +20,6 @@
       "software": { "$value": "#62a3ea", "$description": "Apps, servers and anything else that is code." },
       "build":    { "$value": "#f5c12e", "$description": "Things you can hold: hardware and printed parts." }
     },
-    "status": {
-      "live":    { "$value": "#4fe06a", "$description": "Lamp lit: in use and maintained." },
-      "retired": { "$value": "#4a4038", "$description": "Lamp dark: no longer maintained." }
-    },
     "material": {
       "$description": "Base colours for 3D models, so a printed part or a steel one looks the same everywhere.",
       "petg-cream":  { "$value": "#e8e2d6" },
@@ -92,7 +88,7 @@
     "$type": "dimension",
     "none": { "$value": "0px", "$description": "Panels, cards, rows: square, like cut sheet." },
     "pill": { "$value": "999px", "$description": "Buttons and filter chips." },
-    "round": { "$value": "50%", "$description": "Balloons and lamps." },
+    "round": { "$value": "50%", "$description": "Balloons." },
     "icon": { "$value": "22%", "$description": "App-icon tiles." }
   },
   "border": {
@@ -152,6 +148,16 @@
       "micro-inner":    { "$type": "number", "$value": 9.5 },
       "micro-lug":      { "$type": "number", "$value": 24.5 },
       "micro-lug-half": { "$type": "number", "$value": 14 }
+    },
+    "drawers": {
+      "$description": "The Drawer Illumination Subsystem: the dressing-room unit from the front, the oak top over three columns of drawers, three shallow and one deep. Boxes are [x0, y0, x1, y1] in units of the 64-unit square. Gaps are at least 4 units so the 2.6 edge doesn't close them.",
+      "top":          { "$value": [4, 7, 60, 13], "$description": "The top, overhanging the columns." },
+      "columns":      { "$value": [[6, 20.67], [24.67, 39.33], [43.33, 58]] },
+      "rows":         { "$value": [[19, 25], [29, 35], [39, 45], [49, 58]], "$description": "Three shallow drawers and the deep one." },
+      "radius":       { "$type": "number", "$value": 1 },
+      "micro-top":     { "$value": [4, 6, 60, 13], "$description": "The small-size version has three rows, not four, so every gap is at least a pixel at 16 px." },
+      "micro-columns": { "$value": [[6, 20], [25, 39], [44, 58]] },
+      "micro-rows":    { "$value": [[18, 28], [33, 43], [48, 58]] }
     }
   }
 }

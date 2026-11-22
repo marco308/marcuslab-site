@@ -83,9 +83,6 @@ td.fail{ color:var(--ml-color-role-accent); }
 .btn.primary{ background:var(--ml-color-role-accent); border-color:var(--ml-color-role-accent); color:var(--ml-color-role-on-accent); }
 .chip{ font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-micro); letter-spacing:.06em; text-transform:uppercase; padding:5px 10px; border:1px solid rgba(255,237,215,.4); border-radius:var(--ml-radius-pill); display:inline-flex; align-items:center; gap:7px; }
 .chip i{ width:8px; height:8px; background:var(--c); display:block; } .chip.on{ background:var(--ml-color-cream-100); color:var(--ml-color-ink-900); border-color:var(--ml-color-cream-100); }
-.lamp{ display:inline-flex; align-items:center; gap:8px; font-family:var(--ml-font-family-mono); font-size:var(--ml-font-size-micro); letter-spacing:var(--ml-font-tracking-label); text-transform:uppercase; }
-.lamp i{ width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #e9ffe2, var(--ml-color-status-live) 50%, #1f9c3c); box-shadow:0 0 9px 1px rgba(79,224,106,.6); display:block; }
-.lamp.off i{ background:var(--ml-color-status-retired); box-shadow:none; }
 .bom{ border-top:var(--ml-border-rule) solid var(--ml-color-cream-100); max-width:640px; }
 .row{ display:grid; grid-template-columns:34px minmax(0,1fr) auto auto; gap:6px 16px; align-items:center; padding:10px 8px 10px 4px; border-bottom:1px dotted rgba(255,237,215,var(--ml-opacity-rule)); }
 .row .no, .tag b{ font-family:var(--ml-font-family-mono); font-size:13px; width:28px; height:28px; border-radius:50%; border:var(--ml-border-rule) solid var(--c); display:grid; place-items:center; font-weight:500; }
@@ -189,6 +186,23 @@ footer{ padding:var(--ml-space-5) var(--ml-space-page) var(--ml-space-7); border
       </div>
       <p class="muted">A project's own mark: a real part of the project (here the dosing ring from above, with its three lugs) drawn by the Section A–A rules. It sits with the project's name, never in place of the Marcus Lab mark.</p>
     </div>
+    <div class="block"><h3>Project marks · Drawer Illumination Subsystem</h3>
+      <div class="grid">
+        <figure class="tile"><div class="show mat"><img src="/brand/logo/svg/drawers-mark-cream.svg" alt=""></div><span class="mono">On the mat</span></figure>
+        <figure class="tile"><div class="show on-ink"><img src="/brand/logo/svg/drawers-mark-cream.svg" alt=""></div><span class="mono">On dark</span></figure>
+        <figure class="tile"><div class="show wood"><img src="/brand/logo/svg/drawers-mark-cream.svg" alt=""></div><span class="mono">On the desk</span></figure>
+        <figure class="tile"><div class="show on-cream"><img src="/brand/logo/svg/drawers-mark-ink.svg" alt=""></div><span class="mono">On cream</span></figure>
+      </div>
+      <div class="sizes">
+        <figure><img src="/brand/logo/svg/drawers-icon-olive.svg" width="96" height="96" alt=""><span class="mono">96</span></figure>
+        <figure><img src="/brand/logo/svg/drawers-icon-olive.svg" width="48" height="48" alt=""><span class="mono">48</span></figure>
+        <figure><img src="/brand/logo/svg/drawers-icon-olive.svg" width="32" height="32" alt=""><span class="mono">32</span></figure>
+        <figure><img src="/brand/logo/svg/drawers-mark-cream.svg" width="24" height="24" alt=""><span class="mono">24 · smallest</span></figure>
+        <figure><img src="/brand/logo/svg/drawers-icon-micro-olive.svg" width="16" height="16" alt=""><span class="mono">16 · micro</span></figure>
+        <figure><img src="/brand/logo/svg/drawers-mark-mono-cream.svg" width="64" height="64" alt=""><span class="mono">One colour</span></figure>
+      </div>
+      <p class="muted">The dressing-room unit from the front: the top over three columns of drawers, three shallow and one deep. The small version drops to three rows so every gap stays a pixel wide at 16 px.</p>
+    </div>
     <div class="block"><h3>Clear space</h3>
       <svg class="clear" viewBox="-12 -8 88 80" role="img" aria-label="The mark with one leg-width of clear space marked on every side">
         <rect x="2.5" y="6.5" width="59" height="51" fill="none" stroke="#e8590c" stroke-width=".5" stroke-dasharray="2 1.5"/>
@@ -227,7 +241,6 @@ footer{ padding:var(--ml-space-5) var(--ml-space-page) var(--ml-space-7); border
         <span class="kind" style="--c:var(--ml-color-type-software)"><i></i>Software <span class="mono muted">#62A3EA</span></span>
         <span class="kind" style="--c:var(--ml-color-type-build)"><i></i>Build <span class="mono muted">#F5C12E</span></span>
       </div>
-      <div class="demo"><span class="lamp"><i></i>Live</span><span class="lamp off"><i></i>Retired</span></div>
     </div>
     <div class="block"><h3>Contrast that matters</h3>
       <div class="scroll"><table>
@@ -280,9 +293,9 @@ footer{ padding:var(--ml-space-5) var(--ml-space-page) var(--ml-space-7); border
     </div>
     <div class="block"><h3>Parts list and balloon tags</h3>
       <div class="bom">
-        <div class="row" style="--c:var(--ml-color-type-software)"><span class="no">01</span><span><span class="nm">YAMP</span><span class="ds">Self-hosted meal planner</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Software</span><span class="lamp"><i></i>Live</span></div>
-        <div class="row" style="--c:var(--ml-color-type-build)"><span class="no">03</span><span><span class="nm">zigbrew</span><span class="ds">A smart Sage Barista Express</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Build</span><span class="lamp"><i></i>Live</span></div>
-        <div class="row" style="--c:var(--ml-color-type-software); opacity:.7"><span class="no">08</span><span><span class="nm">HA TickTick</span><span class="ds">TickTick tasks in Home Assistant</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Software</span><span class="lamp off"><i></i>Retired</span></div>
+        <div class="row" style="--c:var(--ml-color-type-software)"><span class="no">01</span><span><span class="nm">YAMP</span><span class="ds">Self-hosted meal planner</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Software</span></div>
+        <div class="row" style="--c:var(--ml-color-type-build)"><span class="no">03</span><span><span class="nm">zigbrew</span><span class="ds">A smart Sage Barista Express</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Build</span></div>
+        <div class="row" style="--c:var(--ml-color-type-software); opacity:.7"><span class="no">08</span><span><span class="nm">HA TickTick</span><span class="ds">TickTick tasks in Home Assistant</span></span><span class="kind mono"><i style="width:9px;height:9px"></i>Software</span><span class="mono muted">Retired</span></div>
       </div>
       <div class="demo"><span class="tag" style="--c:var(--ml-color-type-build)"><b>03</b><span>zigbrew</span></span><span class="tag" style="--c:var(--ml-color-type-software)"><b>05</b><span>mDone</span></span></div>
     </div>

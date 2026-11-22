@@ -84,6 +84,8 @@ A project can have its own mark. It is a different shape drawn by the same rules
 - The ring's lugs reach further out than the M does, so its file has a slightly larger canvas. At the same pixel size it reads a little smaller than the M; give it about 8% more when the two sit side by side.
 - There are no zigbrew lockups yet.
 
+**Drawer Illumination Subsystem** (the drawer lights) is the dressing-room unit from the front: the top over three columns of drawers, three shallow and one deep. Its files are `drawers-*` and follow the zigbrew table above. The small version has three rows instead of four, so every gap is at least a pixel at 16 px; use it below 24 px. Gaps in the big mark are 4 units, because the 2.6 edge closes anything narrower.
+
 ## Colour
 
 Raw scales are in the tokens. In layouts, use the roles.
@@ -107,7 +109,7 @@ Raw scales are in the tokens. In layouts, use the roles.
 
 There were five kinds at first (app, server, hardware, printed, odds and ends). Apps and servers overlapped too much to be worth telling apart, so they were merged.
 
-**Status** is a lamp: lit green (`#4fe06a`) for live, dark (`#4a4038`) for retired. Always with the word beside it.
+**Status** isn't shown for things in use. Something no longer maintained says `RETIRED` in mono after its kind, dimmed. There are no status lamps: a green "live" dot on every row said nothing (removed 22 November 2026).
 
 See [`tokens/contrast.md`](tokens/contrast.md). The pairings to avoid: cream text on orange, and orange on olive or cream for anything that must be read.
 
@@ -127,7 +129,7 @@ See [`tokens/contrast.md`](tokens/contrast.md). The pairings to avoid: cream tex
 ## Layout
 
 - **Spacing** steps: 4, 8, 12, 16, 24, 32, 48, 64, 96 px. Page side padding is `clamp(18px, 4vw, 56px)`.
-- **Corners:** panels, cards and rows are square, like cut sheet. Buttons and filter chips are pills. Balloons and lamps are round.
+- **Corners:** panels, cards and rows are square, like cut sheet. Buttons and filter chips are pills. Balloons are round.
 - **Lines:** a 3 px cream line is the edge of a real thing. A 1.5 px line is a rule. A 1 px dotted cream line at 45% separates rows. An orange chain line (dash 8 2 1.6 2) is a centre line and appears at most once on a screen.
 - **The mat grid** is cream lines on olive: every 20 px at 8%, every 100 px at 20%.
 - **Phones first-class.** Below 900 px there is no pinned scrolling. A 3D view sticks under the nav at about 40% of the screen height and content scrolls beneath it. Tap targets are at least 44 px.
@@ -140,9 +142,8 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The bui
 - **Nav:** the mark and name on the left, links in Outfit 600 caps on the right, over a fade from the ground colour. Solid on phones.
 - **Button:** a pill with a 1.5 px cream outline, Outfit 600 caps. The primary is filled orange with ink text.
 - **Filter chip:** a small mono pill with the kind's colour square. The pressed chip is filled cream with ink text.
-- **Parts list:** one row per thing. A numbered balloon ringed in the kind's colour, the name in caps, a one-line description, the kind, and a status lamp. Rows expand in place.
+- **Parts list:** one row per thing. A numbered balloon ringed in the kind's colour, the name in caps, a one-line description, the kind, and `RETIRED` if it is. Rows expand in place to a short paragraph and its links, with no tech-stack tags.
 - **Balloon tag:** the same number floating over an object. On hover it fills with the kind's colour and the name slides out.
-- **Lamp:** a small glowing dot with its word.
 - **Frosted card:** ink at 50% with a blur, for text that has to sit over the bench.
 - **Figure:** a photo on cream with a strip of orange tape. In a build log, figures are numbered in mono (`FIG. 12`) with a sentence after the number. A lone photo has no caption.
 - **Loader:** the mark draws itself on the mat, then the screen parts along the centre line. It plays once per visit, not on every page.
@@ -172,7 +173,7 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The bui
 
 - First person, dry, specific. "Fortunately, this one is good." Make the joke once and don't explain it.
 - British English and metric units.
-- **Labels** are short capitals in mono, as on a machine or a drawing: `PARTS LIST`, `LIVE`, `RETIRED`.
+- **Labels** are short capitals in mono, as on a machine or a drawing: `PARTS LIST`, `BUILD`, `RETIRED`.
 - **Drawing notes** are reused where they happen to be true: `DO NOT SCALE` in a footer, `IF IN DOUBT, ASK` for contact, `FIG. 2` for captions. Number figures only when there is a real sequence of them.
 - Never invent facts, numbers or steps. Copy comes from Marcus.
 - No exclamation marks, no marketing adjectives, no emoji as decoration.
@@ -181,7 +182,7 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The bui
 
 - Text contrast of at least 4.5:1; check new pairings against `contrast.md`.
 - A visible focus ring: 2 px orange, 3 px offset.
-- Colour is never the only signal. Kinds have names, lamps have words.
+- Colour is never the only signal. Kinds have names beside their colour.
 - Decorative 3D and drawings are hidden from screen readers; the same content exists as text.
 - Honour `prefers-reduced-motion`.
 
@@ -198,6 +199,7 @@ These were tried and turned down while this language was being worked out.
 - Elements that pop or fade in on a loader.
 - Poor stand-in renders: a pint of beer, earbuds.
 - A plain, non-3D fallback as the phone experience.
+- Status lamps (a green dot and `LIVE` on every row) and tech-stack tag lines (`SWIFT · IOS · MIT`) in the parts list: they added nothing.
 
 ## Open questions
 

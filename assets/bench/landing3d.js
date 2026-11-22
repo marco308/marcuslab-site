@@ -330,6 +330,107 @@ add('labels', 150, 196, rad(-6), g => {
   tape.castShadow = true; tape.receiveShadow = true; g.add(tape);
 });
 
+// Drawer lights: the real carrier board (components exported from its KiCad file, its top face as one picture), the
+// ESP32-C6 DevKit in its sockets, and the 7-pixel offcut of COB strip curled round it. Pick it up and the offcut
+// lights the way the drawers do: out from its middle in 400 ms, off a second after you put it down.
+const DRAWER_PARTS = [['black', 0x1b1b1c, 0, .5], ['metal', 0xd2d6da, .9, .3], ['terminals', 0x3f9e55, 0, .55], ['converter', 0x1d1d1e, 0, .5],
+  ['ceramic', 0xc8722c, 0, .5], ['resistor', 0xd8bd8c, 0, .6], ['cap', 0x22408a, .1, .4]];
+const drawerStrip = { mats: [], c: null, g: null, tex: [], lit: false, since: 0, offAt: 0, fadeAt: -9, v: new Array(7).fill(0) };
+const drawers = add('drawers', 92, -160, rad(-8), g => {
+  const BW = 90.2, BD = 66, BT = 1.6;
+  const top = new THREE.TextureLoader().load('/assets/bench/drawers-board-top.jpg'); top.colorSpace = THREE.SRGBColorSpace; top.anisotropy = 8;
+  const fr4 = std({ color: 0x2c6e3d, roughness: .6 });
+  g.add(at(sh(new THREE.Mesh(new THREE.BoxGeometry(BW, BT, BD), [fr4, fr4, std({ map: top, roughness: .45, metalness: .05 }), fr4, fr4, fr4])), 0, BT / 2, 0));
+  const parts = new THREE.Group(); parts.rotation.x = -Math.PI / 2; g.add(parts); drawerStrip.parts = parts;     // the KiCad models are z-up
+
+  // the ESP32-C6-DevKitC-1 on its two sockets: black board, the module with its can and antenna end, two USB-C, two buttons
+  const kit = new THREE.Group(); kit.position.set(-14, 10.1, -3.8); g.add(kit);
+  const blk = std({ color: 0x141414, roughness: .55 }), can = std({ color: 0xc9ccd0, metalness: 1, roughness: .32 });
+  kit.add(at(sh(new THREE.Mesh(new THREE.BoxGeometry(51.8, 1.6, 25.4), blk)), 0, .8, 0));
+  kit.add(at(sh(new THREE.Mesh(new THREE.BoxGeometry(25.5, .8, 18), std({ color: 0x1c2330, roughness: .5 }))), -13.15, 2, 0));
+  kit.add(at(sh(new THREE.Mesh(new THREE.BoxGeometry(17.4, 2.4, 15.6), can)), -10.2, 3.6, 0));
+  const ant = tex(256, 160, (c, w, h) => { c.fillStyle = '#1c2330'; c.fillRect(0, 0, w, h); c.strokeStyle = '#c9a24a'; c.lineWidth = 7; c.beginPath(); c.moveTo(30, 150); for (let i = 0; i < 6; i++) { c.lineTo(30 + i * 36, 20); c.lineTo(48 + i * 36, 20); c.lineTo(48 + i * 36, 120); c.lineTo(66 + i * 36, 120); } c.stroke(); });
+  kit.add(at(decal(6.4, 17, 0, ant), -22.7, 2.41, 0));
+  for (const z of [-6.2, 6.2]) { kit.add(at(sh(new THREE.Mesh(new THREE.BoxGeometry(7.4, 3.2, 8.9), can)), 22.4, 3.2, z)); kit.add(at(new THREE.Mesh(new THREE.BoxGeometry(.2, 2.2, 7.6), std({ color: 0x050505 })), 26.15, 3.2, z)); }
+  for (const z of [-10.4, 10.4]) kit.add(at(sh(new THREE.Mesh(new THREE.BoxGeometry(3.4, 1.4, 3.4), std({ color: 0xbfc3c7, metalness: .8, roughness: .35 }))), 14, 2.3, z), at(new THREE.Mesh(new THREE.CylinderGeometry(.9, .9, 1, 16), blk), 14, 3.3, z));
+
+  // the offcut: 7 pixels of 71.4 mm, about 500 mm, lying flat in a loose loop round the board, its lead at the outer end
+  const pts = [];
+  for (let a = 120; a <= 420; a += 6) { const r = 76 - (a - 120) / 300 * 3, t = rad(a); pts.push(new THREE.Vector3(Math.cos(t) * r, 0, Math.sin(t) * r)); }
+  const end = pts[pts.length - 1], dir = new THREE.Vector3(-Math.sin(rad(420)), 0, Math.cos(rad(420)));
+  for (let s = 20; s <= 100; s += 20) pts.push(end.clone().addScaledVector(dir, s).add(new THREE.Vector3(0, 0, s * s * .0012)));
+  const path = new THREE.CatmullRomCurve3(pts, false, 'centripetal'), len = path.getLength(), N = 400, SW = 10, SH = 2.2;
+  const pos = [], uv = [], idx = [], up = new THREE.Vector3(0, 1, 0), side = new THREE.Vector3();
+  const sp = path.getSpacedPoints(N);
+  sp.forEach((p, i) => {                       // top face, then the two edges, as one flat ribbon with some thickness
+    side.crossVectors(path.getTangentAt(i / N), up).setY(0).normalize().multiplyScalar(SW / 2);
+    const u = i / N;
+    pos.push(p.x - side.x, SH, p.z - side.z, p.x + side.x, SH, p.z + side.z, p.x - side.x, 0, p.z - side.z, p.x + side.x, 0, p.z + side.z);
+    uv.push(u, 1, u, 0, u, 1, u, 0);
+    if (i) { const a = (i - 1) * 4, b = i * 4; idx.push(a, a + 1, b, a + 1, b + 1, b, a + 2, a, b + 2, a, b, b + 2, a + 1, a + 3, b + 1, a + 3, b + 3, b + 1); }
+  });
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); geo.setIndex(idx); geo.computeVertexNormals();
+  const PXL = 71.42, kpx = len / 7;           // the model's pixels share the length exactly
+  const face = tex(Math.round(len * 4), SW * 4, (c, w, h) => {
+    c.fillStyle = '#eeebe3'; c.fillRect(0, 0, w, h);
+    c.fillStyle = '#eedca6'; c.fillRect(0, h * .2, w, h * .6);                       // the phosphor line
+    for (let k = 0; k <= 7; k++) {                                                    // copper cut pads and the cut line between pixels
+      const x = k * kpx * 4; c.fillStyle = '#c8823e'; c.fillRect(x - 10, 0, 7, h * .2); c.fillRect(x + 3, 0, 7, h * .2); c.fillRect(x - 10, h * .8, 7, h * .2); c.fillRect(x + 3, h * .8, 7, h * .2);
+      c.fillStyle = 'rgba(30,30,30,.55)'; c.fillRect(x - 1, 0, 2, h);
+    }
+  });
+  const emit = document.createElement('canvas'); emit.width = 7 * 8; emit.height = 10;
+  const emitTex = new THREE.CanvasTexture(emit); emitTex.colorSpace = THREE.SRGBColorSpace;
+  const glow = document.createElement('canvas'); glow.width = 7 * 8; glow.height = 32;
+  const glowTex = new THREE.CanvasTexture(glow); glowTex.colorSpace = THREE.SRGBColorSpace;
+  const stripMat = std({ map: face, roughness: .5, emissive: 0xffffff, emissiveMap: emitTex, emissiveIntensity: 1.6, side: THREE.DoubleSide });
+  const strip = sh(new THREE.Mesh(geo, stripMat)); g.add(strip);
+  // a soft pool of light on the mat beside it: the same ribbon, wider, flat, added on top
+  const gpos = [], guv = [], gidx = [];
+  sp.forEach((p, i) => { side.crossVectors(path.getTangentAt(i / N), up).setY(0).normalize().multiplyScalar(40); gpos.push(p.x - side.x, .25, p.z - side.z, p.x + side.x, .25, p.z + side.z); guv.push(i / N, 1, i / N, 0); if (i) { const a = (i - 1) * 2; gidx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } });
+  const ggeo = new THREE.BufferGeometry(); ggeo.setAttribute('position', new THREE.Float32BufferAttribute(gpos, 3)); ggeo.setAttribute('uv', new THREE.Float32BufferAttribute(guv, 2)); ggeo.setIndex(gidx);
+  const pool = new THREE.Mesh(ggeo, new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+  pool.renderOrder = 5; g.add(pool);          // after the mat, which is drawn as transparent too
+  drawerStrip.pool = pool;
+  // the lead it was cut from: a short black three-core with its plug
+  const tail = sp[sp.length - 1], tdir = path.getTangentAt(1);
+  const lead = new THREE.CatmullRomCurve3([tail.clone().setY(1.6), tail.clone().addScaledVector(tdir, 24).setY(2), tail.clone().addScaledVector(tdir, 46).add(new THREE.Vector3(8, 2, 6))]);
+  g.add(sh(new THREE.Mesh(new THREE.TubeGeometry(lead, 24, 2, 10), std({ color: 0x111111, roughness: .45 }))));
+  const plug = sh(new THREE.Mesh(new THREE.BoxGeometry(14, 6, 9), std({ color: 0x1a1a1a, roughness: .5 }))); plug.position.copy(lead.getPoint(1)).setY(3); plug.lookAt(lead.getPoint(1).add(lead.getTangentAt(1)).setY(3)); g.add(plug);
+  Object.assign(drawerStrip, { emit, emitTex, glow, glowTex });
+});
+{ // the pool stays on the mat when the offcut is lifted, so it moves from the object's group into the scene
+  drawers.g.updateWorldMatrix(true, true); const p = drawerStrip.pool; p.applyMatrix4(p.matrixWorld); p.removeFromParent(); scene.add(p);
+}
+function drawerLights(t) {                    // the offcut, run like one column of the real strip
+  const s = drawerStrip; if (!s.emit) return;
+  const want = drawers.h > .5;
+  if (want && !s.lit) { s.lit = true; s.since = t; s.offAt = 0; }
+  if (!want && s.lit && !s.offAt) s.offAt = t + 1;
+  if (s.lit && s.offAt && t >= s.offAt) { s.lit = false; s.fadeAt = t; }
+  let changed = false;
+  for (let k = 0; k < 7; k++) {
+    let v = 0;
+    if (s.lit) v = THREE.MathUtils.clamp(Math.min(1, (t - s.since) / .4) * 4 - Math.abs(k - 3), 0, 1);
+    else v = Math.max(0, 1 - (t - s.fadeAt) / .3) * s.v[k];
+    if (!s.lit && t - s.fadeAt > .3) v = 0;
+    if (Math.abs(v - s.v[k]) > .002) { s.v[k] = v; changed = true; }
+  }
+  if (!changed) return;
+  const e = s.emit.getContext('2d'), gl = s.glow.getContext('2d');
+  e.fillStyle = '#000'; e.fillRect(0, 0, 56, 10); gl.clearRect(0, 0, 56, 32);
+  s.v.forEach((v, k) => {
+    if (!v) return;
+    e.fillStyle = `rgba(255,186,96,${v})`; e.fillRect(k * 8, 1, 8, 8);
+    const gr = gl.createLinearGradient(0, 0, 0, 32); gr.addColorStop(0, 'rgba(255,190,120,0)'); gr.addColorStop(.5, `rgba(255,176,92,${.5 * v})`); gr.addColorStop(1, 'rgba(255,190,120,0)');
+    gl.fillStyle = gr; gl.fillRect(k * 8, 0, 8, 32);
+  });
+  s.emitTex.needsUpdate = true; s.glowTex.needsUpdate = true;
+}
+const loadDrawers = DRAWER_PARTS.map(([id, color, metal, rough]) => new Promise((res, rej) => new STLLoader().load(`/assets/bench/models/drawers-${id}.stl`, geo => {
+  drawerStrip.parts.add(sh(new THREE.Mesh(toCreasedNormals(geo, rad(38)), std({ color, metalness: metal, roughness: rough })))); res();
+}, undefined, rej)));
+
 // zigbrew: the real dosing ring and portafilter, part by part
 const ZIG = [
   ['pf-body', 0xaab2bb, .95, .3, -58], ['pf-basket', 0xd0d5da, 1, .22, -30], ['pf-handle', 0x1b1b1d, .1, .5, -58], ['sleeve', 0xc9a66b, 0, .72, -8], ['screws', 0x3a3d40, .85, .45, 6],
@@ -407,7 +508,7 @@ let W = 1, Hh = 1;
    between two things, pull back, travel across and push in again. It never cuts. */
 const focus = { x: 0, z: 0, w: 0 };
 let lastSel = null;
-L.debug = { focus, camera };          // for checking camera moves from the console
+L.debug = { focus, camera, strip: drawerStrip, drawers };          // for checking camera moves from the console
 function refocus() {
   if (L.selected === lastSel) return;
   const sel = OBJECTS.find(o => o.id === L.selected), g = window.gsap, already = focus.w > .05;
@@ -460,6 +561,7 @@ function frame() {
   ball.inner.children[0].rotation.x = ball.h * 1.4;
   if (watchHand) watchHand.rotation.y = -t * (.35 + ball.h * 5);        // the stopwatch runs; faster in your hand
   zigParts.forEach(m => { m.position.z = m.userData.ex * zig.h * .32; });     // zigbrew comes a little apart in your hand
+  drawerLights(t);                                                            // the offcut lights in your hand
 
   // camera: hero → overview, shifted left to make room for the list, then in towards whatever is selected
   const f = smooth(THREE.MathUtils.clamp(S.cam, 0, 1));
@@ -488,7 +590,8 @@ function frame() {
   });
 }
 
-Promise.all(loadZig).then(() => {
+L.debug.frame = () => frame();
+Promise.all([...loadZig, ...loadDrawers]).then(() => {
   // sit the ring on the mat with its middle over the group's origin (measured with the group untransformed)
   const keepPos = zig.g.position.clone(), keepRot = zig.g.rotation.y;
   zig.g.position.set(0, 0, 0); zig.g.rotation.y = 0; zig.g.updateWorldMatrix(true, true);
