@@ -508,22 +508,22 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
   };
   const flow = 'sine.inOut';
   const draw = gsap.timeline({ defaults: { ease: flow } })
-    .to('.l-guides .dr', { strokeDashoffset: 0, duration: 1.1, stagger: .05 }, 0)                      // construction lines run out from the middle
-    .to(pens, { opacity: 1, duration: .25 }, .25)
-    .to('.l-out', { strokeDashoffset: 0, duration: 1.9, ease: 'power1.inOut' }, .3)                   // the outline, in one stroke, with the pen on its tip
-    .to(pen, { t: 1, duration: 1.9, ease: 'power1.inOut', onUpdate: movePen }, .3)
-    .to('.l-cap', { strokeDashoffset: 0, duration: 1.6 }, .7)                                          // the name is written, then inked in
-    .to('.l-cap', { fillOpacity: 1, duration: .8 }, 1.7)
-    .to('.l-rulewipe', { attr: { width: 38 }, duration: 1.3 }, .9)                                     // the scale rules itself in
-    .to('.l-countwipe', { attr: { width: 56 }, duration: 1.3 }, 1.2)                                    // the caption is revealed left to right, like the scale
-    .to(prog, { drawn: 12, duration: 2.5, ease: 'power1.inOut', onUpdate: showProg }, 1.1)
-    .to('.l-wipe', { attr: { y: 14, height: 36 }, duration: 1.3, ease: 'power2.inOut' }, 1.6)          // the whole M fills solid from the bottom
-    .to(pens, { opacity: 0, duration: .35 }, 2.15)
-    .to(cut, { y: 61, duration: 1.35, ease: 'power1.inOut', onUpdate: showCut }, 2.6)                // the centre line comes down through it and cuts the right half open
-    .set('.l-arrows', { opacity: 1 }, 3.6)                                                              // hidden until now: round caps would show as dots
-    .to('.l-arrows .dr', { strokeDashoffset: 0, duration: .45, stagger: .1 }, 3.6)
-    .to('.l-guides', { opacity: 0, duration: .9 }, 3.4)
-    .to({}, { duration: .45 });                                                                        // a beat on the finished mark
+    .to('.l-guides .dr', { strokeDashoffset: 0, duration: .75, stagger: .04 }, 0)                      // construction lines run out from the middle
+    .to(pens, { opacity: 1, duration: .2 }, .15)
+    .to('.l-out', { strokeDashoffset: 0, duration: 1.3, ease: 'power1.inOut' }, .2)                   // the outline, in one stroke, with the pen on its tip
+    .to(pen, { t: 1, duration: 1.3, ease: 'power1.inOut', onUpdate: movePen }, .2)
+    .to('.l-cap', { strokeDashoffset: 0, duration: 1.1 }, .45)                                          // the name is written, then inked in
+    .to('.l-cap', { fillOpacity: 1, duration: .6 }, 1.15)
+    .to('.l-rulewipe', { attr: { width: 38 }, duration: .9 }, .6)                                     // the scale rules itself in
+    .to('.l-countwipe', { attr: { width: 56 }, duration: .9 }, .8)                                    // the caption is revealed left to right, like the scale
+    .to(prog, { drawn: 12, duration: 1.75, ease: 'power1.inOut', onUpdate: showProg }, .7)
+    .to('.l-wipe', { attr: { y: 14, height: 36 }, duration: .95, ease: 'power2.inOut' }, 1.05)          // the whole M fills solid from the bottom
+    .to(pens, { opacity: 0, duration: .25 }, 1.45)
+    .to(cut, { y: 61, duration: .95, ease: 'power1.inOut', onUpdate: showCut }, 1.75)                // the centre line comes down through it and cuts the right half open
+    .set('.l-arrows', { opacity: 1 }, 2.5)                                                              // hidden until now: round caps would show as dots
+    .to('.l-arrows .dr', { strokeDashoffset: 0, duration: .35, stagger: .05 }, 2.5)
+    .to('.l-guides', { opacity: 0, duration: .6 }, 2.3)
+    .to({}, { duration: .3 });                                                                        // a beat on the finished mark
 
   const decided = new Promise(res => {
     LAB.ready = () => res(true); LAB.fail = () => res(false);
@@ -539,10 +539,10 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
   Promise.all([decided, seen ? null : new Promise(r => draw.eventCallback('onComplete', r))]).then(([gl]) => {
     // the two halves of the screen ease apart along the centre line
     const out = gsap.timeline({ onComplete: () => { if (loop) return; if (lenis) lenis.start(); document.getElementById('loader').style.display = 'none'; try { sessionStorage.setItem('ml-seen', '1'); } catch (e) {} } })
-      .to('.l-foot', { opacity: 0, duration: .5, ease: 'sine.inOut' }, 0)
-      .set('#loader', { background: 'transparent' }, .1)
-      .to('.lh.l', { xPercent: -101, duration: 1.25, ease: 'expo.inOut' }, .15)
-      .to('.lh.r', { xPercent: 101, duration: 1.25, ease: 'expo.inOut' }, .15);
+      .to('.l-foot', { opacity: 0, duration: .4, ease: 'sine.inOut' }, 0)
+      .set('#loader', { background: 'transparent' }, .05)
+      .to('.lh.l', { xPercent: -101, duration: 1, ease: 'expo.inOut' }, .1)
+      .to('.lh.r', { xPercent: 101, duration: 1, ease: 'expo.inOut' }, .1);
     if (loop) {                                                   // ?loader=loop: the drawing and the parting repeat, with controls to pause and step
       LAB.loaderLoop = gsap.timeline({ repeat: -1, repeatDelay: 1.2 }).add(draw, 0).add(out, draw.duration()).time(draw.duration());
       document.body.appendChild(Object.assign(document.createElement('script'), { src: '/assets/bench/loader-loop.js' }));
