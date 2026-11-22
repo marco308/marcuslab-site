@@ -280,14 +280,17 @@ def build_youtube():
 
 
 def build_bmc_cover():
-    """Buy Me a Coffee cover: the mat on its own. The page's cards sit over the lower half and its header already
-    carries the icon and name, so anything placed here would be cut off or said twice. 3200×800 is twice the 1600×400
-    it asks for; the grid is at the banner's pitch so the two read as the same mat."""
+    """Buy Me a Coffee cover: the nameplate lockup on the mat, like the YouTube banner. BMC shows the cover about 6:1,
+    cropped from the middle, and its cards cover the lower quarter of what's left, so on a desktop only rows 133 to
+    533 of this 3200x800 image are clear. The lockup sits in that band, at 220 px tall (about 110 px on screen).
+    The grid is at the banner's pitch so the two read as the same mat."""
     rule = lambda deg, a, pitch, x, y: f"linear-gradient({deg}deg, rgba(255,237,215,{a}) 2px, transparent 2px) {x}px {y}px / {pitch}px {pitch}px"
     mat = ", ".join((rule(180, .2, 200, 0, 0), rule(90, .2, 200, 0, 0), rule(180, .08, 40, 0, 0), rule(90, .08, 40, 0, 0), OLIVE))
-    chrome_shot(f'<!doctype html><meta charset="utf-8"><style>html,body{{margin:0}}body{{width:3200px;height:800px;background:{mat}}}</style>',
+    name = (SVG / "lockup-nameplate-cream.svg").read_text()
+    chrome_shot(f'''<!doctype html><meta charset="utf-8">{local_fonts()}<style>html,body{{margin:0}}
+      body{{width:3200px;height:800px;background:{mat};position:relative}}
+      body>svg{{position:absolute;left:50%;top:333px;width:880px;height:220px;transform:translate(-50%,-50%)}}</style>{name}''',
                 "bmc-cover-3200x800.png", 3200, 800, transparent=False)
-
 
 def build_site_icons():
     """The copies the site serves from its root."""
