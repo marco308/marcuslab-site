@@ -39,6 +39,11 @@
 .inbag b{ display:block; font-family:var(--mono); font-weight:500; font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
 .inbag .yes b::before{ content:"✓ "; color:var(--orange); } .inbag .no b::before{ content:"✕ "; }
 .wiring img{ display:block; width:100%; height:auto; }
+.addr{ margin:12px 0 0; font-size:15px; line-height:1.5; display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; }
+.addr b{ font-weight:600; user-select:all; }
+.copy{ font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; min-height:32px; padding:0 12px; border-radius:999px; border:1.5px solid rgba(255,237,215,.6); background:transparent; color:var(--cream); cursor:pointer; }
+.copy:focus-visible{ outline:2px solid var(--cream); outline-offset:3px; }
+.copied{ font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; }
 @media (max-width:899px){ .prod{ grid-template-columns:1fr; gap:28px; padding-top:calc(var(--navh) + 24px); } .inbag{ grid-template-columns:1fr; } .facts li{ grid-template-columns:8em 1fr; } }
 </style>
 <script>addEventListener('load', function(){ var s = document.createElement('script'); s.src = 'https://stats.marcuslab.uk/m.js'; s.dataset.websiteId = '91f11161-cf9b-4e81-a77b-114e94374a5d'; s.dataset.domains = 'marcuslab.uk'; document.head.appendChild(s); });</script>
@@ -66,6 +71,7 @@
       <div class="price">£15<small>plus postage · in stock</small></div>
       <a class="btn" href="mailto:hello@marcuslab.uk?subject=Drawer%20lights%20carrier%20board">Email to order</a>
     </div>
+    <p class="addr">Email <b>hello@marcuslab.uk</b> with your postcode. <button type="button" class="copy">Copy address</button> <span class="copied" aria-live="polite"></span></p>
     <ul class="facts">
       <li><b>You get</b><span>1 bare board, 1 SN74AHCT125N level shifter chip (not soldered) and a copy of the firmware</span></li>
       <li><b>Size</b><span>90 × 66 mm, 2 layers, lead-free HASL, four M3 holes</span></li>
@@ -131,5 +137,20 @@
   </div>
 </footer>
 
+<script>
+/* a mailto link does nothing without a mail app set up, so both buttons also copy the address */
+(function () {
+  const addr = 'hello@marcuslab.uk', note = document.querySelector('.copied');
+  const say = t => { note.textContent = t; setTimeout(() => { note.textContent = ''; }, 4000); };
+  const fallback = () => {          // select the address on the page and copy it the old way
+    const r = document.createRange(); r.selectNodeContents(document.querySelector('.addr b'));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    say(document.execCommand && document.execCommand('copy') ? 'Copied' : 'Selected: press Cmd+C or Ctrl+C');
+  };
+  const copy = () => (navigator.clipboard ? navigator.clipboard.writeText(addr) : Promise.reject()).then(() => say('Copied'), fallback);
+  document.querySelector('.copy').addEventListener('click', copy);
+  document.querySelector('.btn').addEventListener('click', copy);
+})();
+</script>
 </body>
 </html>
