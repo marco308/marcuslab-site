@@ -155,7 +155,7 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The bui
 - **Everything is drawn or moved in.** Stroke lines by their length, wipe fills, write text as outlines and then ink it. No fading up from nothing as the main effect, no popping, no bounce or overshoot.
 - **Overlap.** The next thing starts before the last one finishes, so something is always moving.
 - **Eases, by job:** `flow` (sine in-out) for lines and wipes, `draw` (power1 in-out) for one long stroke, `move` (power3 out) for things arriving, `part` (expo in-out) for big set pieces.
-- **Durations:** 200 ms for feedback, 450 ms for small moves, 900 ms for a stroke or wipe, 1.6 s for a camera move. The landing loader runs about 4.5 s. Reading pages have none.
+- **Durations:** 200 ms for feedback, 450 ms for small moves, 900 ms for a stroke or wipe, 1.6 s for a camera move. The landing loader draws for about 4.3 s, then parts. Reading pages have none.
 - **Scroll:** on the homepage, scrub at about 0.8 and pin only on wide screens. Reading pages never take over scrolling.
 - **Reduced motion or no JavaScript:** every word, image and link is visible and readable as a plain page.
 - **It must be real.** Cross-fading still renders is not animation.
