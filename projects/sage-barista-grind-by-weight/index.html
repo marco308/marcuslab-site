@@ -106,8 +106,8 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
     <p class="lead">The GRIND AMOUNT dial on the Barista Express sets a time, not a weight, and the grams you get in that time drift.</p>
     <p>Fresh beans grind faster than stale ones, finer settings are slower, and a nearly empty hopper feeds the burrs differently from a full one. A dose that's 18 g on Monday can be 17 g by Friday, and the shot pulls differently every day. The fix is to weigh what comes out.</p>
     <figure class="fig"><div class="ph"><img src="/projects/sage-barista-grind-by-weight/img/hero-cradle.jpg" alt="The weighing dosing ring hanging in the grinder cradle of the Sage Barista Express" width="1800" height="2400" style="aspect-ratio:4/3;object-fit:cover;object-position:50% 38%"></div></figure>
-    <p><strong>What I wanted:</strong> pick a dose in grams and have the morning grind land within 0.2 g of it, without standing there watching a scale. Part one already lets the machine press its own buttons. The missing piece was something that could feel the grounds arriving and press GRIND again at the right moment.</p>
-    <p><strong>So far, it works.</strong> The first morning dose landed on 18.0 g exactly, and the next on 18.1 g. That's two mornings, not proof. The ten-dose test is still to do.</p>
+    <p><strong>What I wanted:</strong> pick a dose in grams and have the morning grind land within 0.2 g of it, without standing there watching a scale.</p>
+    <p><strong>So far:</strong> the first two morning doses landed on 18.0 g and 18.1 g. The ten-dose test is still to do.</p>
   </div>
 </section>
 
@@ -134,7 +134,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
         <div class="node"><b>grinder</b><span>~1.6 g/s</span><span>GRIND AMOUNT timer</span><span>= the backstop</span></div>
       </div>
       <div class="loopback">grounds land on the scale, the weight rises, the loop closes</div>
-      </div><p class="cap-note">The only command in the stop path is one Zigbee On, scale to relay, by a binding set up in Zigbee2MQTT's Bind tab. Everything Home Assistant does is dashed.</p>
+      </div><p class="cap-note">The only command in the stop path is one Zigbee On, scale to relay, by a binding set up in Zigbee2MQTT's Bind tab.</p>
     </div>
 
     <p><strong>The safety net is the machine's own timer.</strong> GRIND AMOUNT is turned up so the timed dose always runs a little past the heaviest target. If the scale, the network or the relay drops out, the grind still ends on the timer, a gram or two heavy. The worst case is a heavy dose, never a grinder that won't stop, because the scale only sends short presses and never holds a switch on.</p>
@@ -158,7 +158,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
         <button class="bt" id="loseBtn" type="button">▶ lose the stop press</button>
         <span class="say" id="doseNote">numbers from the bench: 0.89 s to first grounds, 1.62 g/s, 0.35 g after the stop</span>
       </div>
-      <p class="cap-note">Blue is what the load cell reads, noise and all: the ring's real ±0.13 g. The scale ignores single readings and watches the dashed line, a 300 ms trend. It presses stop a little before the target, by an amount I'll call the lead, because grounds keep falling for a moment after the press. It learns the lead from its own doses. Then it keeps watching: if grounds are still pouring 1.5 s later, the stop never arrived, so it presses again.</p>
+      <p class="cap-note">Blue is what the load cell reads, noise and all: the ring's real ±0.13 g. The scale ignores single readings and watches the dashed line, a 300 ms trend. It presses stop a little before the target, by an amount called the lead, because grounds keep falling for a moment after the press. It learns the lead from its own doses. Then it keeps watching: if grounds are still pouring 1.5 s later, the stop never arrived, so it presses again.</p>
     </div>
   </div>
 </section>
@@ -168,7 +168,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
   <div class="col">
     <span class="eyebrow">the shape of it</span>
     <h2>Where the scale goes</h2>
-    <p>The hard part was <strong>where to put a scale on a machine that holds the portafilter by its ears</strong>, on two hooks, right under the grinder outlet with no room to spare. I started with two ideas. <strong>Direction A</strong> was a cup scale shaped like a portafilter that hangs in the cradle on its own; you'd tip the cup into the real portafilter afterwards. It got as far as a fit test and a parts order. Then I wondered whether it would be crazy to weigh straight into the portafilter instead. It wasn't, and that's <strong>Direction B</strong>, the one I built.</p>
+    <p>The hard part was <strong>where to put a scale on a machine that holds the portafilter by its ears</strong>, on two hooks, right under the grinder outlet with no room to spare. <strong>Direction A</strong> was a cup scale shaped like a portafilter, hanging in the cradle on its own, tipped into the real portafilter afterwards. It got as far as a fit test. <strong>Direction B</strong>, the one I built, weighs straight into the portafilter.</p>
     <figure class="fig"><div class="ph render"><img src="/projects/sage-barista-grind-by-weight/img/cup-scale.png" alt="Render of Direction A: a portafilter-shaped cup scale with three lugs and a handle, its brown cup slid out of a window in the front" loading="lazy" width="1277" height="1064"></div><figcaption>Direction A. The cup sits on a 100 g load cell and slides out of the front to be tipped into the real portafilter.</figcaption></figure>
     <p>I already use a dosing ring, which clips onto the portafilter's ears and hangs on the cradle's hooks. B is that ring, <strong>cut in two, with a load cell as the only thing joining the halves.</strong> The top half hangs on the hooks and is never weighed. The bottom half grips the portafilter exactly as the ring does today. Everything below the cut, portafilter and coffee, hangs from the cell.</p>
   </div>
@@ -234,7 +234,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
       <tr><td>About 85 g of PETG</td><td>Top ring, collar, sleeve, two lids, electronics carrier. PETG, not PLA: it sits next to a hot machine.</td><td class="num" data-l="Paid">~£1.70</td></tr>
       <tr><td>30 AWG silicone wire</td><td>Load cell to HX711, HX711 to XIAO.</td><td class="num" data-l="Paid">pennies</td></tr>
     </table>
-    <p class="small"><strong>About £24 in the ring.</strong> That doesn't count the trial prints. Every printed part went through several versions (the electronics carrier is on its seventeenth), so the test prints used several times that filament again.</p>
+    <p class="small"><strong>About £24 in the ring,</strong> not counting trial prints. The electronics carrier alone is on its seventeenth version.</p>
     <div class="note"><span class="k">Safety</span><p>The scale is 5 V USB and a small battery, and it never touches the machine's wiring: the relay and its mains tap are already in from part one. The only real risk isn't electrical. A press on an idle grinder starts it, so anything that presses <strong>at the wrong moment</strong> starts a grind nobody asked for. The firmware only presses after it's been armed, and it counts its presses.</p></div>
   </div>
 </section>
@@ -251,7 +251,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
     </div>
     <div class="pair keep">
       <figure class="fig"><div class="ph"><img src="/projects/sage-barista-grind-by-weight/img/sleeve-vs-ring.jpg" alt="An orange printed sleeve next to the black dosing ring, their slots facing the camera" loading="lazy"></div><figcaption>Draft sleeve beside the real ring.</figcaption></figure>
-      <figure class="fig"><div class="ph"><img src="/projects/sage-barista-grind-by-weight/img/draft-printed.jpg" alt="The first printed draft: an orange top ring, a long box and a separate bar" loading="lazy"></div><figcaption>The first Direction B draft. I held it and asked myself how the load cell was supposed to get into the box. It couldn't. That's step 2.</figcaption></figure>
+      <figure class="fig"><div class="ph"><img src="/projects/sage-barista-grind-by-weight/img/draft-printed.jpg" alt="The first printed draft: an orange top ring, a long box and a separate bar" loading="lazy"></div><figcaption>The first Direction B draft. The load cell couldn't get into the box, which is what step 2 fixes.</figcaption></figure>
     </div>
   </div>
 </section>
@@ -322,7 +322,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
   <div class="col">
     <span class="eyebrow">step 5</span>
     <h2>Grind for real</h2>
-    <p>Once assembled, the ring went into the real cradle with the portafilter clipped on, still powered from the laptop's USB. First the boring checks, which all passed: the sleeve hangs free (every poke comes back to the same reading), re-clipping the portafilter repeats to 0.2 g, the calibration from the bench holds (two £1 coins read 17.49 g of 17.50), and noise is the same ±0.13 g as the bare cell. The portafilter weighs 492.5 g. Then I bound the trigger endpoint to <code>zigbrew_grind</code> in Zigbee2MQTT and ran an actual grind to see what would happen.</p>
+    <p>Once assembled, the ring went into the real cradle with the portafilter clipped on, still powered from the laptop's USB. First the boring checks, which all passed: the sleeve hangs free (every poke comes back to the same reading), re-clipping the portafilter repeats to 0.2 g, the calibration from the bench holds (two £1 coins read 17.49 g of 17.50), and noise is the same ±0.13 g as the bare cell. The portafilter weighs 492.5 g. Then I bound the trigger endpoint to <code>zigbrew_grind</code> in Zigbee2MQTT and ran a real grind.</p>
     <figure class="fig"><div class="ph"><img src="/projects/sage-barista-grind-by-weight/img/in-cradle.jpg" alt="The assembled ring hanging in the cradle with the lid off, load cell and orange carrier visible, USB lead in, the portafilter handle below" loading="lazy"></div><figcaption>The orange ring on the counter is an earlier draft.</figcaption></figure>
     <p>The first try pressed once, saw nothing for four seconds and gave up: the machine was off, and the relay can't start a grinder in standby. One press, no second, exactly as designed. Machine on, armed for 18.0 g with a guessed lead of 1.0 g:</p>
     <table class="tbl stack grindlog">
@@ -359,9 +359,9 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
       <p class="cap-note">Three presses from the scale, four pulses from the relay.</p>
     </div>
 
-    <p>2.99 s is too close to 3 s to be chance. The scale asks the relay to confirm each command, and if no confirmation comes back within <strong>3 s</strong>, it sends the command again. The relay had obeyed the stop, but its confirmation got lost. So the scale sent the stop again three seconds later, and on this relay every On is a press, so the repeat started the grinder. (That 3 s is in the ZBOSS library under the Arduino core's Zigbee stack, if you want to look.) The relay should have spotted the repeat by its counter and ignored it. Why its duplicate table missed it I still don't know; a sniffer would tell. <strong>It doesn't matter for the fix:</strong> a press that is never resent can't be duplicated.</p>
-    <div class="note warn"><span class="k">A press delivered twice is two presses</span><p>The press now asks for <strong>no acknowledgement</strong>. The sketch builds the three-byte On frame itself and hands it to the stack with the ack flag off, so it goes out once and never again. A press that is still lost is simply missing, and the dose logic already handles missing: a lost start gets no grounds and gives up, a lost stop gets a rescue press 1.5 s later. The resend had also been working <em>against</em> the rescue, which I hadn't spotted: lose the stop's first copy, the rescue stops the grinder at 1.5 s, then the 3 s resend arrives and starts it again.</p></div>
-    <p>The second grind, with the ring emptied, was clean: two presses, two pulses, and it repeated the first one almost exactly. First grounds at 0.89 s, 1.62 g/s, stop press at 16.99 g, settled at 17.34. So <strong>0.35 g arrives after the stop press</strong>, not the 1.0 g I'd guessed for the lead. The scale learned 30% of the error on its own (1.00 → 0.80), and I set it to 0.35 from the console to save a few doses. I called it there: enough wasted coffee, for now.</p>
+    <p>2.99 s is too close to 3 s to be chance. The scale asks the relay to confirm each command, and if no confirmation comes back within <strong>3 s</strong>, it sends the command again. The relay had obeyed the stop, but its confirmation got lost. So the scale sent the stop again three seconds later, and on this relay every On is a press, so the repeat started the grinder. (The 3 s comes from the ZBOSS library under the Arduino core's Zigbee stack.) The relay should have spotted the repeat by its counter and ignored it. Why its duplicate table missed it I still don't know; a sniffer would tell. <strong>It doesn't matter for the fix:</strong> a press that is never resent can't be duplicated.</p>
+    <div class="note warn"><span class="k">A press delivered twice is two presses</span><p>The press now asks for <strong>no acknowledgement</strong>. The sketch builds the three-byte On frame itself and hands it to the stack with the ack flag off, so it goes out once and never again. A press that is still lost is simply missing, and the dose logic already handles missing: a lost start gets no grounds and gives up, a lost stop gets a rescue press 1.5 s later. The resend had also been undoing rescues: lose the stop's first copy, the rescue stops the grinder at 1.5 s, then the 3 s resend arrives and starts it again.</p></div>
+    <p>The second grind, with the ring emptied, was clean: two presses, two pulses, and it repeated the first one almost exactly. First grounds at 0.89 s, 1.62 g/s, stop press at 16.99 g, settled at 17.34. So <strong>0.35 g arrives after the stop press</strong>, not the 1.0 g I'd guessed for the lead. The scale learned 30% of the error on its own (1.00 → 0.80), and I set it to 0.35 from the console to save a few doses.</p>
   </div>
 </section>
 
@@ -387,7 +387,7 @@ window.RING = { S: { dark:0, lift:0, explode:0, cut:0, focus:0, cam:0, rot:.6, l
         <div class="node"><b>arm at the next check-in</b><span>scale tares, grinds, stops</span><span>HA records the dose</span></div>
       </div>
       </div><p class="chain-note">once a morning, by construction: POWER and GRIND are stamped for the day, so a shower later finds them pressed and does nothing.</p>
-      <p class="cap-note">The only new trigger is the top box in the diagram. On the first morning, a Sunday, I went to the kitchen before showering and nothing happened: the coffee was waiting for my shower, and the gym-morning trigger only runs on weekdays. So now the first motion downstairs starts it too. The hall sensor comes first because I pass it on the way down.</p>
+      <p class="cap-note">On the first morning, a Sunday, I went to the kitchen before showering and nothing happened: the coffee was waiting for my shower, and the gym-morning trigger only runs on weekdays. So now the first motion downstairs starts it too. The hall sensor comes first because I pass it on the way down.</p>
     </div>
 
     <p>So that Sunday I ran the script by hand, with the scale on a USB wall plug and the 0.35 g lead:</p>

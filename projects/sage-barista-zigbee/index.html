@@ -49,7 +49,7 @@
     <div>
       <div class="crumb mono"><img class="zmk" src="/brand/logo/svg/zigbrew-mark-cream.svg" width="44" height="44" alt="zigbrew"><a href="/#work">projects</a><span>/</span><span>zigbrew</span><span class="kind"><i></i>Build</span><span class="sheet">Sheet 1 of 2</span></div>
       <h1>zigbrew<span class="vh">,</span> <small>or how my Sage Barista Express joined the smart home</small></h1>
-      <p class="dek">Two Zigbee dry-contact relays across the POWER button and the grinder switch, driven by Home Assistant. It turns itself on when I get in the shower and grinds a dose when I walk into the kitchen. Here's the whole build, traps included.</p>
+      <p class="dek">Two Zigbee dry-contact relays across the POWER button and the grinder switch, driven by Home Assistant. It turns itself on when I get in the shower and grinds a dose when I walk into the kitchen.</p>
       <div class="meta">
         <span class="chip">Sage BES870</span><span class="chip">Sonoff MINI-ZBD</span><span class="chip">Zigbee2MQTT</span><span class="chip">Home Assistant</span><span class="chip">230 V inside</span>
         <span class="date">September 2026 · 15 min read</span>
@@ -64,7 +64,7 @@
   <div class="col">
     <span class="eyebrow">why</span>
     <p class="lead">The Barista Express heats its thermoblock in a couple of minutes. Everything the coffee actually touches takes twenty.</p>
-    <p>Group head, portafilter, basket, the metal around them: all of it has to soak up heat before the first shot tastes right. Sage's own manual says a cold portafilter and basket lower the extraction temperature enough to spoil it. I've tested that claim by impatience, many times. It holds.</p>
+    <p>Group head, portafilter, basket, the metal around them: all of it has to soak up heat before the first shot tastes right. Sage's own manual says a cold portafilter and basket lower the extraction temperature enough to spoil it.</p>
     <p>So the machine needs to come on about twenty minutes before I want coffee, and I don't want to think about it. <a href="https://www.kopiro.me/press/sage-barista-via-zigbee/index.html">kopiro</a> did the power button with a Tuya relay, building on a <a href="https://community.home-assistant.io/t/modifying-a-breville-sage-barista-express-coffee-machine-to-integrate-with-home-assistant/487575">Home Assistant community thread</a>. I did the same with Sonoff relays, then kept going and did the grinder.</p>
   </div>
 </section>
@@ -74,7 +74,7 @@
   <div class="col">
     <span class="eyebrow">how it works</span>
     <h2>Press the button</h2>
-    <p>Nothing switches the machine's mains. A relay just presses the button for me, electrically. The relay's contact sits across the same two wires the front-panel button uses, closes for half a second, and lets go. The board can't tell the difference.</p>
+    <p>A relay presses the button electrically. Its contact sits across the button's two wires and closes for half a second, so the board can't tell the difference. Nothing switches the machine's mains.</p>
   </div>
 
   <div class="wide dia" id="chain">
@@ -96,11 +96,11 @@
       <button class="bt primary" id="pressBtn" type="button">▶ tap the switch in HA</button>
       <span class="say" id="pressState">relay open · machine in standby</span>
     </div>
-    <p class="cap-note">The contact closes for 0.5 s and opens by itself. It is the relay that guarantees that, not an automation, so a broken automation can never hold the button down.</p>
+    <p class="cap-note">The relay opens itself after 0.5 s, so a broken automation can never hold the button down.</p>
   </div>
 
   <div class="col">
-    <p>Two properties of the relay make this safe. It must be <strong>momentary</strong>, so it can never hold the button. And it must be a <strong>dry contact</strong>, an isolated switch that puts no voltage of its own into the machine. That second one turns out to matter more than I expected.</p>
+    <p>So the relay must be <strong>momentary</strong>, and a <strong>dry contact</strong>: an isolated switch that puts no voltage into the machine. Step 2 shows why that matters.</p>
   </div>
 </section>
 
@@ -122,7 +122,7 @@
     </table>
     <div class="note warn">
       <span class="k">Safety</span>
-      <p>Part of this touches 230 V. Unplug at the wall before opening anything, and again before every step that touches wiring. The board's low-voltage side is <strong>not</strong> isolated from the mains, so never probe it plugged in. If that sentence worries you, this isn't the project for you.</p>
+      <p>Part of this touches 230 V. Unplug at the wall before opening anything, and again before every step that touches wiring. The board's low-voltage side is <strong>not</strong> isolated from the mains, so never probe it plugged in.</p>
     </div>
   </div>
 </section>
@@ -135,7 +135,7 @@
     <p>Water tank off, every screw on the back, then the one you'll miss: under a round plastic cap in the tank recess, just right of the water inlet. Prise the cap off with a fingernail. The rear panel then lifts a few millimetres and tilts out from the bottom. The cup tray on top lifts off separately, with the bean-hopper cradle on its underside.</p>
   </div>
   <div class="wide pair">
-    <figure class="fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/hidden-screw.jpg" alt="Rear of the machine with the tank off, the hidden screw cap marked" loading="lazy"></div><figcaption>The cap on the right of the inlet valve. kopiro lost half an hour to this one. I lost ten minutes because he'd warned me.</figcaption></figure>
+    <figure class="fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/hidden-screw.jpg" alt="Rear of the machine with the tank off, the hidden screw cap marked" loading="lazy"></div><figcaption>The cap right of the inlet valve hides the last screw.</figcaption></figure>
     <figure class="fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/rear-overview.jpg" alt="Rear view with the panel off, ten parts annotated" loading="lazy"></div><figcaption>Rear view, panel off. Left half is hot and wet: thermoblock, solenoids, pump, heatsink. Right half is the grinder motor over the main-board box, and the mains entry at the bottom. Everything I added lives on the right.</figcaption></figure>
   </div>
 </section>
@@ -145,12 +145,12 @@
   <div class="col">
     <span class="eyebrow">step 2</span>
     <h2>Read the board</h2>
-    <p>Four corner screws on the white box. The board is a BV1871A1, and two things about it shape everything after.</p>
+    <p>Four screws hold the white box. Inside is a BV1871A1 board, and two things about it matter.</p>
   </div>
   <figure class="wide mid fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/board.jpg" alt="Main board component side, seven callouts" loading="lazy"></div><figcaption>Component side. The two white headers on the right edge carry the front-panel loom. Bottom left is the power supply, and it is a capacitive dropper.</figcaption></figure>
   <div class="col">
     <p><strong>The front-panel wiring plugs in.</strong> A loom of identical off-white wires lands on two headers next to the microcontroller. One serves the POWER side of the panel, the other the shot buttons. That's where the probing happens.</p>
-    <p><strong>The supply is transformerless.</strong> Yellow X2 capacitors, chokes, a diode chain, no transformer. So the board's "ground" sits at mains potential while the machine is plugged in. It's why the relay must be a dry contact, why you only probe with the plug out, and why I dropped the tempting idea of running the relay from the board's 12 V rail. There is one, the heater relay coil uses it, but it's a live 12 V.</p>
+    <p><strong>The supply is transformerless.</strong> Yellow X2 capacitors, chokes, a diode chain, no transformer. So the board's "ground" sits at mains potential while the machine is plugged in. So the relay must be a dry contact, you only probe with the plug out, and the board's 12 V rail is no use for powering anything: it's live too.</p>
   </div>
 </section>
 
@@ -159,7 +159,7 @@
   <div class="col">
     <span class="eyebrow">step 3</span>
     <h2>Find the two wires</h2>
-    <p>You need the two wires the POWER button joins when pressed. Every wire in the loom is the same colour except one, so this is done by position, and the neat way removes every confusing reading the board would otherwise give you.</p>
+    <p>You need the two wires the POWER button joins. All but one of the loom's wires are the same colour, so you find them by position, with the plug off the board so nothing else confuses the meter.</p>
 
     <div class="dia" id="probe">
       <svg viewBox="0 0 520 388" data-draw role="img" aria-label="The unplugged front-panel plug with twelve positions; probing finds continuity between positions 1 and 7 only while POWER is held">
@@ -272,7 +272,7 @@
 09:36:36  state=<span class="off">OFF</span>
 <span class="c"># relay returned to OFF by itself, every time</span></pre>
     </div>
-    <p>Toggle it three times from Z2M. Each time the relay clicks, reports ON, then reports OFF within a second with no further command. That log is the moment I stopped worrying about the design. Unplug again before the next step.</p>
+    <p>Toggle it three times from Z2M. Each time the relay clicks, reports ON, then reports OFF within a second with no further command. Unplug again before the next step.</p>
   </div>
 </section>
 
@@ -315,7 +315,7 @@
     <figure class="fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/relay-wired.jpg" alt="The relay with all four leads on: L, N, COM, NO" loading="lazy"></div><figcaption>All four leads on. White to NO, black to COM, NC empty, brown to L, blue to N. Resting on the grinder for the photo only.</figcaption></figure>
   </div>
   <div class="col">
-    <div class="note"><span class="k">It worked</span><p>Loom plugged back on, machine plugged in, one tap in Home Assistant: the Sage woke up as if I'd pressed the button. The physical button still worked. Phase one done. Then I noticed something on the board.</p></div>
+    <div class="note"><span class="k">It worked</span><p>Loom back on, plugged in, one tap in Home Assistant: the Sage woke up, and the real button still works.</p></div>
   </div>
 </section>
 
@@ -324,16 +324,16 @@
   <div class="col">
     <span class="eyebrow">bonus round</span>
     <h2>Also, the grinder</h2>
-    <p>Three colour-keyed two-pin connectors on the board are silkscreened <em>Steam</em>, <em>Hot water</em> and <em>Port filter</em>. I'd assumed they drove the solenoids. A meter across the blue <em>Port filter</em> one while pressing the portafilter into the grinder cradle: continuity. They're switch inputs, and blue is the grinder trigger.</p>
+    <p>Three colour-keyed two-pin connectors on the board are silkscreened <em>Steam</em>, <em>Hot water</em> and <em>Port filter</em>. A meter across the blue <em>Port filter</em> one while pressing the portafilter into the grinder cradle: continuity. They're switch inputs, and blue is the grinder trigger.</p>
   </div>
   <div class="wide pair">
     <figure class="fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/cradle-switch.jpg" alt="The cradle microswitch on the grinder housing with its blue pair" loading="lazy"></div><figcaption>The other end of the blue pair: a microswitch on the grinder housing, lever facing the chute. The portafilter presses it. The second relay's NO and COM went across those two wires.</figcaption></figure>
     <figure class="fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/trial-fit.jpg" alt="A relay held in the top compartment beside the grinder gear" loading="lazy"></div><figcaption>Where both relays live: the top compartment between the panel carrier and the grinder gear, on the cool side of the divider, tied so nothing can drift into the teeth.</figcaption></figure>
   </div>
   <div class="col">
-    <p>Both wires are blue, and it doesn't matter which is which: a switch contact has no polarity. Relay two was configured identically to relay one, and a 0.5 s pulse runs a normal dose. Two things I learned the hard way:</p>
+    <p>Both wires are blue, and it doesn't matter which is which: a switch contact has no polarity. Relay two was configured identically to relay one, and a 0.5 s pulse runs a normal dose. Two catches:</p>
     <div class="note"><span class="k">Standby</span><p>The grinder is ignored while the machine is in standby. POWER first, always. An automation that grinds before it wakes the machine does nothing, silently.</p></div>
-    <div class="note"><span class="k">Hopper interlock</span><p>With the cup tray off, the bean hopper isn't locked, the interlock on the tray's underside is open, and the grinder won't run for the relay <strong>or</strong> the real switch. The machine tells you with SINGLE and DOUBLE flashing alternately. Not a fault: "lock the hopper". Cost me twenty minutes.</p></div>
+    <div class="note"><span class="k">Hopper interlock</span><p>With the cup tray off, the bean hopper isn't locked, the interlock on the tray's underside is open, and the grinder won't run for the relay <strong>or</strong> the real switch. The machine tells you with SINGLE and DOUBLE flashing alternately. It means "lock the hopper", not a fault.</p></div>
   </div>
   <figure class="wide mid fig"><div class="ph"><img src="/projects/sage-barista-zigbee/img/interlock-lights.jpg" alt="Front panel with the single and double lights flashing" loading="lazy"></div><figcaption>What "hopper not locked" looks like. If you're testing with the top off, that's why nothing grinds.</figcaption></figure>
 </section>
