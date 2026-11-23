@@ -18,56 +18,22 @@
 <meta name="theme-color" content="#17110d">
 <link rel="icon" href="/brand/logo/svg/drawers-icon-micro-olive.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
-<script>
-/* "anim" turns on everything that is drawn or moved in. Without it (no JS, or reduced motion) this is a plain article. */
-(function(){ var d = document.documentElement; d.classList.add('js'); try{ if (sessionStorage.getItem('ml-seen')) d.classList.add('seen'); }catch(e){} })();
-</script>
 <link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
-<link rel="stylesheet" href="/assets/zigbrew/zigbrew.css">
+<link rel="stylesheet" href="/assets/writeup/writeup.css">
 <style>
-/* drawer lights page: what it adds to the build-log kit */
-.kind.hw i{ background:#f5c12e; }
-.hero-in > div:first-child{ container-type:inline-size; }      /* the title is sized to its own column, so ILLUMINATION always fits on one line */
-.hero h1{ font-size:min(14cqi,104px); overflow-wrap:normal; }
-.print{ max-width:430px; } .print .ph{ aspect-ratio:3/4; }        /* the hero is a portrait clip */
-
-
-/* videos: YouTube once there's an id, the local cut until then. The poster image holds the frame's size. */
-.vid .ph{ aspect-ratio:9/16; }
-.vid .ph img{ height:100%; object-fit:cover; }
-.ph video, .ph iframe{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:0; display:block; background:var(--dark-2); }
-.clip{ max-width:340px; margin-inline:auto; }
-.clips{ display:grid; grid-template-columns:minmax(0,340px) minmax(0,1fr); gap:28px; align-items:center; }
-.clips > *{ margin-top:0 !important; }
-.play{ position:absolute; left:50%; top:50%; width:68px; height:68px; margin:-34px 0 0 -34px; border-radius:50%; border:0; background:var(--orange); cursor:pointer; display:grid; place-items:center; z-index:1; }
-.play::before{ content:""; margin-left:5px; border-left:20px solid var(--dark); border-top:12px solid transparent; border-bottom:12px solid transparent; }
-.play:focus-visible{ outline:2px solid var(--cream); outline-offset:3px; }
-@media (max-width:899px){ .clips{ grid-template-columns:1fr; } .clip{ max-width:300px; } }
-
-@media (max-width:899px){
-  .chain{ flex-direction:column; } .chain .link{ flex-basis:34px; }
-  .chain .link i{ left:50%; right:auto; top:0; bottom:0; width:1.5px; height:auto; transform-origin:50% 0; }
-  .chain .link i::after{ right:-4px; top:auto; bottom:-1px; border-left:4.5px solid transparent; border-right:4.5px solid transparent; border-top:7px solid var(--cream); border-bottom:0; }
-  .chain .link em{ bottom:auto; top:50%; transform:translateY(-50%); left:calc(50% + 12px); text-align:left; }
-}
-
-/* the plan beside the reality: same height, the render landscape and the phone video portrait */
-.pvr{ display:grid; grid-template-columns:minmax(0,2.42fr) minmax(0,1fr); gap:20px; align-items:start; }
-.pvr > *{ margin-top:0 !important; }
-.pvr .vid .ph{ aspect-ratio:9/16; }
-.pvr-k{ display:block; font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--cream); margin-bottom:8px; }
-.pvr-k::before{ content:""; display:inline-block; width:8px; height:8px; margin-right:8px; background:var(--orange); }
-@media (max-width:899px){ .pvr{ grid-template-columns:1fr; gap:28px; } .pvr .vid{ max-width:300px; } }
-
-/* the effects, one tab each */
-.fx{ margin-top:26px !important; border-top:1.5px solid var(--cream); }
-.fx-tabs{ display:flex; flex-wrap:wrap; gap:8px; padding:16px 0 14px; }
-.fx-tabs button, .fx-ctrl button{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; min-height:40px; padding:0 15px; border-radius:999px; border:1.5px solid rgba(255,237,215,.6); background:transparent; color:var(--cream); cursor:pointer; }
+/* the light shows, one tab each: a demo, framed like any figure */
+.fx-host{ max-width:var(--figw) !important; background:var(--dark-2); padding:20px; margin-top:2em !important; }
+.fx-host .gnotes{ list-style:none; padding:0; margin:0; }
+.fx-host .gnotes li{ padding:10px 0; border-bottom:1px solid rgba(255,237,215,.12); margin:0; }
+.fx-host .gnotes .k{ font-weight:600; color:var(--cream); display:block; }
+.fx-host .gnotes p{ font-size:16px; }
+.fx-tabs{ display:flex; flex-wrap:wrap; gap:8px; padding:0 0 14px; }
+.fx-tabs button, .fx-ctrl button{ font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; min-height:40px; padding:0 15px; border-radius:999px; border:1.5px solid rgba(255,237,215,.6); background:transparent; color:var(--cream); cursor:pointer; }
 .fx-tabs button[aria-selected="true"], .fx-ctrl button[aria-pressed="true"]{ background:var(--cream); border-color:var(--cream); color:var(--dark); }
 .fx-tabs button:hover, .fx-ctrl button:hover{ border-color:var(--cream); }
 .fx-tabs button:focus-visible, .fx-ctrl button:focus-visible, .fx-dr:focus-visible{ outline:2px solid var(--cream); outline-offset:3px; }
-.fx-stage{ background:var(--dark); border:1px solid rgba(255,237,215,.35); }
-.fx-hud{ display:flex; justify-content:space-between; gap:12px; padding:9px 14px; font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); border-bottom:1px solid var(--rule); min-height:36px; box-sizing:border-box; }
+.fx-stage{ background:var(--dark); }
+.fx-hud{ display:flex; justify-content:space-between; gap:12px; padding:9px 14px; font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--dim); border-bottom:1px solid rgba(255,237,215,.12); min-height:36px; }
 .fx-hud .l{ color:var(--cream); }
 .fx-stage svg{ display:block; width:100%; height:auto; }
 .fx-top{ fill:none; stroke:var(--cream); stroke-width:3; }
@@ -75,7 +41,7 @@
 .fx-dr{ cursor:pointer; }
 .fx-dr rect{ fill:rgba(255,237,215,0); stroke:rgba(255,237,215,.7); stroke-width:1.5; transition:fill .2s, stroke .2s; }
 .fx-dr:hover rect{ stroke:var(--cream); fill:rgba(255,237,215,.04); }
-.fx-dr text{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; fill:var(--cream); opacity:0; pointer-events:none; }
+.fx-dr text{ font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; fill:var(--cream); opacity:0; pointer-events:none; }
 .fx-dr.open rect{ fill:rgba(255,237,215,.1); stroke:var(--cream); stroke-width:2.5; }
 .fx-dr.open text{ opacity:1; }
 .fx-bar{ height:3px; background:rgba(255,237,215,.12); } .fx-bar i{ display:block; height:100%; background:var(--cream); transform-origin:0 50%; transform:scaleX(0); }
@@ -83,12 +49,12 @@
 .fx-desc{ margin:0 !important; font-size:16px; line-height:1.45; max-width:34em; }
 .fx-ctrl{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; flex:none; }
 @media (max-width:899px){
-  .fx-tabs{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin-inline:calc(var(--pad) * -1); padding-inline:var(--pad); }
+  .fx-host{ margin-inline:calc(var(--pad) * -1) !important; padding:16px var(--pad); }
+  .fx-tabs{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; }
   .fx-tabs button{ flex:none; min-height:44px; } .fx-ctrl button{ min-height:44px; }
   .fx-under{ flex-direction:column; } .fx-ctrl{ justify-content:flex-start; }
   .fx-dr text{ font-size:20px; }
 }
-
 </style>
 <script>addEventListener('load', function(){ var s = document.createElement('script'); s.src = 'https://stats.marcuslab.uk/m.js'; s.dataset.websiteId = '91f11161-cf9b-4e81-a77b-114e94374a5d'; s.dataset.domains = 'marcuslab.uk'; document.head.appendChild(s); });</script>
 <script defer src="/links.js"></script>
@@ -98,236 +64,126 @@
 <header class="nav">
   <a class="brand" href="/" aria-label="Marcus Lab, home"><span class="mk" data-mark="#ffedd7,#e8590c"></span><span class="t">Marcus Lab</span></a>
   <nav class="nav-links" aria-label="Primary">
-    <a href="/#work">Work</a>
-    <a href="/projects/sage-barista-zigbee/">zigbrew</a>
+    <a href="/#work">Projects</a>
     <a class="opt" href="https://github.com/marco308">GitHub</a><a class="opt" href="https://www.printables.com/@MarcoPolo_2354790">Printables</a>
   </nav>
-  <div class="progress" aria-hidden="true"></div>
 </header>
 
-<main>
+<main class="post">
 
-<div class="hero">
-  <div class="hero-in">
-    <div>
-      <div class="crumb mono"><img class="zmk" src="/brand/logo/svg/drawers-mark-cream.svg" width="44" height="44" alt="Drawer Illumination Subsystem"><a href="/#work">projects</a><span>/</span><span>drawer illumination subsystem</span><span class="kind hw"><i></i>Build</span></div>
-      <h1>Drawer Illumination Subsystem<span class="vh">:</span> <small>Because turning on the main light is just too simple</small></h1>
-      <p class="dek">Adding per-drawer open detection and addressable lighting to my new dressing area.</p>
-      <div class="meta">
-        <span class="date">November 2026 · 3 min read</span>
-      </div>
-    </div>
-    <figure class="print vid"><div class="ph"><img src="/projects/drawer-lights/img/open-one.jpg" alt="Grey drawer fronts with brass handles under an oak top; a hand reaches for a drawer in the left column" width="720" height="1280"><video src="/projects/drawer-lights/img/open-one.mp4" poster="/projects/drawer-lights/img/open-one.jpg" muted loop playsinline autoplay preload="auto" aria-hidden="true" class="auto"></video></div><span class="cap">One drawer, one column</span></figure>
-  </div>
-</div>
+<header class="post-head">
+  <div class="crumb"><img src="/brand/logo/svg/drawers-mark-cream.svg" width="30" height="30" alt=""><a href="/#work">Projects</a><span>/</span><span>Build</span></div>
+  <h1>Drawer Illumination Subsystem<span class="vh">:</span> <small>Because turning on the main light is just too simple</small></h1>
+  <p class="dek">Adding per-drawer open detection and addressable lighting to my new dressing area.</p>
+  <p class="date">November 2026 · 3 min read</p>
+</header>
 
-<!-- ============ WHY ============ -->
-<section class="sec">
-  <div class="col">
-    <span class="eyebrow">why</span>
-    <p class="lead">A week or so ago I finished installing a new dressing area in the bedroom. I was very pleased with it, but there was one problem.</p>
-    <p>There simply wasn't enough Zigbee, electronics, complication or lighting involved. It had been a very carpentry-style project, so we had to change that.</p>
-  </div>
-  <figure class="wide sheetfig" style="max-width:900px">
-    <div class="frame"><img class="photo" src="/projects/drawer-lights/img/one-pager-top.png" alt="Project poster titled Drawer Illumination Subsystem, a Zigbee-connected, reed-switch-instrumented, per-column addressable lighting platform for locating socks. A dark render of the drawers with one open and its column lit. The problem: it is hard to see into a drawer in the dark. The obvious fix, struck through: turn the big light on. The solution: nine steps, from removing the oak worktop to opening the drawer and finding socks." width="1540" height="922" loading="lazy"></div>
-    <div class="tb"><span>The plan</span><span class="grow">Drawn before anything was bought</span><span>Scale: excessive</span><a href="/projects/drawer-lights/img/one-pager.jpg" target="_blank" rel="noopener">Whole sheet ↗</a></div>
-    <figcaption>The plan, before anything was bought. A few details changed on the way.</figcaption>
-  </figure>
+<figure class="tall"><div class="ph"><img src="/projects/drawer-lights/img/open-one.jpg" alt="Grey drawer fronts with brass handles under an oak top; a hand reaches for a drawer in the left column" width="720" height="1280"><video class="auto" src="/projects/drawer-lights/img/open-one.mp4" poster="/projects/drawer-lights/img/open-one.jpg" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video></div><figcaption>One drawer, one column.</figcaption></figure>
 
-  <div class="wide">
-    <div class="pvr">
-      <figure class="fig render-loop"><span class="pvr-k">The plan</span><div class="ph"><img src="/projects/drawer-lights/img/render-loop.jpg" alt="Blender render of the dressing area at dusk: drawers open and shut in different columns, and the strip under the top lights only above the columns with a drawer open" width="1080" height="794" loading="lazy"><video src="/projects/drawer-lights/img/render-loop.mp4" poster="/projects/drawer-lights/img/render-loop.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video></div><figcaption>A column lights while any of its drawers is open, and goes off a second after the last one shuts.</figcaption></figure>
-      <figure class="fig vid"><span class="pvr-k">The reality</span><div class="ph"><img src="/projects/drawer-lights/img/open-columns.jpg" alt="Drawers open in the middle and right columns, with the light on under the top" width="720" height="1280" loading="lazy"><video src="/projects/drawer-lights/img/open-columns.mp4" poster="/projects/drawer-lights/img/open-columns.jpg" controls playsinline preload="metadata" aria-label="Opening drawers in different columns"></video></div></figure>
-    </div>
-  </div>
-  <div class="col">
-    <p>It's one strip across the whole top, but each pixel can be lit on its own, so the board lights just the seven above the open drawer's column. It's a COB strip, so the light is one even line rather than a row of dots.</p>
-  </div>
+<section>
+  <p>A week or so ago I finished installing a new dressing area in the bedroom. I was very pleased with it, but there was one problem.</p>
+  <p>There simply wasn't enough Zigbee, electronics, complication or lighting involved. It had been a very carpentry-style project, so we had to change that.</p>
+  <figure><a href="/projects/drawer-lights/img/one-pager.jpg" target="_blank" rel="noopener" style="border:0"><img src="/projects/drawer-lights/img/one-pager-top.png" alt="Project poster titled Drawer Illumination Subsystem, a Zigbee-connected, reed-switch-instrumented, per-column addressable lighting platform for locating socks. A dark render of the drawers with one open and its column lit. The problem: it is hard to see into a drawer in the dark. The obvious fix, struck through: turn the big light on. The solution: nine steps, from removing the oak worktop to opening the drawer and finding socks." width="1540" height="922" loading="lazy"></a><figcaption>The plan, before anything was bought. A few details changed on the way. <a href="/projects/drawer-lights/img/one-pager.jpg" target="_blank" rel="noopener">Whole sheet</a>.</figcaption></figure>
+  <figure><div class="ph"><img src="/projects/drawer-lights/img/render-loop.jpg" alt="Blender render of the dressing area at dusk: drawers open and shut in different columns, and the strip under the top lights only above the columns with a drawer open" width="1080" height="794" loading="lazy"><video class="loop" src="/projects/drawer-lights/img/render-loop.mp4" poster="/projects/drawer-lights/img/render-loop.jpg" muted loop playsinline preload="metadata" aria-hidden="true"></video></div><figcaption>The plan as a render: a column lights while any of its drawers is open, and goes off a second after the last one shuts.</figcaption></figure>
+  <figure class="tall"><div class="ph"><img src="/projects/drawer-lights/img/open-columns.jpg" alt="Drawers open in the middle and right columns, with the light on under the top" width="720" height="1280" loading="lazy"><video src="/projects/drawer-lights/img/open-columns.mp4" poster="/projects/drawer-lights/img/open-columns.jpg" controls playsinline preload="metadata" aria-label="Opening drawers in different columns"></video></div><figcaption>And the real thing.</figcaption></figure>
+  <p>It's one strip across the whole top, but each pixel can be lit on its own, so the board lights just the seven above the open drawer's column. It's a COB strip, so the light is one even line rather than a row of dots.</p>
 </section>
 
-<!-- ============ FUN ============ -->
-<section class="sec mat">
-  <div class="col" data-fx>
-    <span class="eyebrow">what else it unlocked</span>
-    <h2>It's an RGB strip</h2>
-    <ol class="gnotes">
+<section>
+  <h2>Features</h2>
+  <div class="fx-host" data-fx>
+    <ul class="gnotes">
       <li><span class="k">night red</span><p>Between 22:00 and 06:30 a drawer gets dim red instead of white.</p></li>
       <li><span class="k">sweep</span><p>The light runs out from the middle of the column instead of snapping on.</p></li>
       <li><span class="k">nudge</span><p>A drawer left open breathes amber for its last 30 seconds before the light goes off at five minutes.</p></li>
       <li><span class="k">sunrise</span><p>Deep red to warm white over the 15 minutes before I get up, then birdsong from the bedroom Echo. Opening a drawer ends it.</p></li>
       <li><span class="k">celebrate</span><p>Ten seconds of rainbow bloom, fireworks, a rainbow chase and a gold finish.</p></li>
       <li><span class="k">carol</span><p>56 seconds in time with Last Christmas, played on the Echo.</p></li>
-    </ol>
+    </ul>
   </div>
+  <p>And a drawer alarm. A switch in Home Assistant arms the drawers. Open one and the strip flashes red and blue while the bedroom Echo sounds an alarm.</p>
+  <figure class="tall"><div class="ph"><img src="/projects/drawer-lights/img/alarm.jpg" alt="The whole dressing area from across the room, one drawer open and the strip flashing blue" width="720" height="1280" loading="lazy"><video src="/projects/drawer-lights/img/alarm.mp4" poster="/projects/drawer-lights/img/alarm.jpg" controls playsinline preload="metadata" aria-label="The drawer alarm going off"></video></div><figcaption>Sound on.</figcaption></figure>
 </section>
 
-<!-- ============ ALARM ============ -->
-<section class="sec">
-  <div class="col">
-    <span class="eyebrow">the alarm</span>
-    <h2>Drawer alarm</h2>
-    <p>A switch in Home Assistant arms the drawers. Open one and the strip flashes red and blue while the bedroom Echo sounds an alarm.</p>
-  </div>
-  <div class="wide">
-    <figure class="clip vid"><div class="ph"><img src="/projects/drawer-lights/img/alarm.jpg" alt="The whole dressing area from across the room, one drawer open and the strip flashing blue" width="720" height="1280" loading="lazy"><video src="/projects/drawer-lights/img/alarm.mp4" poster="/projects/drawer-lights/img/alarm.jpg" controls playsinline preload="metadata" aria-label="The drawer alarm going off"></video></div><figcaption>Sound on.</figcaption></figure>
-  </div>
+<section>
+  <h2>How it fits together</h2>
+  <p>Everything runs from one board in a box under the left unit. Each drawer has a contact that tells the board when it opens, and the board lights that column's part of the strip.</p>
+  <figure class="dia"><div class="chain" role="img" aria-label="Twelve door contacts connect over three 8-core cables to the board, which drives the 21-pixel strip">
+    <div class="node"><b>Door contacts</b><span>one per drawer</span></div>
+    <div class="link"><i></i><em>8-core × 3</em></div>
+    <div class="node hot"><b>Board</b><span>ESP32-C6 · ESPHome</span></div>
+    <div class="link or"><i></i><em>data</em></div>
+    <div class="node"><b>Strip</b><span>21 pixels</span></div>
+  </div></figure>
+  <p>The board also talks to Home Assistant over Zigbee: it reports every drawer, and takes the sunrise, the light shows and the alarm.</p>
 </section>
 
-<!-- ============ OVERVIEW ============ -->
-<section class="sec">
-  <div class="col">
-    <span class="eyebrow">the build</span>
-    <h2>How it fits together</h2>
-    <p>Everything runs from one board in a box under the left unit. Each drawer has a contact that tells the board when it opens, and the board lights that column's part of the strip.</p>
-  </div>
-  <div class="wide dia">
-    <div class="cq"><div class="chain" data-chain role="img" aria-label="Twelve door contacts connect over three 8-core cables to the board, which drives the 21-pixel strip">
-      <div class="node"><b>Door contacts</b><span>one per drawer</span></div>
-      <div class="link"><i></i><em>8-core × 3</em><u></u></div>
-      <div class="node hot"><b>Board</b><span>ESP32-C6 · ESPHome</span></div>
-      <div class="link or"><i></i><em>data</em><u></u></div>
-      <div class="node"><b>Strip</b><span>21 pixels</span></div>
-    </div></div>
-    <p class="cap-note">The board also talks to Home Assistant over Zigbee: it reports every drawer, and takes the sunrise, the light shows and the alarm.</p>
-  </div>
+<section>
+  <h2>Parts</h2>
+  <table class="tbl stack">
+    <tr><th>Item</th><th>Notes</th><th>Cost</th></tr>
+    <tr><td>Espressif ESP32-C6-DevKitC-1</td><td>Zigbee radio. Genuine, as range varies on clones.</td><td class="num" data-l="Cost">£11.63</td></tr>
+    <tr><td>WS2814 RGBW COB strip, 24 V</td><td>21 pixels used, seven per column.</td><td class="num" data-l="Cost">£12.39</td></tr>
+    <tr><td>Mean Well GST60A24, 24 V 2.5 A</td><td>The only mains part, so a known brand.</td><td class="num" data-l="Cost">£26.56</td></tr>
+    <tr><td>14 MC-38 door contacts</td><td>One per drawer, normally closed.</td><td class="num" data-l="Cost">£8.09</td></tr>
+    <tr><td>Traco TSR 1-2450</td><td>24 V to 5 V.</td><td class="num" data-l="Cost">£5.87</td></tr>
+    <tr><td>SN74AHCT125, five</td><td>3.3 V data to 5 V.</td><td class="num" data-l="Cost">£1.51</td></tr>
+    <tr><td>Time 8-core alarm cable, 25 m</td><td>A pair of cores per drawer.</td><td class="num" data-l="Cost">£12.49</td></tr>
+    <tr><td>Carrier board</td><td>My own design, <a href="/projects/drawer-lights/board/">available here</a>.</td><td class="num" data-l="Cost">£15</td></tr>
+    <tr><td>Everything else</td><td>Terminals, fuse, box, leads, small parts.</td><td class="num" data-l="Cost">£34.88</td></tr>
+  </table>
+  <p>About £128 in all.</p>
 </section>
 
-<!-- ============ PARTS ============ -->
-<section class="sec">
-  <div class="col">
-    <span class="eyebrow">parts</span>
-    <h2>Parts</h2>
-    <table class="tbl stack">
-      <tr><th>Item</th><th>Notes</th><th>Cost</th></tr>
-      <tr><td>Espressif ESP32-C6-DevKitC-1</td><td>Zigbee radio. Genuine, as range varies on clones.</td><td class="num" data-l="Cost">£11.63</td></tr>
-      <tr><td>WS2814 RGBW COB strip, 24 V</td><td>21 pixels used, seven per column.</td><td class="num" data-l="Cost">£12.39</td></tr>
-      <tr><td>Mean Well GST60A24, 24 V 2.5 A</td><td>The only mains part, so a known brand.</td><td class="num" data-l="Cost">£26.56</td></tr>
-      <tr><td>14 MC-38 door contacts</td><td>One per drawer, normally closed.</td><td class="num" data-l="Cost">£8.09</td></tr>
-      <tr><td>Traco TSR 1-2450</td><td>24 V to 5 V.</td><td class="num" data-l="Cost">£5.87</td></tr>
-      <tr><td>SN74AHCT125, five</td><td>3.3 V data to 5 V.</td><td class="num" data-l="Cost">£1.51</td></tr>
-      <tr><td>Time 8-core alarm cable, 25 m</td><td>A pair of cores per drawer.</td><td class="num" data-l="Cost">£12.49</td></tr>
-      <tr><td>Carrier board</td><td>My own design, <a href="/projects/drawer-lights/board/">available here</a>.</td><td class="num" data-l="Cost">£15</td></tr>
-      <tr><td>Everything else</td><td>Terminals, fuse, box, leads, small parts.</td><td class="num" data-l="Cost">£34.88</td></tr>
-    </table>
-    <p class="small"><strong>About £128 in all.</strong></p>
-  </div>
+<section>
+  <h2>The board</h2>
+  <p>An ESP32-C6 on a carrier board I drew in KiCad, with plugs for the three columns, the strip and the 24 V supply. <a href="/projects/drawer-lights/board/">You can buy the bare board</a>.</p>
+  <figure><div class="ph"><img src="/projects/drawer-lights/img/pcb-top.jpg" alt="Render of the carrier board: three six-way plugs for the left, middle and right columns, a three-way plug for the strip, the 24 V input, a fuse, the 5 V converter and two long sockets for the ESP32-C6" width="1400" height="1045" loading="lazy"></div><figcaption>The C6 plugs into the two long sockets.</figcaption></figure>
+  <figure class="pair-fig"><div class="pair">
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/board-bench.jpg" alt="The carrier board on a cutting mat with the ESP32-C6 plugged in, three door contacts wired to its left-column plug and the 24 V lead on its fuse" width="1154" height="1400" loading="lazy"></div><figcaption>First light on the bench, with three contacts on the left column.</figcaption></figure>
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/board-box.jpg" alt="The board wired up inside its black box: the three column plugs, the strip plug and the 24 V input all connected" width="1400" height="1221" loading="lazy"></div><figcaption>Wired up in its box.</figcaption></figure>
+  </div></figure>
+  <p>At first it wouldn't join Zigbee. The C6 shares one radio between Wi-Fi and Zigbee, and Wi-Fi was hogging it. Wi-Fi now stays off until it has joined.</p>
 </section>
 
-<!-- ============ BOARD ============ -->
-<section class="sec">
-  <div class="col">
-    <span class="eyebrow">the board</span>
-    <h2>One small board</h2>
-    <p>An ESP32-C6 on a carrier board I drew in KiCad, with plugs for the three columns, the strip and the 24 V supply. <a href="/projects/drawer-lights/board/">You can buy the bare board</a>.</p>
-    <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/pcb-top.jpg" alt="Render of the carrier board: three six-way plugs for the left, middle and right columns, a three-way plug for the strip, the 24 V input, a fuse, the 5 V converter and two long sockets for the ESP32-C6" width="1400" height="1045" loading="lazy"></div><figcaption>The C6 plugs into the two long sockets.</figcaption></figure>
-    <div class="pair">
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/board-bench.jpg" alt="The carrier board on a cutting mat with the ESP32-C6 plugged in, three door contacts wired to its left-column plug and the 24 V lead on its fuse" width="1154" height="1400" loading="lazy"></div><figcaption>First light on the bench, with three contacts on the left column.</figcaption></figure>
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/board-box.jpg" alt="The board wired up inside its black box: the three column plugs, the strip plug and the 24 V input all connected" width="1400" height="1221" loading="lazy"></div><figcaption>Wired up in its box.</figcaption></figure>
-    </div>
-    <div class="note"><span class="k">What fought back</span><p><strong>It wouldn't join Zigbee.</strong> The C6 shares one radio between Wi-Fi and Zigbee, and Wi-Fi was hogging it. Wi-Fi now stays off until it has joined.</p></div>
-  </div>
+<section>
+  <h2>Drawer contacts</h2>
+  <p>Each drawer has a wired door contact, fixed upright to the inside of the carcase side, 12 mm back from the front edge. Its magnet sits on the back of the drawer front, facing it. Shut, the magnet holds the contact closed; open the drawer a couple of centimetres and it opens.</p>
+  <p>The contact's tail runs back along the top of the drawer's space to a soldered join with that drawer's own pair of cores. The four pairs run down the back corner into one 8-core cable per column, which drops through the base into the plinth and on to the board.</p>
+  <figure><img src="/projects/drawer-lights/img/side-where.png" alt="One column's side panel from inside with the drawers out: four contacts at the front edge, each tail running back to a join, the four core pairs running down the back corner into the sheathed 8-core, which goes down through the base" loading="lazy" width="1414" height="1690"><figcaption>One column from inside, with the drawers out. Front on the right.</figcaption></figure>
+  <figure><img src="/projects/drawer-lights/img/side-above.png" alt="From above: the contact on the side panel and the magnet on the back of the drawer front, a few millimetres apart when shut" loading="lazy" width="1414" height="617"><figcaption>Shut, the magnet sits a few millimetres from the contact. Opening pulls it straight away.</figcaption></figure>
+  <figure class="pair-fig"><div class="pair">
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/contact-side.jpg" alt="Inside a carcase with the drawers out: a brown door contact fixed at the top front of the side panel, its tail hanging down over the drawer runners" width="1050" height="1400" loading="lazy"></div><figcaption>A contact in place, before its tail was clipped back.</figcaption></figure>
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/j1-wired.jpg" alt="The white 8-core cable's cores screwed into a green six-way plug, held in a hand" width="1255" height="1400" loading="lazy"></div><figcaption>The left column's 8-core in its plug.</figcaption></figure>
+  </div></figure>
+  <figure><img src="/projects/drawer-lights/img/j1-plug.png" alt="The board's six-way plug for the left column: the four second cores twisted into 0 V, then white, yellow, green and blue into pins 1 to 4, top drawer first" loading="lazy" width="946" height="842"><figcaption>At the board: one core from each pair to its own pin, the other four twisted into 0 V.</figcaption></figure>
 </section>
 
-<!-- ============ CONTACTS ============ -->
-<section class="sec">
-  <div class="col">
-    <span class="eyebrow">the drawers</span>
-    <h2>A contact on every drawer</h2>
-    <p>Each drawer has a wired door contact, fixed upright to the inside of the carcase side, 12 mm back from the front edge. Its magnet sits on the back of the drawer front, facing it. Shut, the magnet holds the contact closed; open the drawer a couple of centimetres and it opens.</p>
-    <p>The contact's tail runs back along the top of the drawer's space to a soldered join with that drawer's own pair of cores. The four pairs run down the back corner into one 8-core cable per column, which drops through the base into the plinth and on to the board.</p>
-  </div>
-  <figure class="wide sheetfig" style="max-width:720px">
-    <div class="frame"><img class="photo" src="/projects/drawer-lights/img/side-where.png" alt="One column's side panel from inside with the drawers out: four contacts at the front edge, each tail running back to a join, the four core pairs running down the back corner into the sheathed 8-core, which goes down through the base" loading="lazy" width="1414" height="1690"></div>
-    <div class="tb"><span>One column</span><span class="grow">Side panel from inside</span><span>Do not scale</span><a href="/projects/drawer-lights/img/side-where.png" target="_blank" rel="noopener">Open full size ↗</a></div>
-    <figcaption>One column from inside, with the drawers out. Front on the right.</figcaption>
-  </figure>
-  <figure class="wide sheetfig" style="max-width:720px">
-    <div class="frame"><img class="photo" src="/projects/drawer-lights/img/side-above.png" alt="From above: the contact on the side panel and the magnet on the back of the drawer front, a few millimetres apart when shut" loading="lazy" width="1414" height="617"></div>
-    <div class="tb"><span>Plan</span><span class="grow">Contact and magnet from above</span><span>Do not scale</span><a href="/projects/drawer-lights/img/side-above.png" target="_blank" rel="noopener">Open full size ↗</a></div>
-    <figcaption>Shut, the magnet sits a few millimetres from the contact. Opening pulls it straight away.</figcaption>
-  </figure>
-    <div class="col">
-    <div class="pair">
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/contact-side.jpg" alt="Inside a carcase with the drawers out: a brown door contact fixed at the top front of the side panel, its tail hanging down over the drawer runners" width="1050" height="1400" loading="lazy"></div><figcaption>A contact in place, before its tail was clipped back.</figcaption></figure>
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/j1-wired.jpg" alt="The white 8-core cable's cores screwed into a green six-way plug, held in a hand" width="1255" height="1400" loading="lazy"></div><figcaption>The left column's 8-core in its plug.</figcaption></figure>
-    </div>
-  </div>
-  <figure class="wide sheetfig" style="max-width:640px">
-    <div class="frame"><img class="photo" src="/projects/drawer-lights/img/j1-plug.png" alt="The board's six-way plug for the left column: the four second cores twisted into 0 V, then white, yellow, green and blue into pins 1 to 4, top drawer first" loading="lazy" width="946" height="842"></div>
-    <div class="tb"><span>Left column</span><span class="grow">8-core into J1</span><span>Do not scale</span><a href="/projects/drawer-lights/img/j1-plug.png" target="_blank" rel="noopener">Open full size ↗</a></div>
-    <figcaption>At the board: one core from each pair to its own pin, the other four twisted into 0 V.</figcaption>
-  </figure>
-</section>
-
-<!-- ============ TOP ============ -->
-<section class="sec">
-  <div class="col">
-    <span class="eyebrow">the top</span>
-    <h2>Rout the top</h2>
-    <p>The strip lives in a groove routed into the underside of the top: one pass with a 12 mm bit, 4 mm deep and 28 mm from the front edge, so the top drawers still clear it. A second groove takes the cable back to the gap behind the drawers.</p>
-    <div class="pair">
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/routing.jpg" alt="A plunge router with a fence running along the edge of the oak top, outside" width="1400" height="1051" loading="lazy"></div><figcaption>Routing the light groove.</figcaption></figure>
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/strip-groove.jpg" alt="The underside of the top with the routed groove, and the strip laid along the front edge to check where it ends" width="1400" height="1120" loading="lazy"></div><figcaption>Checking where the strip ends before cutting it.</figcaption></figure>
-    </div>
-  </div>
-  <figure class="wide sheetfig" style="max-width:640px">
-    <div class="frame"><img class="photo" src="/projects/drawer-lights/img/top-section.png" alt="Section through the front of the top: the strip in its groove 28 mm back from the front edge, 51 mm of overhang, lighting down onto the drawer front" loading="lazy" width="946" height="392"></div>
-    <div class="tb"><span>Section</span><span class="grow">Through the front edge</span><span>Do not scale</span><a href="/projects/drawer-lights/img/top-section.png" target="_blank" rel="noopener">Open full size ↗</a></div>
-    <figcaption>The strip sits just inside its groove, so the top drawers pass a few millimetres below it.</figcaption>
-  </figure>
-  <div class="col">
-    <p>The strip is held in with dabs of Stixall, and its lead is extended with pond flex to get round the corner.</p>
-    <div class="pair">
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/strip-start.jpg" alt="Labelled photo of the underside of the top at the wall end, showing where the strip starts next to the feed groove" width="1400" height="1093" loading="lazy"></div><figcaption>Start.</figcaption></figure>
-      <figure class="fig"><div class="ph"><img src="/projects/drawer-lights/img/strip-cut.jpg" alt="Labelled photo of the far end of the strip, showing the cut mark after pixel 21" width="1400" height="926" loading="lazy"></div><figcaption>End, cut at pixel 21.</figcaption></figure>
-    </div>
-  </div>
+<section>
+  <h2>Rout the top</h2>
+  <p>The strip lives in a groove routed into the underside of the top: one pass with a 12 mm bit, 4 mm deep and 28 mm from the front edge, so the top drawers still clear it. A second groove takes the cable back to the gap behind the drawers.</p>
+  <figure class="pair-fig"><div class="pair">
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/routing.jpg" alt="A plunge router with a fence running along the edge of the oak top, outside" width="1400" height="1051" loading="lazy"></div><figcaption>Routing the light groove.</figcaption></figure>
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/strip-groove.jpg" alt="The underside of the top with the routed groove, and the strip laid along the front edge to check where it ends" width="1400" height="1120" loading="lazy"></div><figcaption>Checking where the strip ends before cutting it.</figcaption></figure>
+  </div></figure>
+  <figure><img src="/projects/drawer-lights/img/top-section.png" alt="Section through the front of the top: the strip in its groove 28 mm back from the front edge, 51 mm of overhang, lighting down onto the drawer front" loading="lazy" width="946" height="392"><figcaption>The strip sits just inside its groove, so the top drawers pass a few millimetres below it.</figcaption></figure>
+  <p>The strip is held in with dabs of Stixall, and its lead is extended with pond flex to get round the corner.</p>
+  <figure class="pair-fig"><div class="pair">
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/strip-start.jpg" alt="Labelled photo of the underside of the top at the wall end, showing where the strip starts next to the feed groove" width="1400" height="1093" loading="lazy"></div><figcaption>Start.</figcaption></figure>
+    <figure><div class="ph"><img src="/projects/drawer-lights/img/strip-cut.jpg" alt="Labelled photo of the far end of the strip, showing the cut mark after pixel 21" width="1400" height="926" loading="lazy"></div><figcaption>End, cut at pixel 21.</figcaption></figure>
+  </div></figure>
 </section>
 
 </main>
 
 <footer>
-  <span class="mono">© 2026 Marcus · marcuslab.uk · do not scale</span>
+  <span class="mono">© 2026 Marcus · marcuslab.uk</span>
   <div class="fl mono">
-    <a href="/#work">work</a><a href="/projects/sage-barista-zigbee/">zigbrew</a><a href="https://github.com/marco308">github</a><a href="https://www.printables.com/@MarcoPolo_2354790">printables</a><a href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
+    <a href="/#work">Projects</a><a href="https://github.com/marco308">GitHub</a><a href="https://www.printables.com/@MarcoPolo_2354790">Printables</a><a href="https://buymeacoffee.com/marcuslab">Buy me a coffee</a>
   </div>
 </footer>
 
-<script>
-/* the hero clip loops on its own; with reduced motion it waits for a press instead */
-(function () {
-  const v = document.querySelector('video.auto'); if (!v) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { v.pause(); v.removeAttribute('autoplay'); v.controls = true; v.removeAttribute('aria-hidden'); }
-})();
-</script>
-<script>
-(function () {
-  const v = document.querySelector('.render-loop video'); if (!v) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { v.controls = true; v.removeAttribute('aria-hidden'); return; }
-  new IntersectionObserver(es => es[0].isIntersecting ? v.play().catch(() => {}) : v.pause(), { threshold: .25 }).observe(v);
-})();
-</script>
+<script src="/assets/writeup/writeup.js"></script>
 <script src="/projects/drawer-lights/fx.js"></script>
-<script src="/vendor/gsap/gsap.min.js"></script>
-<script src="/vendor/gsap/ScrollTrigger.min.js"></script>
-<script src="/vendor/gsap/SplitText.min.js"></script>
-<script src="/assets/zigbrew/zigbrew.js"></script>
-<script>
-(function () {
-  const ZB = window.ZB; if (!ZB || !ZB.anim) return;
-  gsap.set(['.crumb', '.dek', '.meta'], { y: 30, clipPath: 'inset(0 0 100% 0)' }); gsap.set('.hero h1', { visibility: 'hidden' }); gsap.set('.print', { yPercent: 130, rotation: -7 });
-  ZB.wire();
-  ZB.start({ caption: 'DRAWER ILLUMINATION SUBSYSTEM · SHEET 1 OF 1' }).then(() => {
-    const h = SplitText.create('.hero h1', { type: 'words,chars', mask: 'chars' });
-    gsap.set('.hero h1', { visibility: 'visible' });
-    gsap.timeline()
-      .to('.crumb', { y: 0, clipPath: 'inset(0 0 0% 0)', duration: .6 }, 0)
-      .from(h.chars, { yPercent: 105, duration: .8, stagger: .012, ease: 'power3.out' }, .05)
-      .to(['.dek', '.meta'], { y: 0, clipPath: 'inset(0 0 0% 0)', duration: .7, stagger: .08, clearProps: 'clipPath,transform' }, .35)
-      .to('.print', { yPercent: 0, rotation: 2.2, duration: 1.1, ease: 'power3.out', clearProps: 'transform' }, .2)
-      .add(() => (ZB.held || []).forEach(f => f()), .55);
-  });
-})();
-</script>
 </body>
 </html>
