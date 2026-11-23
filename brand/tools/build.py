@@ -228,6 +228,16 @@ def build_project_marks():
     svg("drawers-icon-olive.svg", (0, 0, 64, 64), tile(OLIVE, shape_mark(big, CREAM, ORANGE, "d"), .8), "Drawer Illumination Subsystem icon", 512, 512)
     svg("drawers-icon-micro-olive.svg", (0, 0, 64, 64), tile(OLIVE, shape_micro(small, CREAM, "e"), .86), "Drawer Illumination Subsystem icon, small sizes", 64, 64)
 
+    # marks drawn straight from a path in the tokens: the pint (PMaaS), the house and tick (HA TickTick), the pan lid
+    for key, title, uid in (("pmaas", "PMaaS", "p"), ("haticktick", "HA TickTick", "h"), ("lids", "Pan lid generator", "k")):
+        d = T["project-marks"][key]["path"]["$value"]
+        for name, fg, line in (("cream", CREAM, ORANGE), ("ink", INK, ORANGE), ("mono-cream", CREAM, CREAM), ("mono-ink", INK, INK)):
+            svg(f"{key}-mark-{name}.svg", (2, 2, 60, 60), shape_mark(d, fg, line, uid), f"{title} mark")
+        for name, fg in (("cream", CREAM), ("ink", INK)):
+            svg(f"{key}-mark-micro-{name}.svg", (2, 2, 60, 60), shape_micro(d, fg, uid + "u"), f"{title} mark, small sizes")
+        svg(f"{key}-icon-olive.svg", (0, 0, 64, 64), tile(OLIVE, shape_mark(d, CREAM, ORANGE, uid), .8), f"{title} icon", 512, 512)
+        svg(f"{key}-icon-micro-olive.svg", (0, 0, 64, 64), tile(OLIVE, shape_micro(d, CREAM, uid + "u"), .86), f"{title} icon, small sizes", 64, 64)
+
 
 # ---------------------------------------------------------------- PNG exports
 def rsvg(src, out, px):

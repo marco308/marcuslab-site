@@ -142,20 +142,20 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The bui
 - **Nav:** the mark and name on the left, links in Outfit 600 caps on the right, over a fade from the ground colour. Solid on phones.
 - **Button:** a pill with a 1.5 px cream outline, Outfit 600 caps. The primary is filled orange with ink text.
 - **Filter chip:** a small mono pill with the kind's colour square. The pressed chip is filled cream with ink text.
-- **Parts list:** one row per thing. A numbered balloon ringed in the kind's colour, the name in caps, a one-line description, the kind, and `RETIRED` if it is. Rows expand in place to a short paragraph and its links, with no tech-stack tags.
+- **Projects list:** one row per thing, headed `PROJECTS`. The project's own logo (its app icon, or its project mark on olive), the name in caps, a one-line description, the kind, and `RETIRED` if it is. Rows expand in place to a short paragraph and its links, with no tech-stack tags.
 - **Balloon tag:** the same number floating over an object. On hover it fills with the kind's colour and the name slides out.
 - **Frosted card:** ink at 50% with a blur, for text that has to sit over the bench.
 - **Figure:** a photo on cream with a strip of orange tape. In a build log, figures are numbered in mono (`FIG. 12`) with a sentence after the number. A lone photo has no caption.
-- **Loader:** the mark draws itself on the mat, then the screen parts along the centre line. It plays once per visit, not on every page.
+- **Loader:** the mark draws itself on the mat, then the screen parts along the centre line. Taken off the homepage on 23 November 2026; it lives on its own at `/brand/loader/` for video intros (`?controls=0` for a clean recording, `?once` to play it once).
 
 ## Motion
 
-**Reading pages are still (22 November 2026).** Build logs, listings and anything else people come to read open straight away: no loader, the browser's own scrolling (no smooth-scroll library), and nothing revealed or drawn in on scroll. Readers on Reddit called the loader a "bootup screen" and the smooth scroll broken. Motion on those pages is only for things that show something: an interactive demo, a video or loop of the thing working. The one exception is zigbrew part two, which keeps its scroll-driven 3D dosing ring, smooth scroll and all, because Marcus likes it. The rules below are for the homepage, where the bench and its 3D objects are the point, and for that page.
+**No page has a loader (23 November 2026).** **Reading pages are still (22 November 2026).** Build logs, listings and anything else people come to read open straight away: no loader, the browser's own scrolling (no smooth-scroll library), and nothing revealed or drawn in on scroll. Readers on Reddit called the loader a "bootup screen" and the smooth scroll broken. Motion on those pages is only for things that show something: an interactive demo, a video or loop of the thing working. The one exception is zigbrew part two, which keeps its scroll-driven 3D dosing ring, smooth scroll and all, because Marcus likes it. The rules below are for the homepage, where the bench and its 3D objects are the point, and for that page.
 
 - **Everything is drawn or moved in.** Stroke lines by their length, wipe fills, write text as outlines and then ink it. No fading up from nothing as the main effect, no popping, no bounce or overshoot.
 - **Overlap.** The next thing starts before the last one finishes, so something is always moving.
 - **Eases, by job:** `flow` (sine in-out) for lines and wipes, `draw` (power1 in-out) for one long stroke, `move` (power3 out) for things arriving, `part` (expo in-out) for big set pieces.
-- **Durations:** 200 ms for feedback, 450 ms for small moves, 900 ms for a stroke or wipe, 1.6 s for a camera move. The landing loader draws for about 3.5 s, then parts in about 1.1 s. Reading pages have none.
+- **Durations:** 200 ms for feedback, 450 ms for small moves, 900 ms for a stroke or wipe, 1.6 s for a camera move. The loader (now only at `/brand/loader/`, for video) draws for about 3.5 s, then parts in about 1.1 s.
 - **Scroll:** on the homepage, scrub at about 0.8 and pin only on wide screens. Reading pages never take over scrolling.
 - **Reduced motion or no JavaScript:** every word, image and link is visible and readable as a plain page.
 - **It must be real.** Cross-fading still renders is not animation.

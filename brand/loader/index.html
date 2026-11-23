@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Marcus Lab loader</title>
+<link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
+<link rel="stylesheet" href="/vendor/fonts/bench-fonts.css">
+<!--
+  The logo loader that opened marcuslab.uk from 12 to 23 November 2026, kept here on its own for video
+  (YouTube intros and the like). It is not linked from the site.
+
+    /brand/loader/               loops, with controls to pause, step a frame, scrub and slow it down
+    /brand/loader/?controls=0    loops, no controls: for a clean screen recording
+    /brand/loader/?once          plays once (draw, then part) and stops: start recording, then load it
+
+  The drawing and the parting are the homepage's, unchanged. On the site the count followed the 3D models
+  loading; here it follows the drawing alone. When the screen parts it shows the plain ground underneath.
+-->
+<style>
+:root{ --olive:#46583a; --dark:#17110d; --cream:#ffedd7; --orange:#e8590c; }
+html,body{ margin:0; height:100%; background:var(--dark); color:var(--cream); overflow:hidden; }
+/* loader: the mark draws itself on a cutting mat, then the screen parts along its centre line */
+#loader{ display:block; position:fixed; inset:0; z-index:100; pointer-events:none; background:var(--olive); --u:calc(min(64vw, 400px) / 64); }   /* --u: one unit of the mark's 64-unit grid, on screen */
+/* The mat grid is ruled in the mark's own units, 4 and 20 to a square, and anchored to the centre of the screen,
+   so the M's edges, its construction lines and the centre line all sit exactly on grid lines. */
+.lh{ position:absolute; top:0; bottom:0; width:50%; overflow:hidden; background-color:var(--olive); --maj:rgba(255,237,215,.2); --min:rgba(255,237,215,.08);
+  background-image:linear-gradient(90deg, var(--maj) 0 1px, transparent 1px), linear-gradient(180deg, var(--maj) 0 1px, transparent 1px), linear-gradient(90deg, var(--min) 0 1px, transparent 1px), linear-gradient(180deg, var(--min) 0 1px, transparent 1px);
+  background-size:calc(var(--u) * 20) calc(var(--u) * 20), calc(var(--u) * 20) calc(var(--u) * 20), calc(var(--u) * 4) calc(var(--u) * 4), calc(var(--u) * 4) calc(var(--u) * 4);
+  background-position:var(--gx) calc(50% + var(--u)); }
+.lh.l{ left:0; --gx:100%; } .lh.r{ left:50%; --gx:0; }
+.lc{ position:absolute; top:50%; width:100vw; display:flex; flex-direction:column; align-items:center; gap:clamp(14px,2.4vh,26px); transform:translateY(-50%); }
+.lh.l .lc{ left:0; } .lh.r .lc{ left:-50vw; }
+.lc svg{ width:calc(var(--u) * 64); height:auto; overflow:visible; }
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div class="lh l"><div class="lc"></div></div>
+  <div class="lh r"><div class="lc"></div></div>
+  <template id="lc-tpl">
+    <svg viewBox="0 0 64 90" fill="none">
+      <defs>
+        <clipPath id="ldm"><path d="M12 48 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 Z"/></clipPath>
+        <clipPath id="ldl"><rect x="0" y="0" width="32" height="64"/></clipPath>
+        <clipPath id="ldr"><rect x="32" y="0" width="32" height="64"/></clipPath>
+        <clipPath id="ldw"><rect class="l-wipe" x="10" y="48" width="44" height="0"/></clipPath>
+        <mask id="ldo" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><path class="l-out dr" d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#fff" stroke-width="2.9" stroke-linejoin="round"/><g class="l-corners" fill="#fff"></g></mask>
+        <clipPath id="ldx"><rect class="l-cutwipe" x="32" y="3" width="32" height="64"/></clipPath>
+        <clipPath id="ldc"><rect class="l-linewipe" x="29" y="3" width="6" height="0"/></clipPath>
+        <clipPath id="ldt"><rect class="l-rulewipe" x="13" y="72" width="0" height="8"/></clipPath>
+        <clipPath id="ldn"><rect class="l-countwipe" x="4" y="81" width="0" height="5"/></clipPath>
+      </defs>
+      <g class="l-guides" stroke="#ffedd7" stroke-opacity=".45" stroke-width=".3"><path class="dr" d="M32 16 H3"/><path class="dr" d="M32 16 H61"/><path class="dr" d="M32 48 H3"/><path class="dr" d="M32 48 H61"/><path class="dr" d="M12 32 V7"/><path class="dr" d="M12 32 V57"/><path class="dr" d="M52 32 V7"/><path class="dr" d="M52 32 V57"/></g>
+      <g clip-path="url(#ldw)"><g clip-path="url(#ldl)"><path d="M12 48 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 Z" fill="#ffedd7"/></g><g clip-path="url(#ldr)"><g clip-path="url(#ldx)"><path d="M12 48 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 Z" fill="#ffedd7"/></g></g></g>
+      <g clip-path="url(#ldr)"><g clip-path="url(#ldm)" class="ld-hatch" stroke="#ffedd7" stroke-width="1.9"></g></g>
+      <path d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#ffedd7" stroke-width="2.6" stroke-linejoin="miter" mask="url(#ldo)"/>
+      <circle class="l-pen" r="1.1" fill="#e8590c"/>
+      <g clip-path="url(#ldc)"><path d="M32 3.25 V60.75" stroke="#e8590c" stroke-width="2" stroke-dasharray="14.5 2.5 2 2.5"/></g>
+      <g class="l-arrows" opacity="0" stroke="#e8590c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="dr" d="M32 4 H42" stroke-linecap="butt"/><path class="dr" d="M39.4 1.7 L42.5 4 L39.4 6.3"/><path class="dr" d="M32 60 H42" stroke-linecap="butt"/><path class="dr" d="M39.4 57.7 L42.5 60 L39.4 62.3"/></g>
+      <text class="l-cap" x="32.85" y="69.4" text-anchor="middle" font-family="Outfit, system-ui, sans-serif" font-weight="700" font-size="4.3" letter-spacing="1.7" fill="#ffedd7" fill-opacity="0" stroke="#ffedd7" stroke-width=".22" stroke-dasharray="26" stroke-dashoffset="26">MARCUS LAB</text>
+      <g class="l-foot">
+        <g clip-path="url(#ldt)"><path d="M14 77 H50" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/><path d="M14 77 v-2.6 M17 77 v-1.3 M20 77 v-1.3 M23 77 v-2.6 M26 77 v-1.3 M29 77 v-1.3 M32 77 v-2.6 M35 77 v-1.3 M38 77 v-1.3 M41 77 v-2.6 M44 77 v-1.3 M47 77 v-1.3 M50 77 v-2.6" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/></g>
+        <path class="l-bar" d="M14 78.5 H50" stroke="#e8590c" stroke-width=".9" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+        <text class="l-count" x="32.17" y="84.4" text-anchor="middle" font-family="DM Mono, ui-monospace, monospace" font-size="2" letter-spacing=".34" fill="#ffedd7" fill-opacity=".8" clip-path="url(#ldn)">LAYING OUT THE BENCH · <tspan class="l-n">00</tspan>/12</text>
+      </g>
+    </svg>
+  </template>
+</div>
+
+<script src="/vendor/gsap/gsap.min.js"></script>
+<script>
+(() => {
+  const q = location.search, once = /[?&]once\b/.test(q), controls = !once && !/[?&]controls=0/.test(q);
+  window.LAB = {};
+  /* ---------- loader: one continuous drawing while the parts load. Each half of the screen holds its half of it ---------- */
+  const tpl = document.getElementById('lc-tpl');
+  document.querySelectorAll('#loader .lc').forEach(lc => lc.appendChild(tpl.content.cloneNode(true)));
+  // hatching: the logo's own lines (5.2 apart, placed by logo.hatch-offset), each cut to the part that crosses the right half of the M
+  const MP = [[12,16],[21,16],[32,31],[43,16],[52,16],[52,48],[43,48],[43,30.5],[32,45.5],[21,30.5],[21,48],[12,48]], hatchSegs = [];
+  for (let k = 36.68, step = 5.2 * Math.SQRT2; k > -18; k -= step) {
+    const xs = [];
+    MP.forEach(([x1, y1], i) => { const [x2, y2] = MP[(i + 1) % MP.length], t = (k - x1 + y1) / ((x2 - x1) - (y2 - y1)); if (t >= 0 && t < 1) xs.push(x1 + t * (x2 - x1)); });
+    xs.sort((a, b) => a - b);
+    for (let i = 0; i + 1 < xs.length; i += 2) { const a = Math.max(xs[i], 32), b = xs[i + 1]; if (b - a > .4) hatchSegs.push([a - 1, a - 1 - k, b + 1, b + 1 - k, a - k]); }
+  }
+  document.querySelectorAll('.ld-hatch').forEach(g => hatchSegs.forEach(([x1, y1, x2, y2, top]) => { g.insertAdjacentHTML('beforeend', `<path class="dr" d="M${x1} ${y1} L${x2} ${y2}"/>`); g.lastChild._top = top; }));
+  // everything marked .dr is drawn by its own length
+  document.querySelectorAll('#loader .dr').forEach(el => { const n = el.getTotalLength(); el.style.strokeDasharray = n; el.style.strokeDashoffset = n; el._len = n; });
+  const outlines = [...document.querySelectorAll('.l-out')], pens = [...document.querySelectorAll('.l-pen')];
+  const pen = { t: 0 };
+  // the outline is revealed by a round-cornered stroke that follows the pen. A mitred corner's point would otherwise appear whole
+  // in one frame, so each point grows out from its joint as the pen turns the corner (a circle in the mask, MP is the M's corners)
+  let run = 16; const corners = MP.map((v, i) => {
+    const a = i ? MP[i - 1] : [12, 32], b = MP[i + 1] || [12, 32], ang = Math.abs(Math.atan2(a[1] - v[1], a[0] - v[0]) - Math.atan2(b[1] - v[1], b[0] - v[0]));
+    const c = { at: run, m: 1.3 / Math.sin(Math.min(ang, 2 * Math.PI - ang) / 2) + .1 }; run += Math.hypot(b[0] - v[0], b[1] - v[1]); return c;
+  });
+  document.querySelectorAll('.l-corners').forEach(g => MP.forEach(([x, y]) => g.insertAdjacentHTML('beforeend', `<circle cx="${x}" cy="${y}" r="0"/>`)));
+  const movePen = () => outlines.forEach((o, i) => {
+    const at = o._len * pen.t, pt = o.getPointAtLength(at); pens[i].setAttribute('cx', pt.x); pens[i].setAttribute('cy', pt.y);
+    [...document.querySelectorAll('.l-corners')[i].children].forEach((c, n) => c.setAttribute('r', corners[n].m * Math.min(1, Math.max(0, (at - corners[n].at) / (2.5 * corners[n].m)))));
+  });
+  movePen(); gsap.set(pens, { opacity: 0 });
+  // the count shown is the slower of the real load and the drawing, so it never jumps ahead of the animation
+  const prog = { real: 0, drawn: 0, total: 12 };
+  const showProg = () => { const v = Math.min(prog.real, prog.drawn); document.querySelectorAll('.l-n').forEach(b => { b.textContent = String(Math.floor(v)).padStart(2, '0'); }); document.querySelectorAll('.l-bar').forEach(b => { b.style.strokeDashoffset = 1 - v / prog.total; }); };   // set directly: GSAP rounds this to whole pixels, and the bar is one unit long
+  LAB.progress = (n, total) => { prog.real = n; prog.total = total; showProg(); };
+
+  // the cut: as the centre line comes down, the solid right half is taken away above its tip and the hatching is ruled in behind it
+  const cut = { y: 3 };
+  const showCut = () => {
+    document.querySelectorAll('.l-linewipe').forEach(r => r.setAttribute('height', cut.y - 3));
+    document.querySelectorAll('.l-cutwipe').forEach(r => r.setAttribute('y', cut.y));
+    document.querySelectorAll('.ld-hatch .dr').forEach(h => { const p = Math.min(1, Math.max(0, (cut.y - h._top) / 9)); h.style.strokeDashoffset = h._len * (1 - p * p * (3 - 2 * p)); });
+  };
+  const flow = 'sine.inOut';
+  const draw = gsap.timeline({ defaults: { ease: flow } })
+    .to('.l-guides .dr', { strokeDashoffset: 0, duration: .75, stagger: .04 }, 0)                      // construction lines run out from the middle
+    .to(pens, { opacity: 1, duration: .2 }, .15)
+    .to('.l-out', { strokeDashoffset: 0, duration: 1.3, ease: 'power1.inOut' }, .2)                   // the outline, in one stroke, with the pen on its tip
+    .to(pen, { t: 1, duration: 1.3, ease: 'power1.inOut', onUpdate: movePen }, .2)
+    .to('.l-cap', { strokeDashoffset: 0, duration: 1.1 }, .45)                                          // the name is written, then inked in
+    .to('.l-cap', { fillOpacity: 1, duration: .6 }, 1.15)
+    .to('.l-rulewipe', { attr: { width: 38 }, duration: .9 }, .6)                                     // the scale rules itself in
+    .to('.l-countwipe', { attr: { width: 56 }, duration: .9 }, .8)                                    // the caption is revealed left to right, like the scale
+    .to(prog, { drawn: 12, duration: 1.75, ease: 'power1.inOut', onUpdate: showProg }, .7)
+    .to('.l-wipe', { attr: { y: 14, height: 36 }, duration: .95, ease: 'power2.inOut' }, 1.05)          // the whole M fills solid from the bottom
+    .to(pens, { opacity: 0, duration: .25 }, 1.45)
+    .to(cut, { y: 61, duration: .95, ease: 'power1.inOut', onUpdate: showCut }, 1.75)                // the centre line comes down through it and cuts the right half open
+    .set('.l-arrows', { opacity: 1 }, 2.5)                                                              // hidden until now: round caps would show as dots
+    .to('.l-arrows .dr', { strokeDashoffset: 0, duration: .35, stagger: .05 }, 2.5)
+    .to('.l-guides', { opacity: 0, duration: .6 }, 2.3)
+    .to({}, { duration: .3 });
+
+  // the two halves of the screen ease apart along the centre line
+  const out = gsap.timeline()
+    .to('.l-foot', { opacity: 0, duration: .4, ease: 'sine.inOut' }, 0)
+    .set('#loader', { background: 'transparent' }, .05)
+    .to('.lh.l', { xPercent: -101, duration: 1, ease: 'expo.inOut' }, .1)
+    .to('.lh.r', { xPercent: 101, duration: 1, ease: 'expo.inOut' }, .1);
+  prog.real = 12;
+  LAB.loaderLoop = gsap.timeline(once ? { delay: .5 } : { repeat: -1, repeatDelay: 1.2 }).add(draw, 0).add(out, draw.duration());
+  if (controls) document.body.appendChild(Object.assign(document.createElement('script'), { src: 'controls.js' }));
+})();
+</script>
+</body>
+</html>

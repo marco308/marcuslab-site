@@ -1,4 +1,4 @@
-/* Loaded only for /?loader=loop. Controls for the looping loader (LAB.loaderLoop, built in index.html):
+/* Controls for the looping loader on /brand/loader/ (LAB.loaderLoop, built in index.html beside this file):
    pause, step a frame at a time, scrub, and slow it down. Space pauses; the arrow keys step. */
 (() => {
   const tl = window.LAB && window.LAB.loaderLoop;
