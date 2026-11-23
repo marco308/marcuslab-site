@@ -138,7 +138,7 @@ html.anim:not(.narrow) .hero{ position:absolute; z-index:2; left:0; right:0; top
   display:grid; grid-template-columns:auto minmax(0,30em); justify-content:space-between; align-items:end; gap:10px 40px; }
 html.anim:not(.narrow) .h-title{ font-size:clamp(64px,8.6vw,170px); }
 html.anim:not(.narrow) .h-para{ font-size:clamp(15px,1.2vw,18px); padding:.9em 1.1em 1em; margin-bottom:.4em; background:rgba(23,17,13,.5); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); text-shadow:none; }
-html.anim:not(.narrow) .h-hint{ display:block; position:absolute; z-index:2; left:50%; bottom:26px; transform:translateX(-50%); font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; pointer-events:none; text-shadow:0 1px 10px rgba(0,0,0,.6); }
+html.anim:not(.narrow) .h-hint{ display:block; position:absolute; z-index:2; left:50%; bottom:26px; transform:translateX(-50%); font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; pointer-events:none; white-space:nowrap; padding:9px 16px; border-radius:999px; background:rgba(23,17,13,.78); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
 html.anim:not(.narrow) .panel{ position:absolute; z-index:3; top:var(--navh); right:0; bottom:0; width:min(42vw,620px); padding:22px clamp(18px,2.4vw,36px) 26px; background:rgba(23,17,13,.93); border-left:1px solid rgba(255,237,215,.2); overflow-y:auto; overscroll-behavior:contain; gap:14px; scrollbar-width:thin; scrollbar-color:rgba(255,237,215,.4) transparent; }
 
 /* narrow: the bench stays stuck under the nav while the list scrolls beneath it */
@@ -303,9 +303,10 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
   <div class="about-grid">
     <div class="about-text">
       <h2 data-split>About</h2>
-      <p class="lead">I build small software I want to use myself, and lately some hardware too.</p>
-      <p>The apps are Swift, because I like software that feels at home on the iPhone and doesn't nag. The servers are Python, running on a homelab that's bigger than one house needs.</p>
-      <p>When I'm not at a keyboard I'm usually on a polo pony, which is where ChukkaTimer came from.</p>
+      <p class="lead">It all started with Home Assistant on a Raspberry Pi, as a fun hobby, and then sort of got a little bit out of hand from there.</p>
+      <p>Then I realised I could build software that works how I want it to work, and I found that better. I don't like paying subscriptions to companies for software and services that aren't how I want them. I like how everything can integrate with each other.</p>
+      <p>It's also a chance to learn. I've learned a lot putting a homelab together, and that carries over into work.</p>
+      <p>When I'm not doing that I'm usually on a polo pony, which is where ChukkaTimer came from.</p>
     </div>
     <figure class="photo" style="margin:0"><img src="/avatar.jpg" width="400" height="300" loading="lazy" alt="Marcus in a cap by the sea"></figure>
   </div>
