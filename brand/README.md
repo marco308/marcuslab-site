@@ -176,7 +176,7 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. Write-u
 - First person, dry, specific. "Fortunately, this one is good." Make the joke once and don't explain it.
 - British English and metric units.
 - **Labels** are short capitals in mono, as on a machine or a drawing: `PARTS LIST`, `BUILD`, `RETIRED`.
-- **Drawing notes** are reused where they happen to be true: `DO NOT SCALE` in a footer, `IF IN DOUBT, ASK` for contact, `FIG. 2` for captions. Number figures only when there is a real sequence of them.
+- **No drawing-note gags** (23 November 2026): no `DO NOT SCALE`, `IF IN DOUBT, ASK`, `SHEET 1 OF 2` or `FIG. 2` anywhere. Marcus called them silly; readers read them as filler.
 - Never invent facts, numbers or steps. Copy comes from Marcus.
 - No exclamation marks, no marketing adjectives, no emoji as decoration.
 
