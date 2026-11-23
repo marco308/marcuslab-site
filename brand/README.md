@@ -137,7 +137,7 @@ See [`tokens/contrast.md`](tokens/contrast.md). The pairings to avoid: cream tex
 
 ## Components
 
-Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The build-log versions are in `assets/zigbrew/` and `projects/`. All are drawn in the guide.
+Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. Write-ups (`projects/`) use their own plain kit, `assets/writeup/`: see the marcuslab-writeup skill. All are drawn in the guide.
 
 - **Nav:** the mark and name on the left, links in Outfit 600 caps on the right, over a fade from the ground colour. Solid on phones.
 - **Button:** a pill with a 1.5 px cream outline, Outfit 600 caps. The primary is filled orange with ink text.
@@ -145,12 +145,12 @@ Built in `index.html`, with the 3D bench in `assets/bench/landing3d.js`. The bui
 - **Projects list:** one row per thing, headed `PROJECTS`. The project's own logo (its app icon, or its project mark on olive), the name in caps, a one-line description, the kind, and `RETIRED` if it is. Rows expand in place to a short paragraph and its links, with no tech-stack tags.
 - **Balloon tag:** the same number floating over an object. On hover it fills with the kind's colour and the name slides out.
 - **Frosted card:** ink at 50% with a blur, for text that has to sit over the bench.
-- **Figure:** a photo on cream with a strip of orange tape. In a build log, figures are numbered in mono (`FIG. 12`) with a sentence after the number. A lone photo has no caption.
+- **Figure:** on the homepage, a photo on cream with a strip of orange tape. In a write-up, a plain photo at the one figure width with an optional plain-sentence caption: no tape, tilt or figure numbers (23 November 2026).
 - **Loader:** the mark draws itself on the mat, then the screen parts along the centre line. Taken off the homepage on 23 November 2026; it lives on its own at `/brand/loader/` for video intros (`?controls=0` for a clean recording, `?once` to play it once).
 
 ## Motion
 
-**No page has a loader (23 November 2026).** **Reading pages are still (22 November 2026).** Build logs, listings and anything else people come to read open straight away: no loader, the browser's own scrolling (no smooth-scroll library), and nothing revealed or drawn in on scroll. Readers on Reddit called the loader a "bootup screen" and the smooth scroll broken. Motion on those pages is only for things that show something: an interactive demo, a video or loop of the thing working. The one exception is zigbrew part two, which keeps its scroll-driven 3D dosing ring, smooth scroll and all, because Marcus likes it. The rules below are for the homepage, where the bench and its 3D objects are the point, and for that page.
+**No page has a loader (23 November 2026).** **Write-ups are one plain column (23 November 2026):** readers on Reddit said the design "jumps all over the place in each section", so every write-up now uses `assets/writeup/` and nothing else for layout. **Reading pages are still (22 November 2026).** Build logs, listings and anything else people come to read open straight away: no loader, the browser's own scrolling (no smooth-scroll library), and nothing revealed or drawn in on scroll. Readers on Reddit called the loader a "bootup screen" and the smooth scroll broken. Motion on those pages is only for things that show something: an interactive demo, a video or loop of the thing working. The one exception is zigbrew part two, which keeps its scroll-driven 3D dosing ring, smooth scroll and all, because Marcus likes it. The rules below are for the homepage, where the bench and its 3D objects are the point, and for that page.
 
 - **Everything is drawn or moved in.** Stroke lines by their length, wipe fills, write text as outlines and then ink it. No fading up from nothing as the main effect, no popping, no bounce or overshoot.
 - **Overlap.** The next thing starts before the last one finishes, so something is always moving.
@@ -203,6 +203,9 @@ These were tried and turned down while this language was being worked out.
 - Poor stand-in renders: a pint of beer, earbuds.
 - A plain, non-3D fallback as the phone experience.
 - Status lamps (a green dot and `LIVE` on every row) and tech-stack tag lines (`SWIFT · IOS · MIT`) in the parts list: they added nothing.
+- Numbered balloons in the homepage list (replaced by each project's logo, 23 November 2026).
+- In write-ups, a different visual device in every section: olive mat and wood bands, tilted taped photos, drawing-sheet title blocks, "FIG. n" numbering, labels above headings, note cards, stat tiles, chips (removed 23 November 2026; Reddit: "the design jumps all over the place").
+- Any loader, on any page (23 November 2026).
 
 ## Open questions
 
