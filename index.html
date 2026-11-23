@@ -28,8 +28,6 @@
 (function(){
   var d = document.documentElement; d.classList.add('js');
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('anim');
-  /* The logo loader plays once, when someone first arrives. Moving between pages afterwards goes straight in. */
-  try{ if (sessionStorage.getItem('ml-seen') && !/[?&]loader=loop/.test(location.search)) d.classList.add('seen'); }catch(e){}
   if (matchMedia('(max-width: 899px)').matches) d.classList.add('narrow');
 })();
 /* Shared with landing3d.js: scroll state, and what is hovered, selected and filtered. */
@@ -61,21 +59,6 @@ button{ font:inherit; color:inherit; background:none; border:0; padding:0; curso
 .mono{ font-family:var(--mono); letter-spacing:.08em; text-transform:uppercase; font-size:12.5px; }
 :focus-visible{ outline:2px solid var(--orange); outline-offset:3px; }
 [data-type="software"]{ --c:var(--software); } [data-type="build"]{ --c:var(--build); }
-
-/* loader: the mark draws itself on a cutting mat, then the screen parts along its centre line */
-#loader{ display:none; }
-html.seen #loader{ display:none !important; }
-html.anim #loader{ display:block; position:fixed; inset:0; z-index:100; pointer-events:none; background:var(--olive); --u:calc(min(64vw, 400px) / 64); }   /* --u: one unit of the mark's 64-unit grid, on screen */
-/* The mat grid is ruled in the mark's own units, 4 and 20 to a square, and anchored to the centre of the screen,
-   so the M's edges, its construction lines and the centre line all sit exactly on grid lines. */
-.lh{ position:absolute; top:0; bottom:0; width:50%; overflow:hidden; background-color:var(--olive); --maj:rgba(255,237,215,.2); --min:rgba(255,237,215,.08);
-  background-image:linear-gradient(90deg, var(--maj) 0 1px, transparent 1px), linear-gradient(180deg, var(--maj) 0 1px, transparent 1px), linear-gradient(90deg, var(--min) 0 1px, transparent 1px), linear-gradient(180deg, var(--min) 0 1px, transparent 1px);
-  background-size:calc(var(--u) * 20) calc(var(--u) * 20), calc(var(--u) * 20) calc(var(--u) * 20), calc(var(--u) * 4) calc(var(--u) * 4), calc(var(--u) * 4) calc(var(--u) * 4);
-  background-position:var(--gx) calc(50% + var(--u)); }
-.lh.l{ left:0; --gx:100%; } .lh.r{ left:50%; --gx:0; }
-.lc{ position:absolute; top:50%; width:100vw; display:flex; flex-direction:column; align-items:center; gap:clamp(14px,2.4vh,26px); transform:translateY(-50%); }
-.lh.l .lc{ left:0; } .lh.r .lc{ left:-50vw; }
-.lc svg{ width:calc(var(--u) * 64); height:auto; overflow:visible; }
 
 /* nav */
 .nav{ position:fixed; z-index:50; top:0; left:0; right:0; height:var(--navh); display:flex; align-items:center; justify-content:space-between; gap:16px; padding:0 var(--pad); background:linear-gradient(rgba(23,17,13,.75), rgba(23,17,13,0)); pointer-events:none; }
@@ -111,7 +94,7 @@ html.anim #loader{ display:block; position:fixed; inset:0; z-index:100; pointer-
 .rowhead{ width:100%; display:grid; grid-template-columns:34px minmax(0,1fr) auto auto; gap:6px 16px; align-items:center; padding:clamp(9px,1.2vh,13px) 8px clamp(9px,1.2vh,13px) 4px; transition:background .15s; }
 .rowhead:focus-visible{ outline-offset:-2px; }
 .row.hot .rowhead, .rowhead:hover{ background:rgba(255,237,215,.09); }
-.no{ font-family:var(--mono); font-size:13px; font-variant-numeric:tabular-nums; width:28px; height:28px; border-radius:50%; border:1.5px solid var(--c); display:grid; place-items:center; }
+.no{ width:34px; height:34px; border-radius:22%; display:block; }   /* the project's own logo: an app icon, or its Marcus Lab mark on olive */
 .what{ display:flex; flex-direction:column; min-width:0; }
 .nm{ font-weight:700; font-size:clamp(17px,1.35vw,21px); line-height:1.1; text-transform:uppercase; letter-spacing:-.005em; }
 .ds{ font-size:14px; opacity:.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -142,9 +125,10 @@ html.anim .view{ display:block; }
 html.anim #gl{ display:block; width:100%; height:100%; touch-action:pan-y; }
 html.anim .tags{ display:block; position:absolute; inset:0; pointer-events:none; overflow:hidden; }
 .tag{ position:absolute; left:0; top:0; display:flex; align-items:center; gap:0; font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; opacity:0; transition:opacity .2s; padding-bottom:10px; }
-.tag b{ font-weight:500; width:26px; height:26px; border-radius:50%; background:var(--dark); border:1.5px solid var(--c); display:grid; place-items:center; flex:none; }
+.tag b{ width:26px; height:26px; border-radius:22%; background:var(--dark); display:block; flex:none; overflow:hidden; box-shadow:0 0 0 1.5px var(--dark); }
+.tag b img{ width:100%; height:100%; display:block; }
 .tag span{ max-width:0; overflow:hidden; background:var(--dark); padding:0; border-radius:0 13px 13px 0; height:26px; line-height:26px; margin-left:-13px; transition:max-width .25s, padding .25s; }
-.tag.on{ z-index:2; } .tag.on b{ background:var(--c); color:var(--dark); position:relative; z-index:1; } .tag.on span{ max-width:260px; padding:0 12px 0 20px; }
+.tag.on{ z-index:2; } .tag.on b{ box-shadow:0 0 0 1.5px var(--c); position:relative; z-index:1; } .tag.on span{ max-width:260px; padding:0 12px 0 20px; }
 .tag::after{ content:""; position:absolute; left:12.5px; top:26px; width:1px; height:10px; background:var(--c); }
 
 /* wide: one pinned screen, list beside the bench */
@@ -204,40 +188,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
 </head>
 <body>
 
-<div id="loader" aria-hidden="true">
-  <div class="lh l"><div class="lc"></div></div>
-  <div class="lh r"><div class="lc"></div></div>
-  <template id="lc-tpl">
-    <svg viewBox="0 0 64 90" fill="none">
-      <defs>
-        <clipPath id="ldm"><path d="M12 48 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 Z"/></clipPath>
-        <clipPath id="ldl"><rect x="0" y="0" width="32" height="64"/></clipPath>
-        <clipPath id="ldr"><rect x="32" y="0" width="32" height="64"/></clipPath>
-        <clipPath id="ldw"><rect class="l-wipe" x="10" y="48" width="44" height="0"/></clipPath>
-        <mask id="ldo" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><path class="l-out dr" d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#fff" stroke-width="2.9" stroke-linejoin="round"/><g class="l-corners" fill="#fff"></g></mask>
-        <clipPath id="ldx"><rect class="l-cutwipe" x="32" y="3" width="32" height="64"/></clipPath>
-        <clipPath id="ldc"><rect class="l-linewipe" x="29" y="3" width="6" height="0"/></clipPath>
-        <clipPath id="ldt"><rect class="l-rulewipe" x="13" y="72" width="0" height="8"/></clipPath>
-        <clipPath id="ldn"><rect class="l-countwipe" x="4" y="81" width="0" height="5"/></clipPath>
-      </defs>
-      <g class="l-guides" stroke="#ffedd7" stroke-opacity=".45" stroke-width=".3"><path class="dr" d="M32 16 H3"/><path class="dr" d="M32 16 H61"/><path class="dr" d="M32 48 H3"/><path class="dr" d="M32 48 H61"/><path class="dr" d="M12 32 V7"/><path class="dr" d="M12 32 V57"/><path class="dr" d="M52 32 V7"/><path class="dr" d="M52 32 V57"/></g>
-      <g clip-path="url(#ldw)"><g clip-path="url(#ldl)"><path d="M12 48 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 Z" fill="#ffedd7"/></g><g clip-path="url(#ldr)"><g clip-path="url(#ldx)"><path d="M12 48 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 Z" fill="#ffedd7"/></g></g></g>
-      <g clip-path="url(#ldr)"><g clip-path="url(#ldm)" class="ld-hatch" stroke="#ffedd7" stroke-width="1.9"></g></g>
-      <path d="M12 32 V16 H21 L32 31 L43 16 H52 V48 H43 V30.5 L32 45.5 L21 30.5 V48 H12 Z" stroke="#ffedd7" stroke-width="2.6" stroke-linejoin="miter" mask="url(#ldo)"/>
-      <circle class="l-pen" r="1.1" fill="#e8590c"/>
-      <g clip-path="url(#ldc)"><path d="M32 3.25 V60.75" stroke="#e8590c" stroke-width="2" stroke-dasharray="14.5 2.5 2 2.5"/></g>
-      <g class="l-arrows" opacity="0" stroke="#e8590c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="dr" d="M32 4 H42" stroke-linecap="butt"/><path class="dr" d="M39.4 1.7 L42.5 4 L39.4 6.3"/><path class="dr" d="M32 60 H42" stroke-linecap="butt"/><path class="dr" d="M39.4 57.7 L42.5 60 L39.4 62.3"/></g>
-      <text class="l-cap" x="32.85" y="69.4" text-anchor="middle" font-family="Outfit, system-ui, sans-serif" font-weight="700" font-size="4.3" letter-spacing="1.7" fill="#ffedd7" fill-opacity="0" stroke="#ffedd7" stroke-width=".22" stroke-dasharray="26" stroke-dashoffset="26">MARCUS LAB</text>
-      <g class="l-foot">
-        <g clip-path="url(#ldt)"><path d="M14 77 H50" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/><path d="M14 77 v-2.6 M17 77 v-1.3 M20 77 v-1.3 M23 77 v-2.6 M26 77 v-1.3 M29 77 v-1.3 M32 77 v-2.6 M35 77 v-1.3 M38 77 v-1.3 M41 77 v-2.6 M44 77 v-1.3 M47 77 v-1.3 M50 77 v-2.6" stroke="#ffedd7" stroke-opacity=".7" stroke-width=".25"/></g>
-        <path class="l-bar" d="M14 78.5 H50" stroke="#e8590c" stroke-width=".9" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
-        <text class="l-count" x="32.17" y="84.4" text-anchor="middle" font-family="DM Mono, ui-monospace, monospace" font-size="2" letter-spacing=".34" fill="#ffedd7" fill-opacity=".8" clip-path="url(#ldn)">LAYING OUT THE BENCH · <tspan class="l-n">00</tspan>/12</text>
-      </g>
-    </svg>
-  </template>
-</div>
-
-<a class="skip" href="#work">Skip to the parts list</a>
+<a class="skip" href="#work">Skip to the projects</a>
 <header class="nav" id="nav">
   <a class="brand" href="#top" aria-label="Marcus Lab, top of page"><span class="mk" data-mark="#ffedd7,#e8590c"></span><span class="t">Marcus Lab</span></a>
   <nav class="nav-links" aria-label="Primary">
@@ -252,11 +203,11 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     <h1 class="h-title" aria-label="Marcus Lab">Marcus <br>Lab</h1>
     <p class="h-para h-fade">I'm Marcus. I make Swift apps for iPhone and Mac, small servers that run in my homelab, and build logs for when the coffee machine needs a Zigbee relay. I use everything here myself.</p>
   </div>
-  <div class="h-hint h-fade" aria-hidden="true">Scroll for the parts list, or pick something up</div>
+  <div class="h-hint h-fade" aria-hidden="true">Scroll for the projects, or pick something up</div>
   <div class="view"><canvas id="gl" aria-hidden="true"></canvas><div class="tags" aria-hidden="true"></div></div>
 
   <div class="panel" id="work" data-lenis-prevent>
-    <div class="panel-head"><h2>Parts list</h2><span id="count" aria-live="polite">10 items</span></div>
+    <div class="panel-head"><h2>Projects</h2><span id="count" aria-live="polite">10 items</span></div>
     <div class="filters" role="group" aria-label="Filter by type">
       <button type="button" data-f="" aria-pressed="true">All</button>
       <button type="button" data-f="software" data-type="software" aria-pressed="false"><i></i>Software</button>
@@ -265,7 +216,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     <ol class="bom">
       <li class="row" data-id="yamp" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">01</span>
+          <img class="no" src="/assets/logos/yamp.png" alt="" width="34" height="34">
           <span class="what"><span class="nm">YAMP</span><span class="ds">Self-hosted meal planner</span></span>
           <span class="ty"><i></i>Software</span>
         </button>
@@ -273,7 +224,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="podcasts" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">02</span>
+          <img class="no" src="/assets/logos/podcasts.png" alt="" width="34" height="34">
           <span class="what"><span class="nm">Podcast Manager</span><span class="ds">Sorts Spotify podcasts into playlists</span></span>
           <span class="ty"><i></i>Software</span>
         </button>
@@ -281,7 +232,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="zigbrew" data-type="build">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">03</span>
+          <img class="no" src="/brand/logo/svg/zigbrew-icon-olive.svg" alt="" width="34" height="34">
           <span class="what"><span class="nm">zigbrew</span><span class="ds">A smart Sage Barista Express</span></span>
           <span class="ty"><i></i>Build</span>
         </button>
@@ -289,7 +240,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="lids" data-type="build">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">04</span>
+          <img class="no" src="/brand/logo/svg/lids-icon-olive.svg" alt="" width="34" height="34">
           <span class="what"><span class="nm">Pan lid generator</span><span class="ds">A lid rack for any cupboard door</span></span>
           <span class="ty"><i></i>Build</span>
         </button>
@@ -297,7 +248,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="mdone" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">05</span>
+          <img class="no" src="/assets/logos/mdone.png" alt="" width="34" height="34">
           <span class="what"><span class="nm">mDone</span><span class="ds">iPhone and Mac app for Vikunja</span></span>
           <span class="ty"><i></i>Software</span>
         </button>
@@ -305,7 +256,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="chukkatimer" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">06</span>
+          <img class="no" src="/assets/logos/chukkatimer.png" alt="" width="34" height="34">
           <span class="what"><span class="nm">ChukkaTimer</span><span class="ds">A polo timer</span></span>
           <span class="ty"><i></i>Software</span>
         </button>
@@ -313,7 +264,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="pmaas" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">07</span>
+          <img class="no" src="/brand/logo/svg/pmaas-icon-olive.svg" alt="" width="34" height="34">
           <span class="what"><span class="nm">PMaaS</span><span class="ds">Pub Meeting as a Service</span></span>
           <span class="ty"><i></i>Software</span>
         </button>
@@ -321,7 +272,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="labels" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">08</span>
+          <img class="no" src="/brand/logo/svg/labels-icon-olive.svg" alt="" width="34" height="34">
           <span class="what"><span class="nm">Label Printer MCP</span><span class="ds">A label maker my AI agent can print on</span></span>
           <span class="ty"><i></i>Software</span>
         </button>
@@ -329,7 +280,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row" data-id="drawers" data-type="build">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">09</span>
+          <img class="no" src="/brand/logo/svg/drawers-icon-olive.svg" alt="" width="34" height="34">
           <span class="what"><span class="nm">Drawer Illumination Subsystem</span><span class="ds">Open a drawer, its column lights up</span></span>
           <span class="ty"><i></i>Build</span>
         </button>
@@ -337,7 +288,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       </li>
       <li class="row retired" data-id="haticktick" data-type="software">
         <button class="rowhead" type="button" aria-expanded="false">
-          <span class="no">10</span>
+          <img class="no" src="/brand/logo/svg/haticktick-icon-olive.svg" alt="" width="34" height="34">
           <span class="what"><span class="nm">HA TickTick</span><span class="ds">TickTick tasks in Home Assistant</span></span>
           <span class="ty"><i></i>Software</span>
           <span class="st">Retired</span>
@@ -466,65 +417,6 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     lenis.stop();
   }
 
-  /* ---------- loader: one continuous drawing while the parts load. Each half of the screen holds its half of it ---------- */
-  const tpl = document.getElementById('lc-tpl');
-  document.querySelectorAll('#loader .lc').forEach(lc => lc.appendChild(tpl.content.cloneNode(true)));
-  // hatching: the logo's own lines (5.2 apart, placed by logo.hatch-offset), each cut to the part that crosses the right half of the M
-  const MP = [[12,16],[21,16],[32,31],[43,16],[52,16],[52,48],[43,48],[43,30.5],[32,45.5],[21,30.5],[21,48],[12,48]], hatchSegs = [];
-  for (let k = 36.68, step = 5.2 * Math.SQRT2; k > -18; k -= step) {
-    const xs = [];
-    MP.forEach(([x1, y1], i) => { const [x2, y2] = MP[(i + 1) % MP.length], t = (k - x1 + y1) / ((x2 - x1) - (y2 - y1)); if (t >= 0 && t < 1) xs.push(x1 + t * (x2 - x1)); });
-    xs.sort((a, b) => a - b);
-    for (let i = 0; i + 1 < xs.length; i += 2) { const a = Math.max(xs[i], 32), b = xs[i + 1]; if (b - a > .4) hatchSegs.push([a - 1, a - 1 - k, b + 1, b + 1 - k, a - k]); }
-  }
-  document.querySelectorAll('.ld-hatch').forEach(g => hatchSegs.forEach(([x1, y1, x2, y2, top]) => { g.insertAdjacentHTML('beforeend', `<path class="dr" d="M${x1} ${y1} L${x2} ${y2}"/>`); g.lastChild._top = top; }));
-  // everything marked .dr is drawn by its own length
-  document.querySelectorAll('#loader .dr').forEach(el => { const n = el.getTotalLength(); el.style.strokeDasharray = n; el.style.strokeDashoffset = n; el._len = n; });
-  const outlines = [...document.querySelectorAll('.l-out')], pens = [...document.querySelectorAll('.l-pen')];
-  const pen = { t: 0 };
-  // the outline is revealed by a round-cornered stroke that follows the pen. A mitred corner's point would otherwise appear whole
-  // in one frame, so each point grows out from its joint as the pen turns the corner (a circle in the mask, MP is the M's corners)
-  let run = 16; const corners = MP.map((v, i) => {
-    const a = i ? MP[i - 1] : [12, 32], b = MP[i + 1] || [12, 32], ang = Math.abs(Math.atan2(a[1] - v[1], a[0] - v[0]) - Math.atan2(b[1] - v[1], b[0] - v[0]));
-    const c = { at: run, m: 1.3 / Math.sin(Math.min(ang, 2 * Math.PI - ang) / 2) + .1 }; run += Math.hypot(b[0] - v[0], b[1] - v[1]); return c;
-  });
-  document.querySelectorAll('.l-corners').forEach(g => MP.forEach(([x, y]) => g.insertAdjacentHTML('beforeend', `<circle cx="${x}" cy="${y}" r="0"/>`)));
-  const movePen = () => outlines.forEach((o, i) => {
-    const at = o._len * pen.t, pt = o.getPointAtLength(at); pens[i].setAttribute('cx', pt.x); pens[i].setAttribute('cy', pt.y);
-    [...document.querySelectorAll('.l-corners')[i].children].forEach((c, n) => c.setAttribute('r', corners[n].m * Math.min(1, Math.max(0, (at - corners[n].at) / (2.5 * corners[n].m)))));
-  });
-  movePen(); gsap.set(pens, { opacity: 0 });
-  // the count shown is the slower of the real load and the drawing, so it never jumps ahead of the animation
-  const prog = { real: 0, drawn: 0, total: 12 };
-  const showProg = () => { const v = Math.min(prog.real, prog.drawn); document.querySelectorAll('.l-n').forEach(b => { b.textContent = String(Math.floor(v)).padStart(2, '0'); }); document.querySelectorAll('.l-bar').forEach(b => { b.style.strokeDashoffset = 1 - v / prog.total; }); };   // set directly: GSAP rounds this to whole pixels, and the bar is one unit long
-  LAB.progress = (n, total) => { prog.real = n; prog.total = total; showProg(); };
-
-  // the cut: as the centre line comes down, the solid right half is taken away above its tip and the hatching is ruled in behind it
-  const cut = { y: 3 };
-  const showCut = () => {
-    document.querySelectorAll('.l-linewipe').forEach(r => r.setAttribute('height', cut.y - 3));
-    document.querySelectorAll('.l-cutwipe').forEach(r => r.setAttribute('y', cut.y));
-    document.querySelectorAll('.ld-hatch .dr').forEach(h => { const p = Math.min(1, Math.max(0, (cut.y - h._top) / 9)); h.style.strokeDashoffset = h._len * (1 - p * p * (3 - 2 * p)); });
-  };
-  const flow = 'sine.inOut';
-  const draw = gsap.timeline({ defaults: { ease: flow } })
-    .to('.l-guides .dr', { strokeDashoffset: 0, duration: .75, stagger: .04 }, 0)                      // construction lines run out from the middle
-    .to(pens, { opacity: 1, duration: .2 }, .15)
-    .to('.l-out', { strokeDashoffset: 0, duration: 1.3, ease: 'power1.inOut' }, .2)                   // the outline, in one stroke, with the pen on its tip
-    .to(pen, { t: 1, duration: 1.3, ease: 'power1.inOut', onUpdate: movePen }, .2)
-    .to('.l-cap', { strokeDashoffset: 0, duration: 1.1 }, .45)                                          // the name is written, then inked in
-    .to('.l-cap', { fillOpacity: 1, duration: .6 }, 1.15)
-    .to('.l-rulewipe', { attr: { width: 38 }, duration: .9 }, .6)                                     // the scale rules itself in
-    .to('.l-countwipe', { attr: { width: 56 }, duration: .9 }, .8)                                    // the caption is revealed left to right, like the scale
-    .to(prog, { drawn: 12, duration: 1.75, ease: 'power1.inOut', onUpdate: showProg }, .7)
-    .to('.l-wipe', { attr: { y: 14, height: 36 }, duration: .95, ease: 'power2.inOut' }, 1.05)          // the whole M fills solid from the bottom
-    .to(pens, { opacity: 0, duration: .25 }, 1.45)
-    .to(cut, { y: 61, duration: .95, ease: 'power1.inOut', onUpdate: showCut }, 1.75)                // the centre line comes down through it and cuts the right half open
-    .set('.l-arrows', { opacity: 1 }, 2.5)                                                              // hidden until now: round caps would show as dots
-    .to('.l-arrows .dr', { strokeDashoffset: 0, duration: .35, stagger: .05 }, 2.5)
-    .to('.l-guides', { opacity: 0, duration: .6 }, 2.3)
-    .to({}, { duration: .3 });                                                                        // a beat on the finished mark
-
   const decided = new Promise(res => {
     LAB.ready = () => res(true); LAB.fail = () => res(false);
     setTimeout(() => res(false), 12000);
@@ -532,21 +424,11 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
     document.body.appendChild(m);
   });
 
-  const loop = /[?&]loader=loop/.test(location.search);            // a looping loader to inspect: see assets/bench/loader-loop.js
-  const seen = root.classList.contains('seen');                 // already been welcomed in this visit: no loader
-  const at = t => seen ? Math.max(0, t - .45) : t;              // without the loader, the page's own arrival starts at once
-  if (seen) { draw.kill(); if (lenis) lenis.start(); }
-  Promise.all([decided, seen ? null : new Promise(r => draw.eventCallback('onComplete', r))]).then(([gl]) => {
-    // the two halves of the screen ease apart along the centre line
-    const out = gsap.timeline({ onComplete: () => { if (loop) return; if (lenis) lenis.start(); document.getElementById('loader').style.display = 'none'; try { sessionStorage.setItem('ml-seen', '1'); } catch (e) {} } })
-      .to('.l-foot', { opacity: 0, duration: .4, ease: 'sine.inOut' }, 0)
-      .set('#loader', { background: 'transparent' }, .05)
-      .to('.lh.l', { xPercent: -101, duration: 1, ease: 'expo.inOut' }, .1)
-      .to('.lh.r', { xPercent: 101, duration: 1, ease: 'expo.inOut' }, .1);
-    if (loop) {                                                   // ?loader=loop: the drawing and the parting repeat, with controls to pause and step
-      LAB.loaderLoop = gsap.timeline({ repeat: -1, repeatDelay: 1.2 }).add(draw, 0).add(out, draw.duration()).time(draw.duration());
-      document.body.appendChild(Object.assign(document.createElement('script'), { src: '/assets/bench/loader-loop.js' }));
-    }
+  // the page arrives as soon as the bench has loaded (the logo loader that used to play first now lives at /brand/loader/)
+  const at = t => Math.max(0, t - .45);
+  if (lenis) lenis.start();
+  decided.then(gl => {
+    const out = gsap.timeline();
     if (!gl) { plain(); if (lenis) { lenis.destroy(); lenis = null; } return; }
 
     if (narrow) {
@@ -575,7 +457,7 @@ footer .fl{ display:flex; flex-wrap:wrap; gap:8px 20px; } footer a{ text-decorat
       .to({}, { duration: 1.1 });          // hold here: this is where people look around
     ScrollTrigger.sort(); ScrollTrigger.refresh();
 
-    out.from(S, { cam: -.3, duration: seen ? 1.6 : 2.6, ease: 'power3.out' }, at(.45))
+    out.from(S, { cam: -.3, duration: 1.6, ease: 'power3.out' }, at(.45))
        .from(title, { yPercent: 18, duration: .9 }, at(.95))
        .from(['.h-para', '.h-hint', '.nav'], { y: 26, stagger: .07, duration: .7 }, at(1.05));
 

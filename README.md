@@ -9,8 +9,8 @@ under **marcuslab.uk**.
 
 - Design: the "bench" design language, defined in [`brand/`](brand/README.md) (tokens, logo
   files, guidelines and a visual guide at `/brand/guide.html`). The homepage is a live 3D
-  workbench (three.js) with one object per project and a parts list beside it; the two zigbrew
-  build logs under `projects/` use the same language. Scroll and loader animation is
+  workbench (three.js) with one object per project and the projects list beside it; the two zigbrew
+  build logs under `projects/` use the same language. Scroll animation is
   [GSAP](https://gsap.com/) (ScrollTrigger, SplitText) with Lenis, self-hosted in `vendor/`.
   Without JavaScript, or with reduced motion, every page is a plain readable document.
 - Assets: `assets/bench/` holds the homepage scene and the dosing ring's part models (STL,

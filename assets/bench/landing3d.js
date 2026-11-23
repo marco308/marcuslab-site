@@ -481,15 +481,15 @@ const loadZig = ZIG.map(([id, color, metal, rough, ex]) => new Promise((res, rej
   m.userData.ex = ex; zigAsm.add(m); zigParts.push(m); L.progress(zigParts.length, ZIG.length); res();
 }, undefined, rej)));
 
-/* ---------- tags: a numbered balloon over each object, named on hover ---------- */
+/* ---------- tags: the project's logo over each object, named on hover ---------- */
 const tagBox = document.querySelector('.tags');
 const rows = [...document.querySelectorAll('.bom .row')];
-const info = id => { const r = rows.find(r => r.dataset.id === id); return r ? { no: r.querySelector('.no').textContent, name: r.querySelector('.nm').textContent, type: r.dataset.type } : { no: '', name: id, type: '' }; };
+const info = id => { const r = rows.find(r => r.dataset.id === id); return r ? { logo: r.querySelector('.no').getAttribute('src'), name: r.querySelector('.nm').textContent, type: r.dataset.type } : { logo: '', name: id, type: '' }; };
 function makeTags() {
   OBJECTS.forEach(o => {
     const i = info(o.id); o.type = i.type;
     const b = document.createElement('button'); b.type = 'button'; b.className = 'tag'; b.dataset.id = o.id; b.dataset.type = i.type;
-    b.innerHTML = `<b>${i.no}</b><span>${i.name}</span>`; b.setAttribute('aria-label', i.name);
+    b.innerHTML = `<b>${i.logo ? `<img src="${i.logo}" alt="">` : ''}</b><span>${i.name}</span>`; b.setAttribute('aria-label', i.name);
     b.addEventListener('pointerenter', () => L.setHover(o.id)); b.addEventListener('pointerleave', () => L.setHover(null)); b.addEventListener('click', () => L.pick(o.id));
     tagBox.appendChild(b); o.tag = b;
   });
